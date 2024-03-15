@@ -92,7 +92,7 @@ class champ_placement:
                     
             if print_statement ==True:
                 print("No competition with 'Championship' in the name was found in the last", max_months, "months.")
-            return None
+            return None 
 
         
     
