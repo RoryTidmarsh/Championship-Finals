@@ -99,8 +99,9 @@ def database():
 
     #Remove "The Agility Club"
     the_agility_club_df = combined_df[combined_df['Show Name'] == 'the agility club']
-    the_agility_club_df['Show Name'][0] = 'agility club'
-    
+    the_agility_club_df.loc[:, 'Show Name'] = the_agility_club_df['Show Name'].str.replace('^the\s+', '', regex=True)
+
+
     # Now, remove these rows from the original DataFrame
     combined_df = combined_df[combined_df['Show Name'] != 'the agility club']
     

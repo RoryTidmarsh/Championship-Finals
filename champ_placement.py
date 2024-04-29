@@ -4,6 +4,7 @@ import numpy as np
 from urllib.parse import urljoin
 import pandas as pd
 from datetime import datetime
+import re
 
 class champ_placement:
     def __init__(self):
@@ -19,6 +20,8 @@ class champ_placement:
         self.next_show = self.nearest_shows(next_show=True)
 
         self.removed_words = np.char.lower(['DTC', 'Dog', 'Training', 'Society', 'and', '&', 'Club', 'in', 'In', 'Obedience', '(Dorset)', 'District', '(Lancs)', 'Show', 'Championship', 'agility'])
+
+        self.last_show_results_link = self.base_link[:-9] + self.recent_show_link()
 
         
     def month_soup(self, months_ago=0, return_month=False):
@@ -217,7 +220,67 @@ class champ_placement:
                 return most_recent['Show Name'], prev_show
             else:
                 return most_recent['Show Name']
+
+    def recent_show_link(self, print_statement=True):
+        """
+        Retrieves the link associated with the most recent show from the `champ_placement` object. The most recent show is taken from the KC website so if nothing is found then the show might not be on plaza or in this current month.
+        
+        Args:
+            print_statement (bool, optional): If True, prints statements during execution. Defaults to True.
+        
+        Returns:
+            data_href (str): The next part of the link to access the show results page. This needs to be combined to the base link.
+        """
+        elements = self.month_soup(months_ago = 0)
     
+        # Convert each Tag object to a string
+        elements_as_strings = [str(element) for element in elements]
+        
+        # Join the strings
+        combined_html = ''.join(elements_as_strings)
+        
+        # Create a new BeautifulSoup object from the combined HTML
+        soup = BeautifulSoup(combined_html, 'html.parser')
+    
+        
+        last_show = self.nearest_show()
+        if print_statement ==True:
+            print(f"Last show to run was {last_show}")
+        
+        def clean_title(title):
+                words = title.split()
+                cleaned_words = [word for word in words if word not in remove_words]
+                return ' '.join(cleaned_words)
+        
+        
+        if last_show != "agility club":
+            remove_words = self.removed_words
+        
+        # Find <td> elements containing the last show name
+        show_row = soup.find('td', string=lambda text: last_show in clean_title(text.lower()))
+        
+        #  If the row is found then print
+        if show_row:
+            if print_statement ==True:
+                print("Matching rows found:")
+                print(show_row.text)
+            
+            # Find the parent <tr> tag
+            parent_tr = show_row.find_parent('tr')
+        
+            # Find the data-href attribute within the <tr> tag
+            data_href = parent_tr.get('data-href')
+        
+            # If data-href exists, print it
+            if data_href:
+                return data_href
+                if print_statement ==True:
+                    print("Data-href link:", data_href)
+            else:
+                print("No data-href link found.")
+        else:
+            print("No matching rows found.")
+            
 
 #ch = champ_placement()
 #ch.recent_champ(months_ago=2)
