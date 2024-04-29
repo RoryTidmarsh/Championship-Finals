@@ -105,13 +105,14 @@ class champ_placement:
             print("No competition with 'Championship' in the name was found in the last", max_months, "months.")
         return None 
 
-    def find_classes(self, months_ago=0, print_statement=False):
+    def find_classes(self, months_ago=0, KC_website = True, print_statement=False):
         """
-        Extracts information about championship classes from the agility plaza website and organises it into a pandas DataFrame.
+        Extracts information about championship classes from the agility plaza website and organizes it into a pandas DataFrame.
     
         Args:
             self: Instance of the class containing the method.
             months_ago (int, optional): An integer indicating how many months ago the function should search for championship classes. Default is 0, representing the current month.
+            KC_website (bool, optional): A boolean indicating if the most recent championship show should be found by the KC website (True) or by if the show has championship in the name (False), default ==True.
             print_statement (bool, optional): A boolean indicating whether to print statements during the execution of the function. Default is False.
     
         Returns:
@@ -120,7 +121,10 @@ class champ_placement:
         Description:
             This function first retrieves the link and name of the most recent championship competition by calling the 'recent_champ' method. It then sends an HTTP GET request to the retrieved link, parses the response content using BeautifulSoup, and locates all 'card-block' elements within the HTML soup. It iterates through each 'card-block' element to find the championship classes. For each class found, it extracts the class name and link and appends them to a list. After gathering all class information, it creates a pandas DataFrame with columns for the class name, link, and height. The height is derived from the second word in the class name. The function sets the DataFrame index to be composed of the first two words extracted from the class name. Finally, it returns the DataFrame containing the championship class information.
         """
-        show_link, show_name = self.recent_champ(months_ago, print_statement)
+        if KC_website ==True:
+            show_link = self.last_show_results_link
+        else:
+            show_link, show_name = self.recent_champ(months_ago, print_statement)
         
         response = requests.get(show_link)
         soup = BeautifulSoup(response.content, 'html.parser')
