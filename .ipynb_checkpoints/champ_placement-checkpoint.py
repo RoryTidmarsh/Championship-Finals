@@ -375,7 +375,10 @@ class champ_placement:
             print('Full final')
         print("Common Pairings with Points (Lowest to Highest):")
         df_points['place'] = np.arange(1,len(df_points)+1)
-        
+        df_top_20['place'] = np.arange(1,len(df_top_20)+1)
+    
+        df_points = df_points.set_index('place')
+        df_top_20 = df_top_20.set_index('place')
         return df_top_20, df_points
             
 
