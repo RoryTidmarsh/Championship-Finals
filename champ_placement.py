@@ -24,6 +24,8 @@ class champ_placement:
         self.last_show_results_link = self.base_link[:-9] + self.recent_show_link()
 
         
+
+        
     def month_soup(self, months_ago=0, return_month=False):
         """
         Extracts a portion of HTML soup corresponding to a specific month's data from agility plaza.
@@ -284,6 +286,97 @@ class champ_placement:
                 print("No data-href link found.")
         else:
             print("No matching rows found.")
+            
+
+    def df_results(self, height):
+        df = self.find_classes()
+        links = np.array(df[df['Height'] == height]['Link'])
+        links = "https://www." + links
+    
+        #creating an empty list for the data frame of each result to go into
+        results_df_list = list(np.zeros(len(links)))
+        
+        #looping over the list to get the results for both rounds
+        for i, link in enumerate(links):
+            
+            #getting the result soup from the links of each round
+            response = requests.get(link)
+            soup_results = BeautifulSoup(response.text, 'html.parser')
+    
+            table_data = []
+            table = soup_results.find('table')  # Locate the table
+            
+            #creating the table that can be used with pandas 
+            if table:
+                rows = table.find_all('tr')  # Find all rows in the table
+                for row in rows:
+                    row_data = []  # Create a list for each row
+                    cells = row.find_all('td')  # Find all cells in the row
+                    for cell in cells:
+                        row_data.append(cell.get_text())  # Append cell data to the row list
+                    table_data.append(row_data)  # Append the row list to the table_data list
+    
+            # Extract table headings into a list
+            column_headings = ['place1', 'place2', 'posh names', 'name', 'type','faults', 'time']
+            #dropping the useless columns to us
+            df = pd.DataFrame(table_data, columns = column_headings).drop(0).drop(columns=['place1','place2','posh names'])
+            #creating a seperate human and dog column
+            df[['Human', 'Dog']] = df['name'].str.split(' & ', expand=True)
+    
+            selected_columns = ['Human', 'Dog']
+            
+            #creating a new df that only has human and dog columns
+            df_new = df[selected_columns]
+            results_df_list[i] = df_new
+            
+        return results_df_list
+
+
+    def overall_results(self, height):
+        '''creates the final overall top 20 and the overall placings
+        INPUTS
+        organisation_name_to_find - REQUIRED, the name of the organisation/show as shown on Agility Plaza
+        first_round_class_name, second_round_class_name - REQUIRED, the name of both of the championship rounds as shown on Agility Plaza, in the order in which they are ran at the competiiton
+        
+        OUTPUTS
+        df_top_20 - pandas dataframe containing the top 20 placings
+        df_placings - pandas dataframe containing the overall results, not limited to the top 20'''
+        
+        #creating the list of the results from both rounds
+        results_df_list = self.df_results(height)
+        
+        #seperating the 2 result dataframes from the list
+        df1 = results_df_list[0]
+        df2 = results_df_list[1]
+    
+        # Find common dog-human pairings
+        common_pairings = set(zip(df1['Human'], df1['Dog'])) & set(zip(df2['Human'], df2['Dog']))
+    
+        # Calculate points for each common pairing
+        points = {}
+        for human, dog in common_pairings:
+            index1 = df1[(df1['Human'] == human) & (df1['Dog'] == dog)].index
+            index2 = df2[(df2['Human'] == human) & (df2['Dog'] == dog)].index
+            if not index1.empty and not index2.empty:
+                points[(human, dog)] = index1[0] + index2[0]
+    
+        # Create a new dataframe with pairings and points
+        df_points = pd.DataFrame({'Pairing': list(points.keys()), 'Points': list(points.values())})
+    
+        # Sort the dataframe by points in ascending order
+        df_points = df_points.sort_values(by='Points')
+    
+        #taking the top 20
+        df_top_20 = df_points.head(20)
+    
+        if len(df_top_20) < 20:
+            print(f'Partially full final, {20 - len(df_top_20)} spots left')
+        elif len(df_top_20) == 20:
+            print('Full final')
+        print("Common Pairings with Points (Lowest to Highest):")
+        df_points['place'] = np.arange(1,len(df_points)+1)
+        
+        return df_top_20, df_points
             
 
 #ch = champ_placement()
