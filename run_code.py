@@ -5,8 +5,8 @@ show = chp.champ_placement()
 
 
 # # # REMOVE (and replace other) HASHTAG TO CHOOSE BETWEEN INPUT OR LGE # # #
-# height = input("Enter Height 'Sml', 'Med'', 'Int' or 'Lge': ")
-height = "Lge"
+height = input("Enter Height 'Sml', 'Med'', 'Int' or 'Lge': ")
+# height = "Lge"
 
 
 heights = ['Sml', 'Med', 'Int', 'Lge']
