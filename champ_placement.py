@@ -21,7 +21,7 @@ class champ_placement:
 
         self.removed_words = np.char.lower(['DTC', 'Dog', 'Training', 'Society', 'and', '&', 'Club', 'in', 'In', 'Obedience', '(Dorset)', 'District', '(Lancs)', 'Show', 'Championship', 'agility'])
 
-        self.last_show_results_link = self.base_link[:-9] + self.recent_show_link()
+        self.last_show_results_link = str(self.base_link[:-9]) + (self.recent_show_link())
 
         
 
@@ -216,7 +216,7 @@ class champ_placement:
             most_recent = sorted_df.iloc[0]
     
             if most_recent['Comments'] == True:
-                if print_statment == True:
+                if print_statement == True:
                     print(f"Most recent show ({most_recent['Date']}) was '{most_recent['Show Name']}' but it was cancelled.")
                 # Find the previous show before the cancelled one
                 prev_show_index = sorted_df.index[sorted_df['Comments'].shift(-1).fillna(False)].tolist()[0]
@@ -285,7 +285,43 @@ class champ_placement:
             else:
                 print("No data-href link found.")
         else:
-            print("No matching rows found.")
+            print(f'No shows matching "{last_show}" were found this month')
+            print("Trying last month...")
+            elements = self.month_soup(months_ago = 1)
+        
+            # Convert each Tag object to a string
+            elements_as_strings = [str(element) for element in elements]
+            
+            # Join the strings
+            combined_html = ''.join(elements_as_strings)
+            
+            # Create a new BeautifulSoup object from the combined HTML
+            soup = BeautifulSoup(combined_html, 'html.parser')            
+            
+            # Find <td> elements containing the last show name
+            show_row = soup.find('td', string=lambda text: last_show in clean_title(text.lower()))
+            
+            #  If the row is found then print
+            if show_row:
+                if print_statement ==True:
+                    print("Matching show found: ", show_row.text )
+                
+                # Find the parent <tr> tag
+                parent_tr = show_row.find_parent('tr')
+            
+                # Find the data-href attribute within the <tr> tag
+                data_href = parent_tr.get('data-href')
+            
+                # If data-href exists, print it
+                if data_href:
+                    return data_href
+                    if print_statement ==True:
+                        print("Data-href link:", data_href)
+                else:
+                    print("No data-href link found.")
+            else:
+                raise ValueError(f'No show named "{last_show}" found this month or last month. This may be due to \
+                                 {last_show} not being on Agility Plaza. (or the code is broken @rory)')
             
 
     def df_results(self, height):
@@ -370,10 +406,10 @@ class champ_placement:
         df_top_20 = df_points.head(20)
     
         if len(df_top_20) < 20:
-            print(f'Partially full final, {20 - len(df_top_20)} spots left')
+            print(f'Partially filled final, {20 - len(df_top_20)} spots left')
         elif len(df_top_20) == 20:
             print('Full final')
-        print("Common Pairings with Points (Lowest to Highest):")
+        print("Pairings with Points (Lowest to Highest):")
         df_points['place'] = np.arange(1,len(df_points)+1)
         df_top_20['place'] = np.arange(1,len(df_top_20)+1)
     

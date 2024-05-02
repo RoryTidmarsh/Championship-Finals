@@ -21,7 +21,7 @@ class champ_placement:
 
         self.removed_words = np.char.lower(['DTC', 'Dog', 'Training', 'Society', 'and', '&', 'Club', 'in', 'In', 'Obedience', '(Dorset)', 'District', '(Lancs)', 'Show', 'Championship', 'agility'])
 
-        self.last_show_results_link = self.base_link[:-9] + self.recent_show_link()
+        self.last_show_results_link = str(self.base_link[:-9]) + (self.recent_show_link())
 
         
 
