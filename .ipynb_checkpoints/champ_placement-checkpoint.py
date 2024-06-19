@@ -216,7 +216,7 @@ class champ_placement:
             most_recent = sorted_df.iloc[0]
     
             if most_recent['Comments'] == True:
-                if print_statment == True:
+                if print_statement == True:
                     print(f"Most recent show ({most_recent['Date']}) was '{most_recent['Show Name']}' but it was cancelled.")
                 # Find the previous show before the cancelled one
                 prev_show_index = sorted_df.index[sorted_df['Comments'].shift(-1).fillna(False)].tolist()[0]
@@ -285,53 +285,95 @@ class champ_placement:
             else:
                 print("No data-href link found.")
         else:
-            print("No matching rows found.")
+            print(f'No shows matching "{last_show}" were found this month')
+            print("Trying last month...")
+            elements = self.month_soup(months_ago = 1)
+        
+            # Convert each Tag object to a string
+            elements_as_strings = [str(element) for element in elements]
+            
+            # Join the strings
+            combined_html = ''.join(elements_as_strings)
+            
+            # Create a new BeautifulSoup object from the combined HTML
+            soup = BeautifulSoup(combined_html, 'html.parser')            
+            
+            # Find <td> elements containing the last show name
+            show_row = soup.find('td', string=lambda text: last_show in clean_title(text.lower()))
+            
+            #  If the row is found then print
+            if show_row:
+                if print_statement ==True:
+                    print("Matching show found: ", show_row.text )
+                
+                # Find the parent <tr> tag
+                parent_tr = show_row.find_parent('tr')
+            
+                # Find the data-href attribute within the <tr> tag
+                data_href = parent_tr.get('data-href')
+            
+                # If data-href exists, print it
+                if data_href:
+                    return data_href
+                    if print_statement ==True:
+                        print("Data-href link:", data_href)
+                else:
+                    print("No data-href link found.")
+            else:
+                raise ValueError(f'No show named "{self.nearest_show(print_statement=False)}" found this month or last month. This may be due to {last_show} not being on Agility Plaza. (or the code is broken @rory)')
             
 
     def df_results(self, height):
         df = self.find_classes()
+        df = df.drop_duplicates(subset="Class Name", keep="first")
         links = np.array(df[df['Height'] == height]['Link'])
-        links = "https://www." + links
-    
-        #creating an empty list for the data frame of each result to go into
-        results_df_list = list(np.zeros(len(links)))
+        if len(links) ==2:
+            links = "https://www." + links
         
-        #looping over the list to get the results for both rounds
-        for i, link in enumerate(links):
+            #creating an empty list for the data frame of each result to go into
+            results_df_list = list(np.zeros(len(links)))
             
-            #getting the result soup from the links of each round
-            response = requests.get(link)
-            soup_results = BeautifulSoup(response.text, 'html.parser')
+            #looping over the list to get the results for both rounds
+            for i, link in enumerate(links):
+                
+                #getting the result soup from the links of each round
+                response = requests.get(link)
+                soup_results = BeautifulSoup(response.text, 'html.parser')
+        
+                table_data = []
+                table = soup_results.find('table')  # Locate the table
+                
+                #creating the table that can be used with pandas 
+                if table:
+                    rows = table.find_all('tr')  # Find all rows in the table
+                    for row in rows:
+                        row_data = []  # Create a list for each row
+                        cells = row.find_all('td')  # Find all cells in the row
+                        for cell in cells:
+                            row_data.append(cell.get_text())  # Append cell data to the row list
+                        table_data.append(row_data)  # Append the row list to the table_data list
+        
+                # Extract table headings into a list
+                column_headings = ['place1', 'place2', 'posh names', 'name', 'type','faults', 'time']
+                #dropping the useless columns to us
+                df = pd.DataFrame(table_data, columns = column_headings).drop(0).drop(columns=['place1','place2','posh names'])
+                #creating a seperate human and dog column
+                df[['Human', 'Dog']] = df['name'].str.split(' & ', expand=True)
+        
+                selected_columns = ['Human', 'Dog']
+                
+                #creating a new df that only has human and dog columns
+                df_new = df[selected_columns]
+                results_df_list[i] = df_new
+                
+            return results_df_list
+        elif len(links) ==1:
+            print("Only 1 class has run or is running, wait for the other class to start before trying again")
+        
+        else:
+            raise ValueError(f"Height '{height}' not found at '{self.nearest_show()}' show")
     
-            table_data = []
-            table = soup_results.find('table')  # Locate the table
-            
-            #creating the table that can be used with pandas 
-            if table:
-                rows = table.find_all('tr')  # Find all rows in the table
-                for row in rows:
-                    row_data = []  # Create a list for each row
-                    cells = row.find_all('td')  # Find all cells in the row
-                    for cell in cells:
-                        row_data.append(cell.get_text())  # Append cell data to the row list
-                    table_data.append(row_data)  # Append the row list to the table_data list
     
-            # Extract table headings into a list
-            column_headings = ['place1', 'place2', 'posh names', 'name', 'type','faults', 'time']
-            #dropping the useless columns to us
-            df = pd.DataFrame(table_data, columns = column_headings).drop(0).drop(columns=['place1','place2','posh names'])
-            #creating a seperate human and dog column
-            df[['Human', 'Dog']] = df['name'].str.split(' & ', expand=True)
-    
-            selected_columns = ['Human', 'Dog']
-            
-            #creating a new df that only has human and dog columns
-            df_new = df[selected_columns]
-            results_df_list[i] = df_new
-            
-        return results_df_list
-
-
     def overall_results(self, height):
         '''creates the final overall top 20 and the overall placings
         INPUTS
@@ -370,16 +412,18 @@ class champ_placement:
         df_top_20 = df_points.head(20)
     
         if len(df_top_20) < 20:
-            print(f'Partially full final, {20 - len(df_top_20)} spots left')
+            print(f'Partially filled final, {20 - len(df_top_20)} spots left')
         elif len(df_top_20) == 20:
             print('Full final')
-        print("Common Pairings with Points (Lowest to Highest):")
+        print("Pairings with Points (Lowest to Highest):")
         df_points['place'] = np.arange(1,len(df_points)+1)
         df_top_20['place'] = np.arange(1,len(df_top_20)+1)
     
         df_points = df_points.set_index('place')
         df_top_20 = df_top_20.set_index('place')
         return df_top_20, df_points
+        
+        
             
 
 #ch = champ_placement()

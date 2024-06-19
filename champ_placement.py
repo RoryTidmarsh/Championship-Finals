@@ -320,14 +320,14 @@ class champ_placement:
                 else:
                     print("No data-href link found.")
             else:
-                raise ValueError(f'No show named "{last_show}" found this month or last month. This may be due to \
-                                 {last_show} not being on Agility Plaza. (or the code is broken @rory)')
+                raise ValueError(f'No show named "{self.nearest_show(print_statement=False)}" found this month or last month. This may be due to {last_show} not being on Agility Plaza. (or the code is broken @rory)')
             
 
     def df_results(self, height):
         df = self.find_classes()
+        df = df.drop_duplicates(subset="Class Name", keep="first")
         links = np.array(df[df['Height'] == height]['Link'])
-        if links:
+        if len(links) ==2:
             links = "https://www." + links
         
             #creating an empty list for the data frame of each result to go into
@@ -367,6 +367,8 @@ class champ_placement:
                 results_df_list[i] = df_new
                 
             return results_df_list
+        elif len(links) ==1:
+            print("Only 1 class has run or is running, wait for the other class to start before trying again")
         
         else:
             raise ValueError(f"Height '{height}' not found at '{self.nearest_show()}' show")
