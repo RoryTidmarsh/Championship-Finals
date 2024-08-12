@@ -1,14 +1,19 @@
 import champ_placement as chp
+import sys
+import warnings
+warnings.filterwarnings("ignore")
 
 #initialise the class
 show = chp.champ_placement()
 
+if len(sys.argv) > 1:
+    height = sys.argv[1].capitalize()
+else:
+    height = input("Enter Height 'Sml', 'Med'', 'Int' or 'Lge': ")
 
-# # # REMOVE (and replace other) HASHTAG TO CHOOSE BETWEEN INPUT OR LGE # # #
-height = input("Enter Height 'Sml', 'Med'', 'Int' or 'Lge': ")
-# height = "Lge"
+height = height.capitalize()
 
-
+#
 heights = ['Sml', 'Med', 'Int', 'Lge']
 assert height in heights
 

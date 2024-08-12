@@ -388,22 +388,26 @@ class champ_placement:
         results_df_list = self.df_results(height)
         
         #seperating the 2 result dataframes from the list
-        df1 = results_df_list[0]
-        df2 = results_df_list[1]
+        df1 = results_df_list[0] #Round 1
+        df2 = results_df_list[1] #Round 2
     
         # Find common dog-human pairings
         common_pairings = set(zip(df1['Human'], df1['Dog'])) & set(zip(df2['Human'], df2['Dog']))
     
         # Calculate points for each common pairing
         points = {}
+        round_1_points = {}
+        round_2_points = {}
         for human, dog in common_pairings:
             index1 = df1[(df1['Human'] == human) & (df1['Dog'] == dog)].index
             index2 = df2[(df2['Human'] == human) & (df2['Dog'] == dog)].index
             if not index1.empty and not index2.empty:
                 points[(human, dog)] = index1[0] + index2[0]
+                round_1_points[(human, dog)] = index1[0]
+                round_2_points[(human, dog)] = index2[0]
     
         # Create a new dataframe with pairings and points
-        df_points = pd.DataFrame({'Pairing': list(points.keys()), 'Points': list(points.values())})
+        df_points = pd.DataFrame({'Pairing': list(points.keys()), 'Points': list(points.values()), 'Round 1': list(round_1_points.values()), 'Round 2':  list(round_2_points.values())})
     
         # Sort the dataframe by points in ascending order
         df_points = df_points.sort_values(by='Points')
