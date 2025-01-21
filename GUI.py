@@ -10,7 +10,6 @@ app = customtkinter.CTk()
 app.geometry("800x600")
 app.title("Champ Shows 2024")
 
-
 frame = customtkinter.CTkFrame(master=app) 
 frame.pack(pady=20, padx=60, fill="both", expand=True)  
 

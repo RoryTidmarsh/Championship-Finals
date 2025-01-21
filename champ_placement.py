@@ -6,24 +6,25 @@ import pandas as pd
 from datetime import datetime
 import re
 
-class champ_placement:
-    def __init__(self):
+class plaza:
+    def __init__(self, height, JUMPING_url = None, AGILITY_url = None):
         self.base_link = "https://www.agilityplaza.com/results/"
         self.current_date = datetime.now().date()
         self.year = self.current_date.strftime("%Y")
         
         self.current_year_link = self.base_link + str(self.year)
-
-        self.shows_df = pd.read_csv("Champ shows.csv", index_col=0)
-        self.shows_df['Date'] = pd.to_datetime(self.shows_df['Date'])
-        self.last_show = self.nearest_show(print_statement = False)
-        self.next_show = self.nearest_shows(next_show=True)
-
         self.removed_words = np.char.lower(['DTC', 'Dog', 'Training', 'Society', 'and', '&', 'Club', 'in', 'In', 'Obedience', '(Dorset)', 'District', '(Lancs)', 'Show', 'Championship', 'agility'])
 
-        self.last_show_results_link = str(self.base_link[:-9]) + (self.recent_show_link())
+        self.jump_url = JUMPING_url
+        self.agility_url = AGILITY_url
+        self.height = height
 
-        
+        if (self.jump_url ==None)&(self.agility_url==None):
+            self.shows_df = pd.read_csv("Champ shows.csv", index_col=0)
+            self.shows_df['Date'] = pd.to_datetime(self.shows_df['Date'])
+            self.last_show = self.nearest_show(print_statement = False)
+            self.next_show = self.nearest_shows(next_show=True)
+            self.last_show_results_link = str(self.base_link[:-9]) + (self.recent_show_link())
 
         
     def month_soup(self, months_ago=0, return_month=False):
@@ -64,8 +65,7 @@ class champ_placement:
             return elements_between, month
         else:
             return elements_between
-        
-        
+           
     def recent_champ(self, months_ago=0, print_statement=True):
         """
         Finds the most recent championship competition within a specified range of months.
@@ -141,16 +141,19 @@ class champ_placement:
                     name = a.text
                     link = "agilityplaza.com" + a.get('href')
                     class_data.append((name, link))
+                    # self.jump_url = link
                 elif "Championship Agility" in a.text:
                     name = a.text
                     link = "agilityplaza.com" + a.get('href')
                     class_data.append((name, link))
+                    # self.agility_url = link
         
         # Create a pandas DataFrame
         df = pd.DataFrame(class_data, columns=['Class Name', 'Link'])
         df['class number'] = df['Class Name'].apply(lambda x: ' '.join(x.split()[:1]))
         df.set_index('class number', inplace=True)
         df['Height'] = df['Class Name'].apply(lambda x: x.split()[1] if len(x.split()) >= 2 else None)
+        df["Type"] = df['Class Name'].apply(lambda x: x.split()[-1] if len(x.split()) >= 2 else None)
         return df
 
     def nearest_show(self, print_statement=True):
@@ -321,15 +324,17 @@ class champ_placement:
                     print("No data-href link found.")
             else:
                 raise ValueError(f'No show named "{self.nearest_show(print_statement=False)}" found this month or last month. This may be due to {last_show} not being on Agility Plaza. (or the code is broken @rory)')
-            
 
-    def df_results(self, height):
-        df = self.find_classes()
-        df = df.drop_duplicates(subset="Class Name", keep="first")
-        links = np.array(df[df['Height'] == height]['Link'])
-        if len(links) ==2:
+    def df_results(self):
+        if (self.jump_url ==None)&(self.agility_url==None):
+            df = self.find_classes()
+            df = df.drop_duplicates(subset="Class Name", keep="first")
+            links = np.array(df[df['Height'] == self.height]['Link'])
             links = "https://www." + links
-        
+        else:
+            links = np.array([self.jump_url, self.agility_url])
+        if len(links) ==2:
+                   
             #creating an empty list for the data frame of each result to go into
             results_df_list = list(np.zeros(len(links)))
             
@@ -371,10 +376,9 @@ class champ_placement:
             print("Only 1 class has run or is running, wait for the other class to start before trying again")
         
         else:
-            raise ValueError(f"Height '{height}' not found at '{self.nearest_show()}' show")
-    
-    
-    def overall_results(self, height):
+            raise ValueError(f"Height '{self.height}' not found at '{self.nearest_show()}' show")
+        
+    def overall_results(self):
         '''creates the final overall top 20 and the overall placings
         INPUTS
         organisation_name_to_find - REQUIRED, the name of the organisation/show as shown on Agility Plaza
@@ -385,7 +389,7 @@ class champ_placement:
         df_placings - pandas dataframe containing the overall results, not limited to the top 20'''
         
         #creating the list of the results from both rounds
-        results_df_list = self.df_results(height)
+        results_df_list = self.df_results()
         
         #seperating the 2 result dataframes from the list
         df1 = results_df_list[0] #Round 1
@@ -426,7 +430,7 @@ class champ_placement:
         df_points = df_points.set_index('place')
         df_top_20 = df_top_20.set_index('place')
         return df_top_20, df_points
-        
+
         
             
 
