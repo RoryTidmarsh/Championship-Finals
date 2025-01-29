@@ -29,6 +29,7 @@ jumping_entry.pack(pady = 10)
 
 agility_entry = customtkinter.CTkEntry(frame, placeholder_text = "Agility (optional)")
 agility_entry.pack(pady = 10)
+
 # Creating new page with a table in, this needs to be updated to display the results
 def create_table():
     # Hide the login frame
