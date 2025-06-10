@@ -24,14 +24,13 @@
                     <!-- Height Selection -->
                     <div class="form-group">
                         <label for="height">Select Height</label>
-                        <select id="height" name="height">
+                        <select id="height" name="height" required>
                             <option value="">Choose height...</option>
                             <option value="Sml">Small</option>
                             <option value="Med">Medium</option>
                             <option value="Int">Intermediate</option>
                             <option value="Lge">Large</option>
                         </select>
-                        <small class="form-help" id="height-help">Required unless both URLs are provided below</small>
                     </div>
                     
                     <!-- URL Entries -->
@@ -43,7 +42,6 @@
                     <div class="form-group">
                         <label for="agility-url">Agility URL (Optional)</label>
                         <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
-                        <small class="form-help">If using URLs, both Jumping and Agility URLs must be provided</small>
                     </div>
                     
                     <!-- Submit Button -->
@@ -77,7 +75,10 @@
             <div id="results-container" class="hidden">
                 <div class="table-controls">
                     <div id="timer-display" class="timer">Next refresh in 02:00</div>
-                    <button id="manual-refresh" class="secondary-button">Manual Refresh</button>
+                    <button id="manual-refresh" class="secondary-button">
+                        <span id="refresh-button-text">Manual Refresh</span>
+                        <div id="refresh-spinner" class="spinner hidden"></div>
+                    </button>
                 </div>
                 
                 <div class="table-wrapper">
@@ -100,10 +101,10 @@
             </div>
             
             <!-- Debug info (remove this later) -->
-            <div id="debug-info" style="background: #333; padding: 10px; margin: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">
+            <!-- <div id="debug-info" style="background: #333; padding: 10px; margin: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">
                 <strong>Debug Info:</strong><br>
                 <div id="debug-content">Waiting for data...</div>
-            </div>
+            </div> -->
         </div>
     </div>
     
@@ -148,17 +149,6 @@
                     console.error('Form not found!');
                 }
                 
-                // URL input changes for dynamic validation feedback
-                const jumpingUrlInput = document.getElementById('jumping-url');
-                const agilityUrlInput = document.getElementById('agility-url');
-                const heightSelect = document.getElementById('height');
-                
-                if (jumpingUrlInput && agilityUrlInput && heightSelect) {
-                    jumpingUrlInput.addEventListener('input', () => this.updateFormValidation());
-                    agilityUrlInput.addEventListener('input', () => this.updateFormValidation());
-                    heightSelect.addEventListener('change', () => this.updateFormValidation());
-                }
-                
                 // Back button
                 const backButton = document.getElementById('back-button');
                 if (backButton) {
@@ -175,40 +165,12 @@
                 if (refreshButton) {
                     refreshButton.addEventListener('click', () => {
                         console.log('Manual refresh clicked');
-                        this.fetchResults();
+                        if (!refreshButton.disabled) {
+                            this.fetchResults();
+                        }
                     });
                 } else {
                     console.error('Refresh button not found!');
-                }
-            }
-            
-            updateFormValidation() {
-                const jumpingUrl = document.getElementById('jumping-url').value.trim();
-                const agilityUrl = document.getElementById('agility-url').value.trim();
-                const heightHelp = document.getElementById('height-help');
-                const heightSelect = document.getElementById('height');
-                
-                const hasAnyUrl = jumpingUrl.length > 0 || agilityUrl.length > 0;
-                const hasBothUrls = jumpingUrl.length > 0 && agilityUrl.length > 0;
-                
-                if (hasAnyUrl) {
-                    if (hasBothUrls) {
-                        heightHelp.textContent = "Ignored when both URLs are provided";
-                        heightHelp.style.color = "#4CAF50";
-                        heightSelect.style.borderColor = "#4d4d4d";
-                    } else {
-                        heightHelp.textContent = "Both URLs must be provided to skip height selection";
-                        heightHelp.style.color = "#ff9800";
-                        heightSelect.style.borderColor = "#4d4d4d";
-                    }
-                } else {
-                    heightHelp.textContent = "Required unless both URLs are provided below";
-                    heightHelp.style.color = "#b0b0b0";
-                    if (!heightSelect.value) {
-                        heightSelect.style.borderColor = "#ff5722";
-                    } else {
-                        heightSelect.style.borderColor = "#4CAF50";
-                    }
                 }
             }
             
@@ -277,36 +239,18 @@
             handleFormSubmit() {
                 console.log('=== FORM SUBMIT HANDLER ===');
                 const height = document.getElementById('height').value;
-                const jumpingUrl = document.getElementById('jumping-url').value.trim();
-                const agilityUrl = document.getElementById('agility-url').value.trim();
+                const jumpingUrl = document.getElementById('jumping-url').value;
+                const agilityUrl = document.getElementById('agility-url').value;
                 
                 console.log('Form values:', {height, jumpingUrl, agilityUrl});
                 
-                // Check if any URLs are provided
-                const hasJumpingUrl = jumpingUrl.length > 0;
-                const hasAgilityUrl = agilityUrl.length > 0;
-                const hasAnyUrl = hasJumpingUrl || hasAgilityUrl;
-                
-                // Validation logic
-                if (hasAnyUrl) {
-                    // If any URL is provided, both must be provided
-                    if (!hasJumpingUrl || !hasAgilityUrl) {
-                        this.showError('error-display', 'If using URLs, both Jumping and Agility URLs are required.');
-                        return;
-                    }
-                    // URLs provided - height is optional (will be ignored)
-                    console.log('Using provided URLs, height will be ignored');
-                } else {
-                    // No URLs provided - height is required
-                    if (!height) {
-                        this.showError('error-display', 'Height selection is required when not using URLs.');
-                        return;
-                    }
-                    console.log('Using height-based auto-detection');
+                if (!height) {
+                    this.showError('error-display', 'Height selection is required.');
+                    return;
                 }
                 
                 this.currentFormData = {
-                    height: height || null,
+                    height: height,
                     jumping_url: jumpingUrl || null,
                     agility_url: agilityUrl || null
                 };
@@ -351,10 +295,33 @@
                 }
             }
             
+            setRefreshButtonLoading(loading) {
+                const refreshButton = document.getElementById('manual-refresh');
+                const refreshButtonText = document.getElementById('refresh-button-text');
+                const refreshSpinner = document.getElementById('refresh-spinner');
+                
+                if (refreshButton && refreshButtonText && refreshSpinner) {
+                    if (loading) {
+                        refreshButton.disabled = true;
+                        refreshButtonText.textContent = 'Refreshing...';
+                        refreshSpinner.classList.remove('hidden');
+                        console.log('Refresh button set to loading state');
+                    } else {
+                        refreshButton.disabled = false;
+                        refreshButtonText.textContent = 'Manual Refresh';
+                        refreshSpinner.classList.add('hidden');
+                        console.log('Refresh button loading state cleared');
+                    }
+                }
+            }
+            
             async fetchResults() {
                 try {
                     console.log('=== FETCHING RESULTS ===');
                     console.log('Form data:', this.currentFormData);
+                    
+                    // Set loading state
+                    this.setRefreshButtonLoading(true);
                     
                     this.timeRemaining = 120;
                     
@@ -395,6 +362,9 @@
                 } catch (error) {
                     console.error('Error fetching results:', error);
                     this.showError('results-error-display', 'Failed to fetch results. Please check your connection and try again.');
+                } finally {
+                    // Always clear loading state
+                    this.setRefreshButtonLoading(false);
                 }
             }
             
