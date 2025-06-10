@@ -133,6 +133,9 @@ class ChampionshipTracker {
     
     async fetchResults() {
         try {
+            console.log('=== FETCHING RESULTS ===');
+            console.log('Form data:', this.currentFormData);
+            
             // Reset timer
             this.timeRemaining = 120;
             
@@ -144,12 +147,18 @@ class ChampionshipTracker {
                 body: JSON.stringify(this.currentFormData)
             });
             
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
             const data = await response.json();
+            console.log('Response data:', data);
             
             if (data.success) {
+                console.log('Success! Displaying results...');
                 this.displayResults(data.data);
                 this.hideError('results-error-display');
             } else {
+                console.log('Error from server:', data.error);
                 this.showError('results-error-display', data.error);
             }
             
@@ -160,6 +169,10 @@ class ChampionshipTracker {
     }
     
     displayResults(results) {
+        console.log('=== DISPLAYING RESULTS ===');
+        console.log('Results array:', results);
+        console.log('Results length:', results.length);
+        
         // Hide loading message and show results
         document.getElementById('loading-message').classList.add('hidden');
         document.getElementById('results-container').classList.remove('hidden');
@@ -167,7 +180,15 @@ class ChampionshipTracker {
         const tbody = document.getElementById('results-tbody');
         tbody.innerHTML = '';
         
+        if (!results || results.length === 0) {
+            console.log('No results to display');
+            tbody.innerHTML = '<tr><td colspan="6">No results found</td></tr>';
+            return;
+        }
+        
         results.forEach((row, index) => {
+            console.log(`Processing row ${index}:`, row);
+            
             const tr = document.createElement('tr');
             
             // Add cutoff styling for 20th place
@@ -177,6 +198,7 @@ class ChampionshipTracker {
             
             // Extract handler and dog from pairing
             const [handler, dog] = row.Pairing;
+            console.log(`Handler: ${handler}, Dog: ${dog}`);
             
             tr.innerHTML = `
                 <td>${row.place}</td>
@@ -189,6 +211,8 @@ class ChampionshipTracker {
             
             tbody.appendChild(tr);
         });
+        
+        console.log('Results display complete');
     }
     
     showError(elementId, message) {
