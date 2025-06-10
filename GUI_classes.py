@@ -1,3 +1,12 @@
+""" GUI for producing the overal results of the championship. 
+NEXT STEPS:
+- Box at the top: loading messages 
+    - Loading data
+    - Error for all Es (i.e. no final, but results exist)
+- Display what the user has selected in the box at the top
+- Add the 2 Winners of individual classes to the table, they are 20th or 19th if Eliminated in the other round
+- Who else can qualify (need to look at running orders) what they need
+"""
 import customtkinter as ctk
 import pandas as pd
 from tkinter import ttk
@@ -75,17 +84,30 @@ class InputPage(ctk.CTkFrame):
         self.find_button.pack(pady=20)
 
 class ResultsPage(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, switch_to_input_callback, **kwargs):
         super().__init__(master, **kwargs)
+        self.switch_to_input = switch_to_input_callback
         self.refresh_event = threading.Event()
         self.refresh_thread = None
         self.setup_page()
         
     def setup_page(self):
         # Title
-        title_label = ctk.CTkLabel(self, text="Championship Results", 
-                                 font=("Arial", 24, "bold"))
-        title_label.pack(pady=20)
+        title_frame = ctk.CTkFrame(self)
+        title_frame.pack(fill="x", pady=10, padx=10)
+        
+        title_label = ctk.CTkLabel(title_frame, text="Championship Results", 
+                                   font=("Arial", 24, "bold"))
+        title_label.pack(side="left")
+        
+        # Back Button
+        back_button = ctk.CTkButton(
+            title_frame,
+            text="Back",
+            command=self.switch_to_input,  # Navigate back to InputPage
+            font=("Arial", 16)
+        )
+        back_button.pack(side="right", padx=10)
         
         # Error Frame
         self.error_frame = ErrorFrame(self)
@@ -157,6 +179,7 @@ class ResultsPage(ctk.CTkFrame):
     def update_timer_label(self, text):
         self.timer_label.configure(text=text)
 
+
 class ChampPlacementGUI:
     def __init__(self):
         self.setup_window()
@@ -172,10 +195,22 @@ class ChampPlacementGUI:
     def setup_pages(self):
         self.current_page = None
         self.input_page = InputPage(self.root, self.switch_to_results)
-        self.results_page = ResultsPage(self.root)
+        self.results_page = ResultsPage(self.root, self.show_input_page)  # Pass show_input_page as callback
         self.show_input_page()
         
     def show_input_page(self):
+        # Stop any ongoing refresh thread
+        if self.results_page.refresh_thread:
+            if self.results_page.refresh_thread.is_alive():
+                self.results_page.refresh_event.set()
+                self.results_page.refresh_thread.join()
+        
+        # Clear previous inputs
+        self.input_page.height_var.set("")
+        self.input_page.jumping_entry.delete(0, "end")
+        self.input_page.agility_entry.delete(0, "end")
+        
+        # Switch to InputPage
         if self.current_page:
             self.current_page.pack_forget()
         self.input_page.pack(fill="both", expand=True)
@@ -193,10 +228,15 @@ class ChampPlacementGUI:
         jumping_url = self.input_page.jumping_entry.get()
         agility_url = self.input_page.agility_entry.get()
         
+        # Validate inputs
+        if not height:
+            self.input_page.error_frame.show_error("Height selection is required.")
+            return
+        
         # Switch to results page
         self.show_results_page()
         
-        # Start continuous refresh
+        # Start continuous refresh with new inputs
         if self.results_page.refresh_thread is None or not self.results_page.refresh_thread.is_alive():
             self.results_page.refresh_thread = threading.Thread(
                 target=self.continuous_refresh,
