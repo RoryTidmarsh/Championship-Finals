@@ -1,5 +1,3 @@
-""" Flask application for the website
-"""
 # app.py
 from flask import Flask, render_template, request, jsonify
 from champ_placement import plaza
@@ -27,14 +25,26 @@ def get_results():
         print(f"Jumping URL: {jumping_url}")
         print(f"Agility URL: {agility_url}")
         
-        # Validate height
-        if not height:
-            return jsonify({'success': False, 'error': 'Height selection is required'})
+        # Validate inputs based on whether URLs are provided
+        has_urls = jumping_url and agility_url
+        
+        if has_urls:
+            print("Using provided URLs - height not required")
+            # When URLs are provided, height can be None
+            # But we still need to pass something to plaza, so use a default
+            height_to_use = height if height else "Lge"  # Default to Large if not specified
+        else:
+            # No URLs provided - height is required
+            if not height:
+                return jsonify({'success': False, 'error': 'Height selection is required when not using URLs'})
+            height_to_use = height
+        
+        print(f"Using height: {height_to_use}")
         
         print("Creating plaza instance...")
         # Create plaza instance
         champ = plaza(
-            height=height,
+            height=height_to_use,
             JUMPING_url=jumping_url if jumping_url else None,
             AGILITY_url=agility_url if agility_url else None
         )
@@ -63,6 +73,18 @@ def get_results():
         print(f"Error: {error_msg}")
         print(f"Traceback:\n{traceback_str}")
         return jsonify({'success': False, 'error': error_msg})
+
+@app.route('/api/test', methods=['GET'])
+def test_api():
+    """Simple test endpoint to verify API is working"""
+    return jsonify({
+        'success': True, 
+        'message': 'API is working!',
+        'data': [
+            {'place': 1, 'Pairing': ['John Doe', 'Rex'], 'Points': 2, 'Round 1': 1, 'Round 2': 1},
+            {'place': 2, 'Pairing': ['Jane Smith', 'Buddy'], 'Points': 4, 'Round 1': 2, 'Round 2': 2}
+        ]
+    })
 
 @app.errorhandler(404)
 def not_found(error):

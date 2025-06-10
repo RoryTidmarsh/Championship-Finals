@@ -72,6 +72,14 @@ body {
     color: #e0e0e0;
 }
 
+.form-help {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+    color: #b0b0b0;
+    font-style: italic;
+}
+
 .form-group select,
 .form-group input {
     width: 100%;

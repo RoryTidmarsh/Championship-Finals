@@ -24,13 +24,14 @@
                     <!-- Height Selection -->
                     <div class="form-group">
                         <label for="height">Select Height</label>
-                        <select id="height" name="height" required>
+                        <select id="height" name="height">
                             <option value="">Choose height...</option>
                             <option value="Sml">Small</option>
                             <option value="Med">Medium</option>
                             <option value="Int">Intermediate</option>
                             <option value="Lge">Large</option>
                         </select>
+                        <small class="form-help" id="height-help">Required unless both URLs are provided below</small>
                     </div>
                     
                     <!-- URL Entries -->
@@ -42,6 +43,7 @@
                     <div class="form-group">
                         <label for="agility-url">Agility URL (Optional)</label>
                         <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
+                        <small class="form-help">If using URLs, both Jumping and Agility URLs must be provided</small>
                     </div>
                     
                     <!-- Submit Button -->
@@ -146,6 +148,17 @@
                     console.error('Form not found!');
                 }
                 
+                // URL input changes for dynamic validation feedback
+                const jumpingUrlInput = document.getElementById('jumping-url');
+                const agilityUrlInput = document.getElementById('agility-url');
+                const heightSelect = document.getElementById('height');
+                
+                if (jumpingUrlInput && agilityUrlInput && heightSelect) {
+                    jumpingUrlInput.addEventListener('input', () => this.updateFormValidation());
+                    agilityUrlInput.addEventListener('input', () => this.updateFormValidation());
+                    heightSelect.addEventListener('change', () => this.updateFormValidation());
+                }
+                
                 // Back button
                 const backButton = document.getElementById('back-button');
                 if (backButton) {
@@ -166,6 +179,36 @@
                     });
                 } else {
                     console.error('Refresh button not found!');
+                }
+            }
+            
+            updateFormValidation() {
+                const jumpingUrl = document.getElementById('jumping-url').value.trim();
+                const agilityUrl = document.getElementById('agility-url').value.trim();
+                const heightHelp = document.getElementById('height-help');
+                const heightSelect = document.getElementById('height');
+                
+                const hasAnyUrl = jumpingUrl.length > 0 || agilityUrl.length > 0;
+                const hasBothUrls = jumpingUrl.length > 0 && agilityUrl.length > 0;
+                
+                if (hasAnyUrl) {
+                    if (hasBothUrls) {
+                        heightHelp.textContent = "Ignored when both URLs are provided";
+                        heightHelp.style.color = "#4CAF50";
+                        heightSelect.style.borderColor = "#4d4d4d";
+                    } else {
+                        heightHelp.textContent = "Both URLs must be provided to skip height selection";
+                        heightHelp.style.color = "#ff9800";
+                        heightSelect.style.borderColor = "#4d4d4d";
+                    }
+                } else {
+                    heightHelp.textContent = "Required unless both URLs are provided below";
+                    heightHelp.style.color = "#b0b0b0";
+                    if (!heightSelect.value) {
+                        heightSelect.style.borderColor = "#ff5722";
+                    } else {
+                        heightSelect.style.borderColor = "#4CAF50";
+                    }
                 }
             }
             
@@ -234,18 +277,36 @@
             handleFormSubmit() {
                 console.log('=== FORM SUBMIT HANDLER ===');
                 const height = document.getElementById('height').value;
-                const jumpingUrl = document.getElementById('jumping-url').value;
-                const agilityUrl = document.getElementById('agility-url').value;
+                const jumpingUrl = document.getElementById('jumping-url').value.trim();
+                const agilityUrl = document.getElementById('agility-url').value.trim();
                 
                 console.log('Form values:', {height, jumpingUrl, agilityUrl});
                 
-                if (!height) {
-                    this.showError('error-display', 'Height selection is required.');
-                    return;
+                // Check if any URLs are provided
+                const hasJumpingUrl = jumpingUrl.length > 0;
+                const hasAgilityUrl = agilityUrl.length > 0;
+                const hasAnyUrl = hasJumpingUrl || hasAgilityUrl;
+                
+                // Validation logic
+                if (hasAnyUrl) {
+                    // If any URL is provided, both must be provided
+                    if (!hasJumpingUrl || !hasAgilityUrl) {
+                        this.showError('error-display', 'If using URLs, both Jumping and Agility URLs are required.');
+                        return;
+                    }
+                    // URLs provided - height is optional (will be ignored)
+                    console.log('Using provided URLs, height will be ignored');
+                } else {
+                    // No URLs provided - height is required
+                    if (!height) {
+                        this.showError('error-display', 'Height selection is required when not using URLs.');
+                        return;
+                    }
+                    console.log('Using height-based auto-detection');
                 }
                 
                 this.currentFormData = {
-                    height: height,
+                    height: height || null,
                     jumping_url: jumpingUrl || null,
                     agility_url: agilityUrl || null
                 };
