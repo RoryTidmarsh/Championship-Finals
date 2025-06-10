@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Championship Placement Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Input Page -->
+        <div id="input-page" class="page active">
+            <div class="header">
+                <h1>Championship Placement Tracker</h1>
+            </div>
+            
+            <!-- Error Display -->
+            <div id="error-display" class="error-box hidden">
+                <span id="error-message"></span>
+            </div>
+            
+            <div class="form-container">
+                <form id="championship-form">
+                    <!-- Height Selection -->
+                    <div class="form-group">
+                        <label for="height">Select Height</label>
+                        <select id="height" name="height" required>
+                            <option value="">Choose height...</option>
+                            <option value="Sml">Small</option>
+                            <option value="Med">Medium</option>
+                            <option value="Int">Intermediate</option>
+                            <option value="Lge">Large</option>
+                        </select>
+                    </div>
+                    
+                    <!-- URL Entries -->
+                    <div class="form-group">
+                        <label for="jumping-url">Jumping URL (Optional)</label>
+                        <input type="url" id="jumping-url" name="jumping_url" placeholder="Enter jumping URL">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="agility-url">Agility URL (Optional)</label>
+                        <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" id="find-button" class="primary-button">
+                        <span id="button-text">Find Champ Class</span>
+                        <div id="loading-spinner" class="spinner hidden"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Results Page -->
+        <div id="results-page" class="page hidden">
+            <div class="header">
+                <h1>Championship Results</h1>
+                <button id="back-button" class="secondary-button">Back</button>
+            </div>
+            
+            <!-- Error Display for Results -->
+            <div id="results-error-display" class="error-box hidden">
+                <span id="results-error-message"></span>
+            </div>
+            
+            <!-- Loading Message -->
+            <div id="loading-message" class="loading-box">
+                <div class="spinner"></div>
+                <span>Loading championship data...</span>
+            </div>
+            
+            <!-- Results Table Container -->
+            <div id="results-container" class="hidden">
+                <div class="table-controls">
+                    <div id="timer-display" class="timer">Next refresh in 02:00</div>
+                    <button id="manual-refresh" class="secondary-button">Manual Refresh</button>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Place</th>
+                                <th>Handler</th>
+                                <th>Dog</th>
+                                <th>Points</th>
+                                <th>Round 1</th>
+                                <th>Round 2</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody">
+                            <!-- Results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
