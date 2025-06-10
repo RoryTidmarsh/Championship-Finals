@@ -7,7 +7,7 @@ import threading
 warnings.filterwarnings("ignore")
 
 #initialise the class
-show = chp.champ_placement()
+show = chp.plaza()
 
 if len(sys.argv) > 1:
     height = sys.argv[1].capitalize()
