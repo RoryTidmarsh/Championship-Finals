@@ -8,6 +8,11 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #1a1a1a;
+    background-image: url('/static/images/Dude_tyre.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #ffffff;
     line-height: 1.6;
     min-height: 100vh;
@@ -39,8 +44,10 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #2d2d2d;
+    padding: 20px;
+    background-color: #2d2d2d; /* Fully opaque header */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .header h1 {
@@ -54,10 +61,10 @@ body {
 .form-container {
     max-width: 500px;
     margin: 0 auto;
-    background-color: #2d2d2d;
+    background-color: rgba(45, 45, 45, 0.65); /* 65% opacity, no blur */
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .form-group {
@@ -178,11 +185,12 @@ body {
     justify-content: center;
     gap: 15px;
     padding: 40px;
-    background-color: #2d2d2d;
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
     border-radius: 12px;
     margin-bottom: 20px;
     font-size: 1.1em;
     color: #e0e0e0;
+    backdrop-filter: blur(10px);
 }
 
 .spinner {
@@ -206,8 +214,9 @@ body {
     align-items: center;
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #2d2d2d;
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
     border-radius: 8px;
+    backdrop-filter: blur(10px);
 }
 
 .timer {
@@ -218,10 +227,11 @@ body {
 
 /* Results Table */
 .table-wrapper {
-    background-color: #2d2d2d;
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
     max-height: 600px;
     overflow-y: auto;
 }

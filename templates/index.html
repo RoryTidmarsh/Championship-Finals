@@ -6,8 +6,9 @@
     <title>Championship Placement Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="input-page-active">
     <div class="container">
+        
         <!-- Input Page -->
         <div id="input-page" class="page active">
             <div class="header">
@@ -182,7 +183,10 @@
                 if (inputPage && resultsPage) {
                     inputPage.classList.add('active');
                     resultsPage.classList.remove('active');
-                    console.log('Page switch successful');
+                    
+                    // Change background to input page background
+                    document.body.className = 'input-page-active';
+                    console.log('Page switch successful - background set to Dude tyre');
                 } else {
                     console.error('Page elements not found!', {inputPage, resultsPage});
                 }
@@ -200,7 +204,10 @@
                 if (inputPage && resultsPage) {
                     inputPage.classList.remove('active');
                     resultsPage.classList.add('active');
-                    console.log('Results page shown');
+                    
+                    // Change background to results page background
+                    document.body.className = 'results-page-active';
+                    console.log('Results page shown - background set to sonic weaving');
                 } else {
                     console.error('Page elements not found for results!');
                 }
