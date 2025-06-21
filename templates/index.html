@@ -14,6 +14,9 @@
         <div id="input-page" class="page active">
             <div class="header">
                 <h1>Championship Placement Tracker</h1>
+                <p class="header-description">
+                    This automatically detects a live (or most recent) champ show to find the combined results of the jumping and agility round for a championship show hosted on Agility Plaza.
+                </p>
             </div>
             
             <!-- Error Display -->
@@ -35,15 +38,30 @@
                         </select>
                     </div>
                     
-                    <!-- URL Entries -->
-                    <div class="form-group">
-                        <label for="jumping-url">Jumping URL (Optional)</label>
-                        <input type="url" id="jumping-url" name="jumping_url" placeholder="Enter jumping URL">
+                    <!-- Manual Input Toggle -->
+                    <div class="manual-toggle">
+                        <button type="button" id="manual-toggle-btn" class="toggle-button">
+                            Not detecting the show or rounds you want? Click here
+                            <span class="toggle-arrow">▼</span>
+                        </button>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="agility-url">Agility URL (Optional)</label>
-                        <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
+                    <!-- Manual URL Section (Hidden by default) -->
+                    <div id="manual-url-section" class="manual-section hidden">
+                        <div class="manual-description">
+                            Manually input the URL (link or web address) of the agility plaza results pages into the boxes below:
+                        </div>
+                        
+                        <!-- URL Entries -->
+                        <div class="form-group">
+                            <label for="jumping-url">Jumping URL</label>
+                            <input type="url" id="jumping-url" name="jumping_url" placeholder="Enter jumping URL">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="agility-url">Agility URL</label>
+                            <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
+                        </div>
                     </div>
                     
                     <!-- Submit Button -->
@@ -157,6 +175,16 @@
                     console.error('Form not found!');
                 }
                 
+                // Manual toggle button
+                const manualToggleBtn = document.getElementById('manual-toggle-btn');
+                if (manualToggleBtn) {
+                    manualToggleBtn.addEventListener('click', () => {
+                        this.toggleManualSection();
+                    });
+                } else {
+                    console.error('Manual toggle button not found!');
+                }
+                
                 const backButton = document.getElementById('back-button');
                 if (backButton) {
                     backButton.addEventListener('click', () => {
@@ -232,6 +260,37 @@
                 if (height) height.value = '';
                 if (jumpingUrl) jumpingUrl.value = '';
                 if (agilityUrl) agilityUrl.value = '';
+                
+                // Also collapse the manual section
+                this.hideManualSection();
+            }
+            
+            toggleManualSection() {
+                const manualSection = document.getElementById('manual-url-section');
+                const toggleBtn = document.getElementById('manual-toggle-btn');
+                const arrow = toggleBtn.querySelector('.toggle-arrow');
+                
+                if (manualSection.classList.contains('hidden')) {
+                    manualSection.classList.remove('hidden');
+                    arrow.textContent = '▲';
+                    toggleBtn.classList.add('expanded');
+                    console.log('Manual section expanded');
+                } else {
+                    manualSection.classList.add('hidden');
+                    arrow.textContent = '▼';
+                    toggleBtn.classList.remove('expanded');
+                    console.log('Manual section collapsed');
+                }
+            }
+            
+            hideManualSection() {
+                const manualSection = document.getElementById('manual-url-section');
+                const toggleBtn = document.getElementById('manual-toggle-btn');
+                const arrow = toggleBtn.querySelector('.toggle-arrow');
+                
+                if (manualSection) manualSection.classList.add('hidden');
+                if (arrow) arrow.textContent = '▼';
+                if (toggleBtn) toggleBtn.classList.remove('expanded');
             }
             
             clearIntervals() {
