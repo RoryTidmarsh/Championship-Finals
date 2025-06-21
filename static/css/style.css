@@ -1,0 +1,543 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a1a;
+    background-image: url('/static/images/Dude_tyre.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Page Management */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #2d2d2d; /* Fully opaque header */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Input page header layout */
+#input-page .header {
+    flex-direction: column;
+}
+
+#input-page .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Results page header layout */
+#results-page .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#results-page .header-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0;
+}
+
+.header-logo {
+    height: 2.5em; /* Match the title font size */
+    width: auto; /* Maintain aspect ratio */
+    max-width: 80px; /* Prevent logo from getting too large */
+    object-fit: contain; /* Ensure logo scales properly */
+}
+
+.header h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 0;
+}
+
+.header-description {
+    font-size: 1em;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* Form Styles */
+.form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: rgba(45, 45, 45, 0.65); /* 65% opacity, no blur */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1em;
+    background-color: #3d3d3d;
+    color: #ffffff;
+    border: 2px solid #4d4d4d;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.form-group select option {
+    background-color: #3d3d3d;
+    color: #ffffff;
+}
+
+/* Toggle Button and Manual Section */
+.manual-toggle {
+    margin-bottom: 20px;
+}
+
+.toggle-button {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: rgba(93, 93, 93, 0.8);
+    color: #e0e0e0;
+    border: 2px solid #5d5d5d;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+}
+
+.toggle-button:hover {
+    background-color: rgba(109, 109, 109, 0.8);
+    border-color: #6d6d6d;
+}
+
+.toggle-button.expanded {
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.toggle-arrow {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.manual-section {
+    border: 2px solid #4d4d4d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: rgba(61, 61, 61, 0.6);
+}
+
+.manual-description {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #FFC107;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+/* Button Styles */
+.primary-button {
+    width: 100%;
+    padding: 15px 24px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+}
+
+.primary-button:hover {
+    background: linear-gradient(135deg, #45a049, #4CAF50);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.primary-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.secondary-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #ffffff;
+    background-color: #5d5d5d;
+    border: 2px solid #6d6d6d;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 140px;
+}
+
+.secondary-button:hover:not(:disabled) {
+    background-color: #6d6d6d;
+    border-color: #7d7d7d;
+}
+
+.secondary-button:disabled {
+    background-color: #4d4d4d;
+    border-color: #5d5d5d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Error Display */
+.error-box {
+    background-color: #d32f2f;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #b71c1c;
+    font-weight: 500;
+}
+
+/* Loading Styles */
+.loading-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 40px;
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #e0e0e0;
+    backdrop-filter: blur(10px);
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #3d3d3d;
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Table Controls */
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.timer {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #4CAF50;
+}
+
+/* Round Winners Styles */
+.round-winners {
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent, matching other components */
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.round-winners h3 {
+    color: #4CAF50;
+    margin-bottom: 8px;
+    text-align: center;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.winners-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.winner-card {
+    background-color: rgba(61, 61, 61, 0.8);
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    border-left: 3px solid #4CAF50;
+    transition: all 0.3s ease;
+}
+
+.winner-card:hover {
+    background-color: rgba(77, 77, 77, 0.8);
+    transform: translateY(-2px);
+}
+
+.winner-card.round-2 {
+    border-left-color: #4CAF50; /* Same color as round 1 */
+}
+
+.winner-title {
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 3px;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.winner-info {
+    font-size: 0.9em;
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+.winner-name {
+    display: none; /* Hide individual name elements */
+}
+
+.winner-dog {
+    display: none; /* Hide individual dog elements */
+}
+
+/* Results Table */
+.table-wrapper {
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+#results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1em;
+}
+
+#results-table thead {
+    background-color: #4CAF50;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#results-table thead th {
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+}
+
+#results-table tbody tr {
+    border-bottom: 1px solid #3d3d3d;
+    transition: background-color 0.2s ease;
+}
+
+#results-table tbody tr:hover {
+    background-color: #3d3d3d;
+}
+
+#results-table tbody tr.cutoff {
+    background-color: #FFE4B5;
+    color: #333;
+    font-weight: 600;
+}
+
+#results-table tbody tr.cutoff:hover {
+    background-color: #FFD700;
+}
+
+#results-table tbody td {
+    padding: 12px;
+    color: #e0e0e0;
+    font-size: 0.95em;
+}
+
+#results-table tbody tr.cutoff td {
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .header-logo {
+        height: 2em; /* Scale with smaller title */
+        max-width: 60px;
+    }
+    
+    #input-page .header-top {
+        gap: 10px;
+    }
+    
+    #results-page .header-top {
+        gap: 10px;
+    }
+    
+    .form-container {
+        padding: 25px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    #results-page .header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .table-controls {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .winners-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .round-winners {
+        padding: 6px;
+    }
+    
+    .winner-card {
+        padding: 6px;
+    }
+    
+    .winner-info {
+        font-size: 0.8em;
+    }
+    
+    .table-wrapper {
+        font-size: 0.9em;
+    }
+    
+    #results-table thead th,
+    #results-table tbody td {
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    #results-table {
+        font-size: 0.8em;
+    }
+    
+    #results-table thead th,
+    #results-table tbody td {
+        padding: 6px 4px;
+    }
+    
+    .winner-name {
+        font-size: 1.1em;
+    }
+    
+    .winner-dog {
+        font-size: 0.9em;
+    }
+}

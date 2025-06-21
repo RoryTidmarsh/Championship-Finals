@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Championship Placement Tracker</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="input-page-active">
+    <div class="container">
+        
+        <!-- Input Page -->
+        <div id="input-page" class="page active">
+            <div class="header">
+                <div class="header-top">
+                    <img src="{{ url_for('static', filename='images/logo.PNG') }}" alt="Logo" class="header-logo">
+                    <h1>Championship Placement Tracker</h1>
+                </div>
+                <p class="header-description">
+                    This automatically detects a live (or most recent) champ show to find the combined results of the jumping and agility round for a championship show hosted on Agility Plaza.
+                </p>
+            </div>
+            
+            <!-- Error Display -->
+            <div id="error-display" class="error-box hidden">
+                <span id="error-message"></span>
+            </div>
+            
+            <div class="form-container">
+                <form id="championship-form">
+                    <!-- Height Selection -->
+                    <div class="form-group">
+                        <label for="height">Select Height</label>
+                        <select id="height" name="height" required>
+                            <option value="">Choose height...</option>
+                            <option value="Sml">Small</option>
+                            <option value="Med">Medium</option>
+                            <option value="Int">Intermediate</option>
+                            <option value="Lge">Large</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Manual Input Toggle -->
+                    <div class="manual-toggle">
+                        <button type="button" id="manual-toggle-btn" class="toggle-button">
+                            Not detecting the show or rounds you want? Click here
+                            <span class="toggle-arrow">▼</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Manual URL Section (Hidden by default) -->
+                    <div id="manual-url-section" class="manual-section hidden">
+                        <div class="manual-description">
+                            Manually input the URL (link or web address) of the agility plaza results pages into the boxes below:
+                        </div>
+                        
+                        <!-- URL Entries -->
+                        <div class="form-group">
+                            <label for="jumping-url">Jumping URL</label>
+                            <input type="url" id="jumping-url" name="jumping_url" placeholder="Enter jumping URL">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="agility-url">Agility URL</label>
+                            <input type="url" id="agility-url" name="agility_url" placeholder="Enter agility URL">
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" id="find-button" class="primary-button">
+                        <span id="button-text">Find Champ Class</span>
+                        <div id="loading-spinner" class="spinner hidden"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Results Page -->
+        <div id="results-page" class="page">
+            <div class="header">
+                <div class="header-top">
+                    <img src="{{ url_for('static', filename='images/logo.PNG') }}" alt="Logo" class="header-logo">
+                    <h1>Championship Results</h1>
+                </div>
+                <button id="back-button" class="secondary-button">Back</button>
+            </div>
+            
+            <!-- Error Display for Results -->
+            <div id="results-error-display" class="error-box hidden">
+                <span id="results-error-message"></span>
+            </div>
+            
+            <!-- Loading Message -->
+            <div id="loading-message" class="loading-box">
+                <div class="spinner"></div>
+                <span>Loading championship data...</span>
+            </div>
+            
+            <!-- Results Container -->
+            <div id="results-container" class="hidden">
+                <div class="table-controls">
+                    <div id="timer-display" class="timer">Next refresh in 02:00</div>
+                    <button id="manual-refresh" class="secondary-button">
+                        <span id="refresh-button-text">Manual Refresh</span>
+                        <div id="refresh-spinner" class="spinner hidden"></div>
+                    </button>
+                </div>
+                
+                <!-- Round Winners Display -->
+                <div id="round-winners" class="round-winners hidden">
+                    <h3>Round Winners</h3>
+                    <div class="winners-grid">
+                        <div class="winner-card round-1">
+                            <div class="winner-title">Round 1 Winner</div>
+                            <div class="winner-info" id="round-1-info">Loading...</div>
+                        </div>
+                        <div class="winner-card round-2">
+                            <div class="winner-title">Round 2 Winner</div>
+                            <div class="winner-info" id="round-2-info">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Place</th>
+                                <th>Handler</th>
+                                <th>Dog</th>
+                                <th>Points</th>
+                                <th>Round 1</th>
+                                <th>Round 2</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody">
+                            <!-- Results will be populated here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        console.log('DOM loaded, starting application...');
+        
+        class ChampionshipTracker {
+            constructor() {
+                console.log('ChampionshipTracker constructor called');
+                this.refreshInterval = null;
+                this.refreshTimer = null;
+                this.timeRemaining = 120;
+                this.currentFormData = null;
+                
+                this.init();
+            }
+            
+            init() {
+                console.log('Initializing...');
+                this.bindEvents();
+                this.showInputPage();
+                
+                console.log('Input page element:', document.getElementById('input-page'));
+                console.log('Results page element:', document.getElementById('results-page'));
+                console.log('Form element:', document.getElementById('championship-form'));
+            }
+            
+            bindEvents() {
+                console.log('Binding events...');
+                
+                const form = document.getElementById('championship-form');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        console.log('Form submitted!');
+                        e.preventDefault();
+                        this.handleFormSubmit();
+                    });
+                } else {
+                    console.error('Form not found!');
+                }
+                
+                // Manual toggle button
+                const manualToggleBtn = document.getElementById('manual-toggle-btn');
+                if (manualToggleBtn) {
+                    manualToggleBtn.addEventListener('click', () => {
+                        this.toggleManualSection();
+                    });
+                } else {
+                    console.error('Manual toggle button not found!');
+                }
+                
+                const backButton = document.getElementById('back-button');
+                if (backButton) {
+                    backButton.addEventListener('click', () => {
+                        console.log('Back button clicked');
+                        this.showInputPage();
+                    });
+                } else {
+                    console.error('Back button not found!');
+                }
+                
+                const refreshButton = document.getElementById('manual-refresh');
+                if (refreshButton) {
+                    refreshButton.addEventListener('click', () => {
+                        console.log('Manual refresh clicked');
+                        if (!refreshButton.disabled) {
+                            this.fetchResults();
+                        }
+                    });
+                } else {
+                    console.error('Refresh button not found!');
+                }
+            }
+            
+            showInputPage() {
+                console.log('Showing input page...');
+                const inputPage = document.getElementById('input-page');
+                const resultsPage = document.getElementById('results-page');
+                
+                if (inputPage && resultsPage) {
+                    inputPage.classList.add('active');
+                    resultsPage.classList.remove('active');
+                    
+                    document.body.className = 'input-page-active';
+                    console.log('Page switch successful - background set to input page');
+                } else {
+                    console.error('Page elements not found!', {inputPage, resultsPage});
+                }
+                
+                this.clearIntervals();
+                this.clearForm();
+                this.hideError('error-display');
+            }
+            
+            showResultsPage() {
+                console.log('Showing results page...');
+                const inputPage = document.getElementById('input-page');
+                const resultsPage = document.getElementById('results-page');
+                
+                if (inputPage && resultsPage) {
+                    inputPage.classList.remove('active');
+                    resultsPage.classList.add('active');
+                    
+                    document.body.className = 'results-page-active';
+                    console.log('Results page shown - background set to results page');
+                } else {
+                    console.error('Page elements not found for results!');
+                }
+                
+                const loadingMessage = document.getElementById('loading-message');
+                const resultsContainer = document.getElementById('results-container');
+                
+                if (loadingMessage) loadingMessage.classList.remove('hidden');
+                if (resultsContainer) resultsContainer.classList.add('hidden');
+                
+                this.hideError('results-error-display');
+            }
+            
+            clearForm() {
+                const height = document.getElementById('height');
+                const jumpingUrl = document.getElementById('jumping-url');
+                const agilityUrl = document.getElementById('agility-url');
+                
+                if (height) height.value = '';
+                if (jumpingUrl) jumpingUrl.value = '';
+                if (agilityUrl) agilityUrl.value = '';
+                
+                // Also collapse the manual section
+                this.hideManualSection();
+            }
+            
+            toggleManualSection() {
+                const manualSection = document.getElementById('manual-url-section');
+                const toggleBtn = document.getElementById('manual-toggle-btn');
+                const arrow = toggleBtn.querySelector('.toggle-arrow');
+                
+                if (manualSection.classList.contains('hidden')) {
+                    manualSection.classList.remove('hidden');
+                    arrow.textContent = '▲';
+                    toggleBtn.classList.add('expanded');
+                    console.log('Manual section expanded');
+                } else {
+                    manualSection.classList.add('hidden');
+                    arrow.textContent = '▼';
+                    toggleBtn.classList.remove('expanded');
+                    console.log('Manual section collapsed');
+                }
+            }
+            
+            hideManualSection() {
+                const manualSection = document.getElementById('manual-url-section');
+                const toggleBtn = document.getElementById('manual-toggle-btn');
+                const arrow = toggleBtn.querySelector('.toggle-arrow');
+                
+                if (manualSection) manualSection.classList.add('hidden');
+                if (arrow) arrow.textContent = '▼';
+                if (toggleBtn) toggleBtn.classList.remove('expanded');
+            }
+            
+            clearIntervals() {
+                if (this.refreshInterval) {
+                    clearInterval(this.refreshInterval);
+                    this.refreshInterval = null;
+                }
+                if (this.refreshTimer) {
+                    clearInterval(this.refreshTimer);
+                    this.refreshTimer = null;
+                }
+            }
+            
+            handleFormSubmit() {
+                console.log('=== FORM SUBMIT HANDLER ===');
+                const height = document.getElementById('height').value;
+                const jumpingUrl = document.getElementById('jumping-url').value;
+                const agilityUrl = document.getElementById('agility-url').value;
+                
+                console.log('Form values:', {height, jumpingUrl, agilityUrl});
+                
+                if (!height) {
+                    this.showError('error-display', 'Height selection is required.');
+                    return;
+                }
+                
+                this.currentFormData = {
+                    height: height,
+                    jumping_url: jumpingUrl || null,
+                    agility_url: agilityUrl || null
+                };
+                
+                console.log('Stored form data:', this.currentFormData);
+                
+                this.showResultsPage();
+                this.startContinuousRefresh();
+            }
+            
+            startContinuousRefresh() {
+                console.log('Starting continuous refresh...');
+                this.fetchResults();
+                
+                this.refreshInterval = setInterval(() => {
+                    this.fetchResults();
+                }, 120000);
+                
+                this.startCountdownTimer();
+            }
+            
+            startCountdownTimer() {
+                this.timeRemaining = 120;
+                this.updateTimerDisplay();
+                
+                this.refreshTimer = setInterval(() => {
+                    this.timeRemaining--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeRemaining <= 0) {
+                        this.timeRemaining = 120;
+                    }
+                }, 1000);
+            }
+            
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                const timerDisplay = document.getElementById('timer-display');
+                if (timerDisplay) {
+                    timerDisplay.textContent = `Next refresh in ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+            
+            setRefreshButtonLoading(loading) {
+                const refreshButton = document.getElementById('manual-refresh');
+                const refreshButtonText = document.getElementById('refresh-button-text');
+                const refreshSpinner = document.getElementById('refresh-spinner');
+                
+                if (refreshButton && refreshButtonText && refreshSpinner) {
+                    if (loading) {
+                        refreshButton.disabled = true;
+                        refreshButtonText.textContent = 'Refreshing...';
+                        refreshSpinner.classList.remove('hidden');
+                        console.log('Refresh button set to loading state');
+                    } else {
+                        refreshButton.disabled = false;
+                        refreshButtonText.textContent = 'Manual Refresh';
+                        refreshSpinner.classList.add('hidden');
+                        console.log('Refresh button loading state cleared');
+                    }
+                }
+            }
+            
+            async fetchResults() {
+                try {
+                    console.log('=== FETCHING RESULTS ===');
+                    console.log('Form data:', this.currentFormData);
+                    
+                    this.setRefreshButtonLoading(true);
+                    this.timeRemaining = 120;
+                    
+                    const response = await fetch('/api/results', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.currentFormData)
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    console.log('Response ok:', response.ok);
+                    
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    if (data.success) {
+                        console.log('Success! Displaying results...');
+                        this.displayResults(data.data);
+                        this.displayRoundWinners(data.round_winners);
+                        this.hideError('results-error-display');
+                    } else {
+                        console.log('Error from server:', data.error);
+                        this.showError('results-error-display', data.error);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error fetching results:', error);
+                    this.showError('results-error-display', 'Failed to fetch results. Please check your connection and try again.');
+                } finally {
+                    this.setRefreshButtonLoading(false);
+                }
+            }
+            
+            displayRoundWinners(roundWinners) {
+                console.log('=== DISPLAYING ROUND WINNERS ===');
+                console.log('Round winners data:', roundWinners);
+                
+                const roundWinnersDiv = document.getElementById('round-winners');
+                const round1Info = document.getElementById('round-1-info');
+                const round2Info = document.getElementById('round-2-info');
+                
+                if (roundWinners && roundWinners.round_1 && roundWinners.round_2) {
+                    if (round1Info) {
+                        round1Info.textContent = `${roundWinners.round_1.handler} & ${roundWinners.round_1.dog}`;
+                    }
+                    if (round2Info) {
+                        round2Info.textContent = `${roundWinners.round_2.handler} & ${roundWinners.round_2.dog}`;
+                    }
+                    
+                    if (roundWinnersDiv) {
+                        roundWinnersDiv.classList.remove('hidden');
+                        console.log('Round winners displayed successfully');
+                    }
+                } else {
+                    console.log('Round winners data not available');
+                    if (roundWinnersDiv) {
+                        roundWinnersDiv.classList.add('hidden');
+                    }
+                }
+            }
+            
+            displayResults(results) {
+                console.log('=== DISPLAYING RESULTS ===');
+                console.log('Results array:', results);
+                console.log('Results length:', results.length);
+                
+                const loadingMessage = document.getElementById('loading-message');
+                const resultsContainer = document.getElementById('results-container');
+                
+                if (loadingMessage) {
+                    loadingMessage.classList.add('hidden');
+                    console.log('Loading message hidden');
+                }
+                if (resultsContainer) {
+                    resultsContainer.classList.remove('hidden');
+                    console.log('Results container shown');
+                }
+                
+                const tbody = document.getElementById('results-tbody');
+                if (!tbody) {
+                    console.error('Table body not found!');
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                if (!results || results.length === 0) {
+                    console.log('No results to display');
+                    tbody.innerHTML = '<tr><td colspan="6">No results found</td></tr>';
+                    return;
+                }
+                
+                results.forEach((row, index) => {
+                    console.log(`Processing row ${index}:`, row);
+                    
+                    const tr = document.createElement('tr');
+                    
+                    if (row.place === 20) {
+                        tr.classList.add('cutoff');
+                    }
+                    
+                    // Handle the pairing - it comes as a tuple from Python
+                    let handler, dog;
+                    if (Array.isArray(row.Pairing)) {
+                        [handler, dog] = row.Pairing;
+                    } else if (typeof row.Pairing === 'string') {
+                        // If it's a string, try to parse it
+                        const match = row.Pairing.match(/\('([^']+)', '([^']+)'\)/);
+                        if (match) {
+                            handler = match[1];
+                            dog = match[2];
+                        } else {
+                            handler = row.Pairing;
+                            dog = '';
+                        }
+                    } else {
+                        handler = 'Unknown';
+                        dog = 'Unknown';
+                    }
+                    
+                    console.log(`Handler: ${handler}, Dog: ${dog}`);
+                    
+                    tr.innerHTML = `
+                        <td>${row.place}</td>
+                        <td>${handler}</td>
+                        <td>${dog}</td>
+                        <td>${row.Points}</td>
+                        <td>${row['Round 1']}</td>
+                        <td>${row['Round 2']}</td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                console.log('Results display complete');
+            }
+            
+            showError(elementId, message) {
+                console.log(`Showing error on ${elementId}: ${message}`);
+                const errorDiv = document.getElementById(elementId);
+                const errorMessage = document.getElementById(elementId.replace('-display', '-message'));
+                
+                if (errorMessage) errorMessage.textContent = message;
+                if (errorDiv) errorDiv.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    this.hideError(elementId);
+                }, 5000);
+            }
+            
+            hideError(elementId) {
+                const errorDiv = document.getElementById(elementId);
+                if (errorDiv) errorDiv.classList.add('hidden');
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM ready, creating ChampionshipTracker...');
+            new ChampionshipTracker();
+        });
+    </script>
+</body>
+</html>

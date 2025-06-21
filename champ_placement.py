@@ -18,6 +18,8 @@ class plaza:
         self.jump_url = JUMPING_url
         self.agility_url = AGILITY_url
         self.height = height
+        self.round_1_winner = None
+        self.round_2_winner = None
 
         if (self.jump_url ==None)&(self.agility_url==None):
             self.shows_df = pd.read_csv("Champ shows.csv", index_col=0)
@@ -394,7 +396,10 @@ class plaza:
         #seperating the 2 result dataframes from the list
         df1 = results_df_list[0] #Round 1
         df2 = results_df_list[1] #Round 2
-    
+
+        self.round_1_winner = df1.iloc[0]
+        self.round_2_winner = df2.iloc[0]
+            
         # Find common dog-human pairings
         common_pairings = set(zip(df1['Human'], df1['Dog'])) & set(zip(df2['Human'], df2['Dog']))
     
@@ -432,7 +437,13 @@ class plaza:
         return df_top_20, df_points
 
         
-            
-
-#ch = champ_placement()
-#ch.recent_champ(months_ago=2)
+if __name__ == "__main__":
+    # Example usage
+    plaza_instance = plaza(height="Sml", JUMPING_url="https://www.agilityplaza.com/agilityClass/1945889857/results", AGILITY_url= "https://www.agilityplaza.com/agilityClass/1239111043/results")  # Example height
+    top_20, all_results = plaza_instance.overall_results()
+    
+    print("Top 20 Results:")
+    print(top_20)
+    
+    print("\nAll Results:")
+    print(all_results)
