@@ -52,11 +52,45 @@ body {
     text-align: center;
 }
 
+/* Input page header layout */
+#input-page .header {
+    flex-direction: column;
+}
+
+#input-page .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Results page header layout */
+#results-page .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#results-page .header-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0;
+}
+
+.header-logo {
+    height: 2.5em; /* Match the title font size */
+    width: auto; /* Maintain aspect ratio */
+    max-width: 80px; /* Prevent logo from getting too large */
+    object-fit: contain; /* Ensure logo scales properly */
+}
+
 .header h1 {
     font-size: 2.5em;
     font-weight: bold;
     color: #4CAF50;
-    margin: 0 0 15px 0;
+    margin: 0;
 }
 
 .header-description {
@@ -428,6 +462,19 @@ body {
         font-size: 2em;
     }
     
+    .header-logo {
+        height: 2em; /* Scale with smaller title */
+        max-width: 60px;
+    }
+    
+    #input-page .header-top {
+        gap: 10px;
+    }
+    
+    #results-page .header-top {
+        gap: 10px;
+    }
+    
     .form-container {
         padding: 25px;
     }
@@ -436,6 +483,11 @@ body {
         flex-direction: column;
         gap: 15px;
         text-align: center;
+    }
+    
+    #results-page .header {
+        flex-direction: column;
+        gap: 15px;
     }
     
     .table-controls {

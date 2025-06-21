@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Championship Placement Tracker</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.PNG') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="input-page-active">
@@ -13,7 +13,10 @@
         <!-- Input Page -->
         <div id="input-page" class="page active">
             <div class="header">
-                <h1>Championship Placement Tracker</h1>
+                <div class="header-top">
+                    <img src="{{ url_for('static', filename='images/logo.PNG') }}" alt="Logo" class="header-logo">
+                    <h1>Championship Placement Tracker</h1>
+                </div>
                 <p class="header-description">
                     This automatically detects a live (or most recent) champ show to find the combined results of the jumping and agility round for a championship show hosted on Agility Plaza.
                 </p>
@@ -76,7 +79,10 @@
         <!-- Results Page -->
         <div id="results-page" class="page">
             <div class="header">
-                <h1>Championship Results</h1>
+                <div class="header-top">
+                    <img src="{{ url_for('static', filename='images/logo.PNG') }}" alt="Logo" class="header-logo">
+                    <h1>Championship Results</h1>
+                </div>
                 <button id="back-button" class="secondary-button">Back</button>
             </div>
             
