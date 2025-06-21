@@ -82,6 +82,21 @@
                     </button>
                 </div>
                 
+                <!-- Round Winners Display -->
+                <div id="round-winners" class="round-winners hidden">
+                    <h3>Round Winners</h3>
+                    <div class="winners-grid">
+                        <div class="winner-card round-1">
+                            <div class="winner-title">Round 1 Winner</div>
+                            <div class="winner-info" id="round-1-info">Loading...</div>
+                        </div>
+                        <div class="winner-card round-2">
+                            <div class="winner-title">Round 2 Winner</div>
+                            <div class="winner-info" id="round-2-info">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="table-wrapper">
                     <table id="results-table">
                         <thead>
@@ -100,17 +115,10 @@
                     </table>
                 </div>
             </div>
-            
-            <!-- Debug info (remove this later) -->
-            <!-- <div id="debug-info" style="background: #333; padding: 10px; margin: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">
-                <strong>Debug Info:</strong><br>
-                <div id="debug-content">Waiting for data...</div>
-            </div> -->
         </div>
     </div>
     
     <script>
-        // Inline JavaScript for debugging - we'll move this back to app.js once working
         console.log('DOM loaded, starting application...');
         
         class ChampionshipTracker {
@@ -129,7 +137,6 @@
                 this.bindEvents();
                 this.showInputPage();
                 
-                // Test that elements exist
                 console.log('Input page element:', document.getElementById('input-page'));
                 console.log('Results page element:', document.getElementById('results-page'));
                 console.log('Form element:', document.getElementById('championship-form'));
@@ -138,7 +145,6 @@
             bindEvents() {
                 console.log('Binding events...');
                 
-                // Form submission
                 const form = document.getElementById('championship-form');
                 if (form) {
                     form.addEventListener('submit', (e) => {
@@ -150,7 +156,6 @@
                     console.error('Form not found!');
                 }
                 
-                // Back button
                 const backButton = document.getElementById('back-button');
                 if (backButton) {
                     backButton.addEventListener('click', () => {
@@ -161,7 +166,6 @@
                     console.error('Back button not found!');
                 }
                 
-                // Manual refresh button
                 const refreshButton = document.getElementById('manual-refresh');
                 if (refreshButton) {
                     refreshButton.addEventListener('click', () => {
@@ -184,9 +188,8 @@
                     inputPage.classList.add('active');
                     resultsPage.classList.remove('active');
                     
-                    // Change background to input page background
                     document.body.className = 'input-page-active';
-                    console.log('Page switch successful - background set to Dude tyre');
+                    console.log('Page switch successful - background set to input page');
                 } else {
                     console.error('Page elements not found!', {inputPage, resultsPage});
                 }
@@ -205,14 +208,12 @@
                     inputPage.classList.remove('active');
                     resultsPage.classList.add('active');
                     
-                    // Change background to results page background
                     document.body.className = 'results-page-active';
-                    console.log('Results page shown - background set to sonic weaving');
+                    console.log('Results page shown - background set to results page');
                 } else {
                     console.error('Page elements not found for results!');
                 }
                 
-                // Show loading state
                 const loadingMessage = document.getElementById('loading-message');
                 const resultsContainer = document.getElementById('results-container');
                 
@@ -327,9 +328,7 @@
                     console.log('=== FETCHING RESULTS ===');
                     console.log('Form data:', this.currentFormData);
                     
-                    // Set loading state
                     this.setRefreshButtonLoading(true);
-                    
                     this.timeRemaining = 120;
                     
                     const response = await fetch('/api/results', {
@@ -346,20 +345,10 @@
                     const data = await response.json();
                     console.log('Response data:', data);
                     
-                    // Update debug info
-                    const debugContent = document.getElementById('debug-content');
-                    if (debugContent) {
-                        debugContent.innerHTML = `
-                            Status: ${response.status}<br>
-                            Success: ${data.success}<br>
-                            Data length: ${data.data ? data.data.length : 'N/A'}<br>
-                            First record: ${JSON.stringify(data.data ? data.data[0] : 'N/A')}
-                        `;
-                    }
-                    
                     if (data.success) {
                         console.log('Success! Displaying results...');
                         this.displayResults(data.data);
+                        this.displayRoundWinners(data.round_winners);
                         this.hideError('results-error-display');
                     } else {
                         console.log('Error from server:', data.error);
@@ -370,8 +359,35 @@
                     console.error('Error fetching results:', error);
                     this.showError('results-error-display', 'Failed to fetch results. Please check your connection and try again.');
                 } finally {
-                    // Always clear loading state
                     this.setRefreshButtonLoading(false);
+                }
+            }
+            
+            displayRoundWinners(roundWinners) {
+                console.log('=== DISPLAYING ROUND WINNERS ===');
+                console.log('Round winners data:', roundWinners);
+                
+                const roundWinnersDiv = document.getElementById('round-winners');
+                const round1Info = document.getElementById('round-1-info');
+                const round2Info = document.getElementById('round-2-info');
+                
+                if (roundWinners && roundWinners.round_1 && roundWinners.round_2) {
+                    if (round1Info) {
+                        round1Info.textContent = `${roundWinners.round_1.handler} & ${roundWinners.round_1.dog}`;
+                    }
+                    if (round2Info) {
+                        round2Info.textContent = `${roundWinners.round_2.handler} & ${roundWinners.round_2.dog}`;
+                    }
+                    
+                    if (roundWinnersDiv) {
+                        roundWinnersDiv.classList.remove('hidden');
+                        console.log('Round winners displayed successfully');
+                    }
+                } else {
+                    console.log('Round winners data not available');
+                    if (roundWinnersDiv) {
+                        roundWinnersDiv.classList.add('hidden');
+                    }
                 }
             }
             

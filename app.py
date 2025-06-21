@@ -62,10 +62,27 @@ def get_results():
         # Reset index to include 'place' as a column
         results_dict = all_results.reset_index().to_dict('records')
         
+        # Extract round winners information
+        round_winners = {
+            'round_1': {
+                'handler': champ.round_1_winner['Human'] if hasattr(champ.round_1_winner, 'Human') else str(champ.round_1_winner).split(' & ')[0] if ' & ' in str(champ.round_1_winner) else 'Unknown',
+                'dog': champ.round_1_winner['Dog'] if hasattr(champ.round_1_winner, 'Dog') else str(champ.round_1_winner).split(' & ')[1] if ' & ' in str(champ.round_1_winner) else 'Unknown'
+            },
+            'round_2': {
+                'handler': champ.round_2_winner['Human'] if hasattr(champ.round_2_winner, 'Human') else str(champ.round_2_winner).split(' & ')[0] if ' & ' in str(champ.round_2_winner) else 'Unknown',
+                'dog': champ.round_2_winner['Dog'] if hasattr(champ.round_2_winner, 'Dog') else str(champ.round_2_winner).split(' & ')[1] if ' & ' in str(champ.round_2_winner) else 'Unknown'
+            }
+        }
+        
+        print(f"Round winners: {round_winners}")
         print(f"Converted to dict, length: {len(results_dict)}")
         print(f"First record: {results_dict[0] if results_dict else 'No records'}")
         
-        return jsonify({'success': True, 'data': results_dict})
+        return jsonify({
+            'success': True, 
+            'data': results_dict,
+            'round_winners': round_winners
+        })
     
     except Exception as e:
         error_msg = str(e)
@@ -84,7 +101,11 @@ def test_api():
         'data': [
             {'place': 1, 'Pairing': ['John Doe', 'Rex'], 'Points': 2, 'Round 1': 1, 'Round 2': 1},
             {'place': 2, 'Pairing': ['Jane Smith', 'Buddy'], 'Points': 4, 'Round 1': 2, 'Round 2': 2}
-        ]
+        ],
+        'round_winners': {
+            'round_1': {'handler': 'John Doe', 'dog': 'Rex'},
+            'round_2': {'handler': 'Jane Smith', 'dog': 'Buddy'}
+        }
     })
 
 @app.errorhandler(404)

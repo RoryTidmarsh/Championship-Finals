@@ -225,6 +225,71 @@ body {
     color: #4CAF50;
 }
 
+/* Round Winners Styles */
+.round-winners {
+    background-color: rgba(45, 45, 45, 0.85); /* Translucent, matching other components */
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.round-winners h3 {
+    color: #4CAF50;
+    margin-bottom: 8px;
+    text-align: center;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.winners-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.winner-card {
+    background-color: rgba(61, 61, 61, 0.8);
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    border-left: 3px solid #4CAF50;
+    transition: all 0.3s ease;
+}
+
+.winner-card:hover {
+    background-color: rgba(77, 77, 77, 0.8);
+    transform: translateY(-2px);
+}
+
+.winner-card.round-2 {
+    border-left-color: #4CAF50; /* Same color as round 1 */
+}
+
+.winner-title {
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 3px;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.winner-info {
+    font-size: 1em;
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+.winner-name {
+    display: none; /* Hide individual name elements */
+}
+
+.winner-dog {
+    display: none; /* Hide individual dog elements */
+}
+
 /* Results Table */
 .table-wrapper {
     background-color: rgba(45, 45, 45, 0.85); /* Translucent */
@@ -313,6 +378,23 @@ body {
         text-align: center;
     }
     
+    .winners-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .round-winners {
+        padding: 6px;
+    }
+    
+    .winner-card {
+        padding: 6px;
+    }
+    
+    .winner-info {
+        font-size: 0.8em;
+    }
+    
     .table-wrapper {
         font-size: 0.9em;
     }
@@ -331,5 +413,13 @@ body {
     #results-table thead th,
     #results-table tbody td {
         padding: 6px 4px;
+    }
+    
+    .winner-name {
+        font-size: 1.5em;
+    }
+    
+    .winner-dog {
+        font-size: 0.9em;
     }
 }
