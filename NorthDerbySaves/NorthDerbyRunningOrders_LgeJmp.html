@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<head>
+ <meta charset="utf-8"/>
+ <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+ <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+ <title>
+  Agility Plaza
+ </title>
+ <link href="/bootstrap/css/bootstrap-flex.min.css" rel="stylesheet"/>
+ <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet"/>
+ <link href="/cardjs/card-js.min.css" rel="stylesheet"/>
+ <link href="/css/style_v1.60.css" rel="stylesheet"/>
+ <link href="/manifest.json" rel="manifest"/>
+ <meta content="yes" name="apple-mobile-web-app-capable"/>
+ <style>
+  @media screen and (min-device-width: 420px) and (orientation: portrait), screen and (min-device-height: 420px) and (orientation: landscape) {
+        .underlay {
+            background: url(/img/back/back15a.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            opacity: .5;
+        }
+    }
+ </style>
+</head>
+<html lang="en" style="font-size: 12pt">
+ <body>
+  <!-- Forms-->
+  <!-- Buttons & Links-->
+  <!-- Grids and Cards-->
+  <!-- Misc-->
+  <div class="underlay">
+  </div>
+  <input id="refresh" type="hidden" value="no"/>
+  <!-- Navbar-->
+  <div class="top-bar" style="background-color: #dbff89;">
+   <a href="javascript:showLoading();location.reload()">
+    <img class="sm-up navLogo" src="/img/logo.svg"/>
+    <img class="xs-down navLogo" src="/img/logo_small.svg"/>
+   </a>
+   <div class="md-up">
+   </div>
+   <a class="btn-nav-top" href="/">
+    <i class="fa fa-arrow-left">
+    </i>
+    Back
+   </a>
+   <div class="nav-panel-toggle float-right">
+    <a class="btn-nav-top float-right" href="javascript:toggleNavPanel()">
+     <i class="fa fa-bars">
+     </i>
+     <span>
+      Menu
+     </span>
+    </a>
+   </div>
+  </div>
+  <div class="title-bar">
+   <span>
+    Running Orders
+   </span>
+  </div>
+  <div class="nav-panel">
+   <div class="page-title">
+    Running Orders
+   </div>
+   <hr/>
+   <div class="general">
+    <a class="btn-panel" href="/live?root=true">
+     <i class="fa fa-bolt">
+     </i>
+     Live &amp; Imminent Shows
+    </a>
+    <a class="btn-panel" href="/results?root=true">
+     <i class="fa fa-trophy">
+     </i>
+     Results
+    </a>
+    <a class="btn-panel" href="/competition/active?root=true">
+     <i class="fa fa-calendar">
+     </i>
+     Show Diary
+    </a>
+    <a class="btn-panel" href="/leagues?root=true">
+     <i class="fa fa-award">
+     </i>
+     Leagues &amp; Qualifiers
+    </a>
+   </div>
+   <!--+button("link", "Training Clubs", "graduation-cap", {href: "/training/active?root=true", panel: true})-->
+   <hr/>
+   <div class="w-100">
+    <a href="/">
+     <i class="fa fa-home">
+     </i>
+     Home
+    </a>
+    <a class="float-right" href="/login">
+     <i class="fa fa-sign-in">
+     </i>
+     Login
+    </a>
+    <span class="float-right">
+     /
+    </span>
+    <a class="float-right" href="/open/register">
+     <i class="fa fa-sign-in">
+     </i>
+     Register
+    </a>
+   </div>
+   <hr/>
+   <div class="list font90">
+    <div class="list-item">
+     <a href="/open/terms?root=true">
+      <span>
+       Terms &amp; Conditions
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/privacy?root=true">
+      <span>
+       Privacy Policy
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/about?root=true">
+      <span>
+       About Us
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/contact?root=true">
+      <span>
+       Contact
+      </span>
+     </a>
+    </div>
+   </div>
+  </div>
+  <div class="home-panel">
+   <div class="container-fluid">
+    <div class="text-xs-center" id="loading">
+     <img src="/img/wait.svg" width="120"/>
+    </div>
+    <div class="max60">
+     <div class="card" id="card1">
+      <div class="card-header">
+       61b Lge Championship Jumping - Running Orders
+      </div>
+      <div class="card-block">
+       <table class="table table-sm table-striped">
+        <tr>
+         <th class="width4">
+          R/O
+         </th>
+         <th>
+          Name
+         </th>
+        </tr>
+        <tr>
+         <td>
+          1
+         </td>
+         <td>
+          Wendy McAlenan &amp; Nellie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          2
+         </td>
+         <td>
+          Fiona Gavin &amp; Keeper
+         </td>
+        </tr>
+        <tr>
+         <td>
+          3
+         </td>
+         <td>
+          Izzy Austin &amp; Willow
+         </td>
+        </tr>
+        <tr>
+         <td>
+          4
+         </td>
+         <td>
+          Tracy Moerel &amp; Motto (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          5
+         </td>
+         <td>
+          Anthony Clarke &amp; Hustle
+         </td>
+        </tr>
+        <tr>
+         <td>
+          6
+         </td>
+         <td>
+          Sara Bacon &amp; Bliss
+         </td>
+        </tr>
+        <tr>
+         <td>
+          7
+         </td>
+         <td>
+          Becca Middleton &amp; Nettle
+         </td>
+        </tr>
+        <tr>
+         <td>
+          8
+         </td>
+         <td>
+          Claire Mason &amp; Estar (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          9
+         </td>
+         <td>
+          Aimee Kerton &amp; Copernicus
+         </td>
+        </tr>
+        <tr>
+         <td>
+          10
+         </td>
+         <td>
+          Will Hinz &amp; Storm
+         </td>
+        </tr>
+        <tr>
+         <td>
+          11
+         </td>
+         <td>
+          Rebecca White &amp; Tali (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          12
+         </td>
+         <td>
+          Holly Willoughby &amp; Weiser
+         </td>
+        </tr>
+        <tr>
+         <td>
+          13
+         </td>
+         <td>
+          Alan Short &amp; Bomb
+         </td>
+        </tr>
+        <tr>
+         <td>
+          14
+         </td>
+         <td>
+          Sam Clayson &amp; Astro
+         </td>
+        </tr>
+        <tr>
+         <td>
+          15
+         </td>
+         <td>
+          Lindsay Bentley &amp; Cruz
+         </td>
+        </tr>
+        <tr>
+         <td>
+          16
+         </td>
+         <td>
+          Jodie Nazimi &amp; Nitro
+         </td>
+        </tr>
+        <tr>
+         <td>
+          17
+         </td>
+         <td>
+          Steven Poulton &amp; Rudi
+         </td>
+        </tr>
+        <tr>
+         <td>
+          18
+         </td>
+         <td>
+          Sharon Reeder &amp; Robbie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          19
+         </td>
+         <td>
+          Mick Fern &amp; Odie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          20
+         </td>
+         <td>
+          Tracy Moerel &amp; Kudos
+         </td>
+        </tr>
+        <tr>
+         <td>
+          21
+         </td>
+         <td>
+          Amy Challis &amp; Royce
+         </td>
+        </tr>
+        <tr>
+         <td>
+          22
+         </td>
+         <td>
+          Joanne Tristram &amp; Fade
+         </td>
+        </tr>
+        <tr>
+         <td>
+          23
+         </td>
+         <td>
+          Alice Walford &amp; Pilot (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          24
+         </td>
+         <td>
+          Danielle Austin &amp; Bramble (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          25
+         </td>
+         <td>
+          Megan Meade &amp; Journey
+         </td>
+        </tr>
+        <tr>
+         <td>
+          26
+         </td>
+         <td>
+          Alisa Atkins &amp; Ace
+         </td>
+        </tr>
+        <tr>
+         <td>
+          27
+         </td>
+         <td>
+          Harriet Harding &amp; Zero
+         </td>
+        </tr>
+        <tr>
+         <td>
+          28
+         </td>
+         <td>
+          Stuart Raine &amp; Gin
+         </td>
+        </tr>
+        <tr>
+         <td>
+          29
+         </td>
+         <td>
+          Helen Ross Smith &amp; Neon
+         </td>
+        </tr>
+        <tr>
+         <td>
+          30
+         </td>
+         <td>
+          Kate Fowler &amp; Promise
+         </td>
+        </tr>
+        <tr>
+         <td>
+          31
+         </td>
+         <td>
+          Jessica Smith &amp; Elsie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          32
+         </td>
+         <td>
+          Mike Bendell &amp; Falcon
+         </td>
+        </tr>
+        <tr>
+         <td>
+          33
+         </td>
+         <td>
+          Olivia White &amp; Mocha
+         </td>
+        </tr>
+        <tr>
+         <td>
+          34
+         </td>
+         <td>
+          Jess Rapinett &amp; Sassy
+         </td>
+        </tr>
+        <tr>
+         <td>
+          35
+         </td>
+         <td>
+          Caroline Godfrey &amp; Jude
+         </td>
+        </tr>
+        <tr>
+         <td>
+          36
+         </td>
+         <td>
+          Ellen Sleight &amp; Saint (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          37
+         </td>
+         <td>
+          Caroline Hendy &amp; Rudi (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          38
+         </td>
+         <td>
+          Nicki Heslop &amp; Swat
+         </td>
+        </tr>
+        <tr>
+         <td>
+          39
+         </td>
+         <td>
+          Linsey Toon &amp; Luna
+         </td>
+        </tr>
+        <tr>
+         <td>
+          40
+         </td>
+         <td>
+          Alan Short &amp; Bellini
+         </td>
+        </tr>
+        <tr>
+         <td>
+          41
+         </td>
+         <td>
+          Siân Illingworth &amp; Design
+         </td>
+        </tr>
+        <tr>
+         <td>
+          42
+         </td>
+         <td>
+          Jane Powell &amp; Tarzan
+         </td>
+        </tr>
+        <tr>
+         <td>
+          43
+         </td>
+         <td>
+          Hayley Tindall &amp; Max
+         </td>
+        </tr>
+        <tr>
+         <td>
+          44
+         </td>
+         <td>
+          Norman Stokoe &amp; Bob
+         </td>
+        </tr>
+        <tr>
+         <td>
+          45
+         </td>
+         <td>
+          Michelle Waugh &amp; Ren (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          46
+         </td>
+         <td>
+          Toby Horsman &amp; Axel
+         </td>
+        </tr>
+        <tr>
+         <td>
+          47
+         </td>
+         <td>
+          Amanda Ellerton &amp; Beau
+         </td>
+        </tr>
+        <tr>
+         <td>
+          48
+         </td>
+         <td>
+          Sue Spring &amp; Polo
+         </td>
+        </tr>
+        <tr>
+         <td>
+          49
+         </td>
+         <td>
+          Ellen Sleight &amp; Hero (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          50
+         </td>
+         <td>
+          Mirella Ballestracci &amp; Gibson
+         </td>
+        </tr>
+        <tr>
+         <td>
+          51
+         </td>
+         <td>
+          Steve Seale &amp; Be B
+         </td>
+        </tr>
+        <tr>
+         <td>
+          52
+         </td>
+         <td>
+          Pia Glover &amp; Beat
+         </td>
+        </tr>
+        <tr>
+         <td>
+          53
+         </td>
+         <td>
+          Jessica Smith &amp; Fancy
+         </td>
+        </tr>
+        <tr>
+         <td>
+          54
+         </td>
+         <td>
+          Jane Powell &amp; Noddy
+         </td>
+        </tr>
+        <tr>
+         <td>
+          55
+         </td>
+         <td>
+          Alice Brownridge &amp; Pilot
+         </td>
+        </tr>
+        <tr>
+         <td>
+          56
+         </td>
+         <td>
+          Sharon Banks &amp; Class
+         </td>
+        </tr>
+        <tr>
+         <td>
+          57
+         </td>
+         <td>
+          Anne Murray &amp; Diva
+         </td>
+        </tr>
+        <tr>
+         <td>
+          58
+         </td>
+         <td>
+          Lindsey Lightowler &amp; Havok
+         </td>
+        </tr>
+        <tr>
+         <td>
+          59
+         </td>
+         <td>
+          Anna Auster &amp; Zeus
+         </td>
+        </tr>
+        <tr>
+         <td>
+          60
+         </td>
+         <td>
+          Harriet Harding &amp; Pi
+         </td>
+        </tr>
+        <tr>
+         <td>
+          61
+         </td>
+         <td>
+          Sally Cleghorn &amp; Tilly
+         </td>
+        </tr>
+        <tr>
+         <td>
+          62
+         </td>
+         <td>
+          Tunde Bell &amp; Gertie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          63
+         </td>
+         <td>
+          Ken Wheate &amp; Rock
+         </td>
+        </tr>
+        <tr>
+         <td>
+          64
+         </td>
+         <td>
+          Sarah Bowyer &amp; Eric
+         </td>
+        </tr>
+        <tr>
+         <td>
+          65
+         </td>
+         <td>
+          Caroline Hendy &amp; Sid (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          66
+         </td>
+         <td>
+          Amy Creaser &amp; Walt
+         </td>
+        </tr>
+        <tr>
+         <td>
+          67
+         </td>
+         <td>
+          Donna Surtees &amp; Nora
+         </td>
+        </tr>
+        <tr>
+         <td>
+          68
+         </td>
+         <td>
+          Emma Wallis &amp; Dodger
+         </td>
+        </tr>
+        <tr>
+         <td>
+          69
+         </td>
+         <td>
+          Shelley Woodward &amp; Jiffy
+         </td>
+        </tr>
+        <tr>
+         <td>
+          70
+         </td>
+         <td>
+          Kathrin Strangfeld &amp; Red (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          71
+         </td>
+         <td>
+          Alan Short &amp; Boogie
+         </td>
+        </tr>
+        <tr>
+         <td>
+          72
+         </td>
+         <td>
+          Max Glover &amp; Sushi
+         </td>
+        </tr>
+        <tr>
+         <td>
+          73
+         </td>
+         <td>
+          Nicola Wildman &amp; Panache
+         </td>
+        </tr>
+        <tr>
+         <td>
+          74
+         </td>
+         <td>
+          Tracey Norrey &amp; Mac
+         </td>
+        </tr>
+        <tr>
+         <td>
+          75
+         </td>
+         <td>
+          Jennifer Coates &amp; Hudson (Withdrawn)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          76
+         </td>
+         <td>
+          Martin Cavill &amp; Jura
+         </td>
+        </tr>
+        <tr>
+         <td>
+          77
+         </td>
+         <td>
+          Lauren Harper &amp; Asta
+         </td>
+        </tr>
+        <tr>
+         <td>
+          78
+         </td>
+         <td>
+          Lynne Gittins &amp; Red Dog
+         </td>
+        </tr>
+        <tr>
+         <td>
+          79
+         </td>
+         <td>
+          Julie Plant &amp; Bob
+         </td>
+        </tr>
+        <tr>
+         <td>
+          80
+         </td>
+         <td>
+          Laura Beevors &amp; Chief
+         </td>
+        </tr>
+        <tr>
+         <td>
+          81
+         </td>
+         <td>
+          Jen Slade &amp; Brokkoli
+         </td>
+        </tr>
+        <tr>
+         <td>
+          82
+         </td>
+         <td>
+          Alan Bray &amp; Ticket (Withdrawn)
+         </td>
+        </tr>
+       </table>
+       <div class="mt-1">
+        <a class="btn mr-1 btn-secondary" href="https://api.agilityplaza.co.uk/agilityClass/1799909160/runningOrders/pdf/running_orders_1799909160.pdf">
+         <i class="far fa-file-pdf">
+         </i>
+         Download PDF
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- SCRIPTS-->
+  <script crossorigin="anonymous" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js">
+  </script>
+  <script src="/api_v1.9c.js">
+  </script>
+  <script>
+   $(document).ready(function (e) {
+          var $input = $('#refresh');
+          $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
+      });
+      
+      jQuery("#screenWidth").text(screen.width)
+      jQuery("#screenHeight").text(screen.height)
+      jQuery("#windowWidth").text(window.innerWidth)
+      jQuery("#windowHeight").text(window.innerHeight)
+      
+      jQuery(window).resize(function () {
+          jQuery("#screenWidth").text(screen.width)
+          jQuery("#screenHeight").text(screen.height)
+          jQuery("#windowWidth").text(window.outerWidth)
+          jQuery("#windowHeight").text(window.outerHeight)
+      })
+  </script>
+  <script>
+   bindForm("spoofForm", "/api/spoof", {
+          spoof: {
+              idCompetitor: "",
+              token: ""
+          }
+      })
+      
+      var mimeCheck = function (type) {
+          return Array.prototype.reduce.call(navigator.plugins, function (supported, plugin) {
+              return supported || Array.prototype.reduce.call(plugin, function (supported, mime) {
+                  return supported || mime.type == type;
+              }, supported);
+          }, false);
+      };
+      
+      /*
+      window.addEventListener("beforeunload", function () {
+          console.info("when beforeunload")
+          showLoading();
+      });
+      
+      window.addEventListener("pageshow", function () {
+          console.info("when window pageshow")
+          hideLoading();
+      });
+      */
+  </script>
+ </body>
+</html>
