@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<head>
+ <meta charset="utf-8"/>
+ <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+ <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+ <meta content="120" http-equiv="refresh"/>
+ <title>
+  Agility Plaza
+ </title>
+ <link href="/bootstrap/css/bootstrap-flex.min.css" rel="stylesheet"/>
+ <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet"/>
+ <link href="/cardjs/card-js.min.css" rel="stylesheet"/>
+ <link href="/css/style_v1.60.css" rel="stylesheet"/>
+ <link href="/manifest.json" rel="manifest"/>
+ <meta content="yes" name="apple-mobile-web-app-capable"/>
+ <style>
+  @media screen and (min-device-width: 420px) and (orientation: portrait), screen and (min-device-height: 420px) and (orientation: landscape) {
+        .underlay {
+            background: url(/img/back/back3a.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            opacity: .5;
+        }
+    }
+ </style>
+</head>
+<html lang="en" style="font-size: 12pt">
+ <body>
+  <!-- Forms-->
+  <!-- Buttons & Links-->
+  <!-- Grids and Cards-->
+  <!-- Misc-->
+  <div class="underlay">
+  </div>
+  <input id="refresh" type="hidden" value="no"/>
+  <!-- Navbar-->
+  <div class="top-bar" style="background-color: #dbff89;">
+   <a href="javascript:showLoading();location.reload()">
+    <img class="sm-up navLogo" src="/img/logo.svg"/>
+    <img class="xs-down navLogo" src="/img/logo_small.svg"/>
+   </a>
+   <div class="md-up">
+   </div>
+   <a class="btn-nav-top" href="/">
+    <i class="fa fa-arrow-left">
+    </i>
+    Back
+   </a>
+   <div class="nav-panel-toggle float-right">
+    <a class="btn-nav-top float-right" href="javascript:toggleNavPanel()">
+     <i class="fa fa-bars">
+     </i>
+     <span>
+      Menu
+     </span>
+    </a>
+   </div>
+  </div>
+  <div class="title-bar">
+   <span>
+    Agility Plaza
+   </span>
+  </div>
+  <div class="nav-panel">
+   <div class="page-title">
+    Agility Plaza
+   </div>
+   <hr/>
+   <div class="general">
+    <a class="btn-panel" href="/live?root=true">
+     <i class="fa fa-bolt">
+     </i>
+     Live &amp; Imminent Shows
+    </a>
+    <a class="btn-panel" href="/results?root=true">
+     <i class="fa fa-trophy">
+     </i>
+     Results
+    </a>
+    <a class="btn-panel" href="/competition/active?root=true">
+     <i class="fa fa-calendar">
+     </i>
+     Show Diary
+    </a>
+    <a class="btn-panel" href="/leagues?root=true">
+     <i class="fa fa-award">
+     </i>
+     Leagues &amp; Qualifiers
+    </a>
+   </div>
+   <!--+button("link", "Training Clubs", "graduation-cap", {href: "/training/active?root=true", panel: true})-->
+   <hr/>
+   <div class="w-100">
+    <a href="/">
+     <i class="fa fa-home">
+     </i>
+     Home
+    </a>
+    <a class="float-right" href="/login">
+     <i class="fa fa-sign-in">
+     </i>
+     Login
+    </a>
+    <span class="float-right">
+     /
+    </span>
+    <a class="float-right" href="/open/register">
+     <i class="fa fa-sign-in">
+     </i>
+     Register
+    </a>
+   </div>
+   <hr/>
+   <div class="list font90">
+    <div class="list-item">
+     <a href="/open/terms?root=true">
+      <span>
+       Terms &amp; Conditions
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/privacy?root=true">
+      <span>
+       Privacy Policy
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/about?root=true">
+      <span>
+       About Us
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/contact?root=true">
+      <span>
+       Contact
+      </span>
+     </a>
+    </div>
+   </div>
+  </div>
+  <div class="home-panel">
+   <div class="container-fluid">
+    <div class="text-xs-center" id="loading">
+     <img src="/img/wait.svg" width="120"/>
+    </div>
+    <div class="max65">
+     <div class="card" id="card1">
+      <div class="card-header">
+       <i )="" class="fa fa-trophy">
+       </i>
+       61b Large Championship Jumping (Judge: Jan Smith)
+      </div>
+      <div class="card-block">
+       <table class="table table-sm table-striped">
+        <thead>
+         <td colspan="99">
+          Course Time: 49 secs, 188m, Placing to 9th, Trophies to 2nd, 31 not run
+         </td>
+        </thead>
+        <tbody>
+         <tr>
+          <th>
+           Rank
+          </th>
+          <th>
+           Name
+          </th>
+          <th class="text-sm-center">
+           Run Data
+          </th>
+          <th class="text-sm-right">
+           Faults
+          </th>
+          <th class="text-sm-center">
+           Time
+          </th>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           1
+          </td>
+          <td class="align-middle hidden-md-up">
+           1
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Anthony Clarke &amp; Hustle (Sunwood Hustle)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Anthony Clarke &amp; Hustle
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           32.427
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           2
+          </td>
+          <td class="align-middle hidden-md-up">
+           2
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Mike Bendell &amp; Falcon (AG CH Lookylooky Blue Falcon)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Mike Bendell &amp; Falcon
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           33.114
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           3
+          </td>
+          <td class="align-middle hidden-md-up">
+           3
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Caroline Godfrey &amp; Jude (Darleyfalls Perfect Storm AW(S))
+          </td>
+          <td class="align-middle hidden-md-up">
+           Caroline Godfrey &amp; Jude
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           33.262
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           4
+          </td>
+          <td class="align-middle hidden-md-up">
+           4
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Harriet Harding &amp; Zero (Play With Madness Mai Tai)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Harriet Harding &amp; Zero
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           33.730
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           5
+          </td>
+          <td class="align-middle hidden-md-up">
+           5
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Sara Bacon &amp; Bliss (Bizzyberry Blissful Dream)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Sara Bacon &amp; Bliss
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           34.721
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           6
+          </td>
+          <td class="align-middle hidden-md-up">
+           6
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Alan Short &amp; Bomb (Labomba At Lalapaws)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Alan Short &amp; Bomb
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           34.761
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           7
+          </td>
+          <td class="align-middle hidden-md-up">
+           7
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Lindsay Bentley &amp; Cruz (Darleyfalls Cruise Control)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Lindsay Bentley &amp; Cruz
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           35.156
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           8
+          </td>
+          <td class="align-middle hidden-md-up">
+           8
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Sharon Reeder &amp; Robbie (Bexenolly Star Trooper AW(D))
+          </td>
+          <td class="align-middle hidden-md-up">
+           Sharon Reeder &amp; Robbie
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           38.066
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           9
+          </td>
+          <td class="align-middle hidden-md-up">
+           9
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Wendy McAlenan &amp; Nellie (Perfect Tiddly Pom AW(P))
+          </td>
+          <td class="align-middle hidden-md-up">
+           Wendy McAlenan &amp; Nellie
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           40.220
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           10
+          </td>
+          <td class="align-middle hidden-md-up">
+           10
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Izzy Austin &amp; Willow (Jonanelle Portia AW(D))
+          </td>
+          <td class="align-middle hidden-md-up">
+           Izzy Austin &amp; Willow
+          </td>
+          <td class="align-middle text-sm-center">
+          </td>
+          <td class="align-middle text-sm-right">
+           0
+          </td>
+          <td class="align-middle text-sm-center">
+           40.780
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           11
+          </td>
+          <td class="align-middle hidden-md-up">
+           11
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Stuart Raine &amp; Gin (Rainstorm Eclipse)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Stuart Raine &amp; Gin
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           33.086
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           12
+          </td>
+          <td class="align-middle hidden-md-up">
+           12
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Megan Meade &amp; Journey (Lalapaws Don't Stop Believin)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Megan Meade &amp; Journey
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           33.472
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           13
+          </td>
+          <td class="align-middle hidden-md-up">
+           13
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Holly Willoughby &amp; Weiser (Cherryhog Arkansas Black)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Holly Willoughby &amp; Weiser
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           33.863
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           14
+          </td>
+          <td class="align-middle hidden-md-up">
+           14
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Alan Short &amp; Bellini (Lalapaws Make Mine A Bellini)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Alan Short &amp; Bellini
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           33.903
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           15
+          </td>
+          <td class="align-middle hidden-md-up">
+           15
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Jane Powell &amp; Tarzan (Comebyanaway Me Tarzan)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Jane Powell &amp; Tarzan
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           33.937
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           16
+          </td>
+          <td class="align-middle hidden-md-up">
+           16
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Joanne Tristram &amp; Fade (Foxridge Fade To Black)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Joanne Tristram &amp; Fade
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           35.160
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           17
+          </td>
+          <td class="align-middle hidden-md-up">
+           17
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Norman Stokoe &amp; Bob (Indistorm Moorhouse Bob)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Norman Stokoe &amp; Bob
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           36.571
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           18
+          </td>
+          <td class="align-middle hidden-md-up">
+           18
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Aimee Kerton &amp; Copernicus (Infinity Runners Shanapu)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Aimee Kerton &amp; Copernicus
+          </td>
+          <td class="align-middle text-sm-center">
+           5
+          </td>
+          <td class="align-middle text-sm-right">
+           5
+          </td>
+          <td class="align-middle text-sm-center">
+           41.061
+          </td>
+         </tr>
+         <tr>
+          <td class="align-middle hidden-sm-down">
+           19
+          </td>
+          <td class="align-middle hidden-md-up">
+           19
+          </td>
+          <td class="align-middle hidden-sm-down">
+           Helen Ross Smith &amp; Neon (Indistorm Lyte Of Neon)
+          </td>
+          <td class="align-middle hidden-md-up">
+           Helen Ross Smith &amp; Neon
+          </td>
+          <td class="align-middle text-sm-center">
+           5, R, 5
+          </td>
+          <td class="align-middle text-sm-right">
+           15
+          </td>
+          <td class="align-middle text-sm-center">
+           44.665
+          </td>
+         </tr>
+        </tbody>
+        <tr>
+         <td colspan="99">
+          <strong>
+           Eliminated
+          </strong>
+          : Alice Walford &amp; Pilot (R), Amy Challis &amp; Royce, Becca Middleton &amp; Nettle (R), Hayley Tindall &amp; Max (5), Jess Rapinett &amp; Sassy (5), Jessica Smith &amp; Elsie, Jodie Nazimi &amp; Nitro (5), Kate Fowler &amp; Promise, Linsey Toon &amp; Luna (5), Mick Fern &amp; Odie (5), Nicki Heslop &amp; Swat, Siân Illingworth &amp; Design, Steven Poulton &amp; Rudi (5), Will Hinz &amp; Storm (5, R)
+         </td>
+        </tr>
+       </table>
+       <div class="mt-1">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- SCRIPTS-->
+  <script crossorigin="anonymous" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js">
+  </script>
+  <script src="/api_v1.9c.js">
+  </script>
+  <script>
+   $(document).ready(function (e) {
+          var $input = $('#refresh');
+          $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
+      });
+      
+      jQuery("#screenWidth").text(screen.width)
+      jQuery("#screenHeight").text(screen.height)
+      jQuery("#windowWidth").text(window.innerWidth)
+      jQuery("#windowHeight").text(window.innerHeight)
+      
+      jQuery(window).resize(function () {
+          jQuery("#screenWidth").text(screen.width)
+          jQuery("#screenHeight").text(screen.height)
+          jQuery("#windowWidth").text(window.outerWidth)
+          jQuery("#windowHeight").text(window.outerHeight)
+      })
+  </script>
+  <script>
+   bindForm("spoofForm", "/api/spoof", {
+          spoof: {
+              idCompetitor: "",
+              token: ""
+          }
+      })
+      
+      var mimeCheck = function (type) {
+          return Array.prototype.reduce.call(navigator.plugins, function (supported, plugin) {
+              return supported || Array.prototype.reduce.call(plugin, function (supported, mime) {
+                  return supported || mime.type == type;
+              }, supported);
+          }, false);
+      };
+      
+      /*
+      window.addEventListener("beforeunload", function () {
+          console.info("when beforeunload")
+          showLoading();
+      });
+      
+      window.addEventListener("pageshow", function () {
+          console.info("when window pageshow")
+          hideLoading();
+      });
+      */
+  </script>
+ </body>
+</html>
