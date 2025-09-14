@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<head>
+ <meta charset="utf-8"/>
+ <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+ <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+ <title>
+  Agility Plaza
+ </title>
+ <link href="/bootstrap/css/bootstrap-flex.min.css" rel="stylesheet"/>
+ <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet"/>
+ <link href="/cardjs/card-js.min.css" rel="stylesheet"/>
+ <link href="/css/style_v1.60.css" rel="stylesheet"/>
+ <link href="/manifest.json" rel="manifest"/>
+ <meta content="yes" name="apple-mobile-web-app-capable"/>
+ <style>
+  @media screen and (min-device-width: 420px) and (orientation: portrait), screen and (min-device-height: 420px) and (orientation: landscape) {
+        .underlay {
+            background: url(/img/back/back10a.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            opacity: .5;
+        }
+    }
+ </style>
+</head>
+<html lang="en" style="font-size: 12pt">
+ <body>
+  <!-- Forms-->
+  <!-- Buttons & Links-->
+  <!-- Grids and Cards-->
+  <!-- Misc-->
+  <div class="underlay">
+  </div>
+  <input id="refresh" type="hidden" value="no"/>
+  <!-- Navbar-->
+  <div class="top-bar" style="background-color: #dbff89;">
+   <a href="javascript:showLoading();location.reload()">
+    <img class="sm-up navLogo" src="/img/logo.svg"/>
+    <img class="xs-down navLogo" src="/img/logo_small.svg"/>
+   </a>
+   <div class="md-up">
+   </div>
+   <a class="btn-nav-top" href="/">
+    <i class="fa fa-arrow-left">
+    </i>
+    Back
+   </a>
+   <div class="nav-panel-toggle float-right">
+    <a class="btn-nav-top float-right" href="javascript:toggleNavPanel()">
+     <i class="fa fa-bars">
+     </i>
+     <span>
+      Menu
+     </span>
+    </a>
+   </div>
+  </div>
+  <div class="title-bar">
+   <span>
+    North Derbyshire Dog Agility Club - Results
+   </span>
+  </div>
+  <div class="nav-panel">
+   <div class="page-title">
+    North Derbyshire Dog Agility Club - Results
+   </div>
+   <hr/>
+   <div class="general">
+    <a class="btn-panel" href="/live?root=true">
+     <i class="fa fa-bolt">
+     </i>
+     Live &amp; Imminent Shows
+    </a>
+    <a class="btn-panel" href="/results?root=true">
+     <i class="fa fa-trophy">
+     </i>
+     Results
+    </a>
+    <a class="btn-panel" href="/competition/active?root=true">
+     <i class="fa fa-calendar">
+     </i>
+     Show Diary
+    </a>
+    <a class="btn-panel" href="/leagues?root=true">
+     <i class="fa fa-award">
+     </i>
+     Leagues &amp; Qualifiers
+    </a>
+   </div>
+   <!--+button("link", "Training Clubs", "graduation-cap", {href: "/training/active?root=true", panel: true})-->
+   <hr/>
+   <div class="w-100">
+    <a href="/">
+     <i class="fa fa-home">
+     </i>
+     Home
+    </a>
+    <a class="float-right" href="/login">
+     <i class="fa fa-sign-in">
+     </i>
+     Login
+    </a>
+    <span class="float-right">
+     /
+    </span>
+    <a class="float-right" href="/open/register">
+     <i class="fa fa-sign-in">
+     </i>
+     Register
+    </a>
+   </div>
+   <hr/>
+   <div class="list font90">
+    <div class="list-item">
+     <a href="/open/terms?root=true">
+      <span>
+       Terms &amp; Conditions
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/privacy?root=true">
+      <span>
+       Privacy Policy
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/about?root=true">
+      <span>
+       About Us
+      </span>
+     </a>
+    </div>
+    <div class="list-item">
+     <a href="/open/contact?root=true">
+      <span>
+       Contact
+      </span>
+     </a>
+    </div>
+   </div>
+  </div>
+  <div class="home-panel">
+   <div class="container-fluid">
+    <div class="text-xs-center" id="loading">
+     <img src="/img/wait.svg" width="120"/>
+    </div>
+    <div class="mygrid">
+     <div class="grid-item">
+      <div class="card" id="card1">
+       <div class="card-header">
+        <i )="" class="fa fa-calendar">
+        </i>
+        Sun, 14 Sep 2025
+       </div>
+       <div class="card-block">
+        <div>
+         <a href="/agilityClass/1263911657/results">
+          <span>
+           61a Lge Championship Agility
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1795576280/results">
+          <span>
+           65 Sml Crufts Singles Agility (Q) C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1603818030/results">
+          <span>
+           67 Med Crufts ABC Stakes
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1788796285/results">
+          <span>
+           68 Lge Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1703257779/results">
+          <span>
+           70 Lge Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1453257345/results">
+          <span>
+           74 Lge Jumping G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1120558052/results">
+          <span>
+           75 Lge Jumping C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1938612342/results">
+          <span>
+           80 Int Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2026965142/results">
+          <span>
+           102 Med Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1203463982/results">
+          <span>
+           105 Sml Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1478063257/results">
+          <span>
+           113 Sml Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1540610144/results">
+          <span>
+           115 Anysize Jumping
+          </span>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="grid-item">
+      <div class="card" id="card2">
+       <div class="card-header">
+        <i )="" class="fa fa-calendar">
+        </i>
+        Sat, 13 Sep 2025
+       </div>
+       <div class="card-block">
+        <div>
+         <a href="/agilityClass/1502469837/results">
+          <span>
+           Int Crufts Singles Qualifier C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1863678738/results">
+          <span>
+           Lge Crufts Singles Qualifier C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1486732207/results">
+          <span>
+           1 Med Championship
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1739352115/results">
+          <span>
+           1a Med Championship Agility
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1421687053/results">
+          <span>
+           1b Med Championship Jumping
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1957834043/results">
+          <span>
+           1c Med Championship Final
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2043388560/results">
+          <span>
+           2 Sml Championship
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1318286943/results">
+          <span>
+           2a Sml Championship Agility
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1285004176/results">
+          <span>
+           2b Sml Championship Jumping
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1727244901/results">
+          <span>
+           2c Sml Championship Final
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1452871268/results">
+          <span>
+           3 Lge Crufts Singles Agility (Q) C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1388551003/results">
+          <span>
+           4 Lge Crufts Singles Jumping (Q) C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1279666125/results">
+          <span>
+           5 Int Crufts Singles Agility (Q) C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1570693614/results">
+          <span>
+           6 Int Crufts Singles Jumping (Q) C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1704138043/results">
+          <span>
+           7 Lge Crufts ABC Stakes
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1089474286/results">
+          <span>
+           8 Int Crufts ABC Stakes
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1987646385/results">
+          <span>
+           9 Lge YKC Jumping Cup
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1322118264/results">
+          <span>
+           10 Int YKC Jumping Cup
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2132204998/results">
+          <span>
+           11 Med YKC Jumping Cup
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2063111472/results">
+          <span>
+           12 Sml YKC Jumping Cup
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1348271016/results">
+          <span>
+           13 Lge Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1589572718/results">
+          <span>
+           14 Lge Agility C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1391398812/results">
+          <span>
+           15 Lge Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2104729767/results">
+          <span>
+           16 Lge Jumping C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1417163315/results">
+          <span>
+           17 Lge Agility G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1973635252/results">
+          <span>
+           18 Lge Agility C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1689675521/results">
+          <span>
+           19 Lge Jumping G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1289979938/results">
+          <span>
+           20 Lge Jumping C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1265226105/results">
+          <span>
+           21 Lge Agility G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1584929348/results">
+          <span>
+           22 Lge Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1413887790/results">
+          <span>
+           23 Lge Jumping G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1184399259/results">
+          <span>
+           24 Int Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1607788712/results">
+          <span>
+           25 Int Agility C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1963195323/results">
+          <span>
+           26 Int Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1792414491/results">
+          <span>
+           27 Int Jumping C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1574017794/results">
+          <span>
+           28 Int Agility G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1263773291/results">
+          <span>
+           29 Int Agility C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1707532761/results">
+          <span>
+           30 Int Jumping G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1554223307/results">
+          <span>
+           31 Int Jumping C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1697068850/results">
+          <span>
+           32 Int Agility G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2134344058/results">
+          <span>
+           33 Int Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1720250057/results">
+          <span>
+           34 Int Jumping G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2106349743/results">
+          <span>
+           35 Med Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1231734733/results">
+          <span>
+           36 Med Agility C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1473796545/results">
+          <span>
+           37 Med Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1951082749/results">
+          <span>
+           38 Med Jumping C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1120739623/results">
+          <span>
+           39 Med Agility G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1084898862/results">
+          <span>
+           40 Med Agility C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1321663710/results">
+          <span>
+           41 Med Jumping G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1828224775/results">
+          <span>
+           42 Med Jumping C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1523679116/results">
+          <span>
+           43 Med Agility G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1908459797/results">
+          <span>
+           44 Med Agility C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1392695366/results">
+          <span>
+           45 Med Jumping G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1112656613/results">
+          <span>
+           46 Med Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1639776275/results">
+          <span>
+           47 Sml Agility G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1145335728/results">
+          <span>
+           48 Sml Agility C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1350756017/results">
+          <span>
+           49 Sml Jumping G1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1338138783/results">
+          <span>
+           50 Sml Jumping C1-3
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2111111763/results">
+          <span>
+           51 Sml Agility G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1944753130/results">
+          <span>
+           52 Sml Agility C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1657516457/results">
+          <span>
+           53 Sml Jumping G4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1944228819/results">
+          <span>
+           54 Sml Jumping C4-5
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/2003317540/results">
+          <span>
+           55 Sml Agility G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1368600923/results">
+          <span>
+           56 Sml Agility C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1473832508/results">
+          <span>
+           57 Sml Jumping G6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1924924722/results">
+          <span>
+           58 Sml Jumping C6-7
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1661916525/results">
+          <span>
+           59 Anysize Jumping 1
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1223164601/results">
+          <span>
+           60 Anysize Jumping 2
+          </span>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="grid-item">
+      <div class="card" id="card3">
+       <div class="card-header">
+        <i )="" class="fa fa-list-alt">
+        </i>
+        Running Orders
+       </div>
+       <div class="card-block">
+        <div>
+         <a href="/agilityClass/1263911657/running_orders">
+          <span>
+           61a Lge Championship Agility
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1799909160/running_orders">
+          <span>
+           61b Lge Championship Jumping
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1515549810/running_orders">
+          <span>
+           62a Int Championship Agility
+          </span>
+         </a>
+        </div>
+        <div>
+         <a href="/agilityClass/1426396723/running_orders">
+          <span>
+           62b Int Championship Jumping
+          </span>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- SCRIPTS-->
+  <script crossorigin="anonymous" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js">
+  </script>
+  <script src="/api_v1.9c.js">
+  </script>
+  <script>
+   $(document).ready(function (e) {
+          var $input = $('#refresh');
+          $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
+      });
+      
+      jQuery("#screenWidth").text(screen.width)
+      jQuery("#screenHeight").text(screen.height)
+      jQuery("#windowWidth").text(window.innerWidth)
+      jQuery("#windowHeight").text(window.innerHeight)
+      
+      jQuery(window).resize(function () {
+          jQuery("#screenWidth").text(screen.width)
+          jQuery("#screenHeight").text(screen.height)
+          jQuery("#windowWidth").text(window.outerWidth)
+          jQuery("#windowHeight").text(window.outerHeight)
+      })
+  </script>
+  <script>
+   bindForm("spoofForm", "/api/spoof", {
+          spoof: {
+              idCompetitor: "",
+              token: ""
+          }
+      })
+      
+      var mimeCheck = function (type) {
+          return Array.prototype.reduce.call(navigator.plugins, function (supported, plugin) {
+              return supported || Array.prototype.reduce.call(plugin, function (supported, mime) {
+                  return supported || mime.type == type;
+              }, supported);
+          }, false);
+      };
+      
+      /*
+      window.addEventListener("beforeunload", function () {
+          console.info("when beforeunload")
+          showLoading();
+      });
+      
+      window.addEventListener("pageshow", function () {
+          console.info("when window pageshow")
+          hideLoading();
+      });
+      */
+  </script>
+  <script>
+   $(window).on("load", function () {
+              $('.grid').masonry({itemSelector: '.grid-item', columnWidth: '.grid-sizer', percentPosition: true});
+          })
+  </script>
+ </body>
+</html>
