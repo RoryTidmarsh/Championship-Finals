@@ -37,7 +37,7 @@ def write_to_file(soup, filename="NorthDerbyShow.txt"):
 response = requests.get(NorthDerbyURL_2ndClass)
 soup = BeautifulSoup(response.content, 'html.parser')
 # Write the file once, then comment this out and use read_from_file()
-write_to_file(soup)
+write_to_file(soup, dir_path + "\\NorthDerbyShow_SecondClass.html")
 
 
 
