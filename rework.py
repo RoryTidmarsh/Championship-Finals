@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import numpy as np
 from urllib.parse import urljoin
 import pandas as pd
 from datetime import datetime
@@ -8,8 +7,6 @@ import re
 import os
 import sys
 import difflib
-from NorthDerbySaves.running_orders import read_from_file
-
 sys.stdout.reconfigure(encoding='utf-8')
 
 print_statements = False
@@ -207,11 +204,11 @@ print_statements2 = False
 def print_debug2(message, *args, **kwargs):
     if print_statements2 ==True:
         print(message,*args, **kwargs)
-# def read_from_file(filename="NorthDerbyShow.txt"):
-#     with open(filename, "r", encoding="utf-8") as f:      
-#         html = f.read()
-#     soup = BeautifulSoup(html, 'html.parser')
-#     return soup
+def read_from_file(filename="NorthDerbyShow.txt"):
+    with open(filename, "r", encoding="utf-8") as f:      
+        html = f.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup
 
 ## Actual soup from the web, comment out when using saved file.
 # response = requests.get(find_show_url(Target_show_name, num_shows=10))
@@ -668,11 +665,29 @@ def import_running_orders(show_class, simulation=False):
     print_debug3(f"Running Orders DataFrame for {show_class.class_type}:\n", df.head())
     return df
 
+def process_df(df):
+    #Validate input
+    if df is None or df.empty:
+        raise ValueError("Input DataFrame is None or empty")
+    
+    # If there is a Name column, split it into Dog Name and Handler Name
+    if 'Name' in df.columns:
+        df[['Handler', 'Dog']] = df['Name'].str.split(' & ', expand=True)
+        df.drop(columns=['Name'], inplace=True)
+    else:
+        raise ValueError("No 'Name' column found in DataFrame to split into Dog and Handler")
+    #if there is the same name for a dog then print warning
+    if df['Dog'].duplicated().any():
+        duplicated_dogs = df[df['Dog'].duplicated(keep=False)]['Dog'].unique()
+        print_debug3(f"Warning: Duplicate dog names found: {duplicated_dogs}")
+    else:
+        print_debug3("No duplicate dog names found.")
+    return df
 
 if __name__ =="__main__":
     jumping_class_results, jumping_class_eliminations = import_results(jumping_class, simulation=True)
     dummy_class = ClassInfo("dummy", results_url=None, running_orders_url=None)
     dummy_class.update_status()
     print(import_results(dummy_class, simulation=False))
-    jumping_running_orders = import_running_orders(jumping_class, simulation=True)
+    jumping_running_orders = process_df(import_running_orders(jumping_class, simulation=True))
     agility_running_orders = import_running_orders(agility_class, simulation=True)
