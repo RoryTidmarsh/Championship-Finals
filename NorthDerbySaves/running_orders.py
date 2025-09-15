@@ -34,10 +34,11 @@ def write_to_file(soup, filename="NorthDerbyShow.txt"):
         f.write(soup.prettify())
     print(f"Saved to {new_filename}")
 
-response = requests.get(NorthDerbyURL_2ndClass)
-soup = BeautifulSoup(response.content, 'html.parser')
-# Write the file once, then comment this out and use read_from_file()
-write_to_file(soup, dir_path + "\\NorthDerbyShow_SecondClass.html")
+if __name__ == "__main__":
+    response = requests.get(NorthDerbyURL_2ndClass)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    # Write the file once, then comment this out and use read_from_file()
+    write_to_file(soup, dir_path + "\\NorthDerbyShow_SecondClass.html")
 
 
 
@@ -54,6 +55,6 @@ def read_from_file(filename="NorthDerbyShow.txt"):
 # response = requests.get(RunningOrdersURL)
 # RunningOrderSoup = BeautifulSoup(response.content, 'html.parser')
 # write_to_file(RunningOrderSoup, "NorthDerbyRunningOrders_LgeJmp.txt")
-
-RO_soup = read_from_file(dir_path + "\\NorthDerbyRunningORders_LgeJmp.html")
-print(RO_soup.prettify()[:1000])  # Print the first 1000 characters to verify content
+if __name__ == "__main__":
+    RO_soup = read_from_file(dir_path + "\\NorthDerbyRunningORders_LgeJmp.html")
+    print(RO_soup.prettify()[:1000])  # Print the first 1000 characters to verify content

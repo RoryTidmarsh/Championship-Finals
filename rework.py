@@ -8,10 +8,11 @@ import re
 import os
 import sys
 import difflib
+from NorthDerbySaves.running_orders import read_from_file
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-print_statements = True
+print_statements = False
 def print_debug(message, *args, **kwargs):
     if print_statements ==True:
         print(message,*args, **kwargs)
@@ -62,7 +63,6 @@ def check_show_in_closest(Target_show_name, *args, **kwargs):
     else:
         print_debug(f"Target show '{match}' found in closest shows.")
         return match
-
 
 def is_close_match(target, candidate, threshold=0.7):
     """
@@ -191,6 +191,167 @@ def find_show_url(show_name,*args, **kwargs):
     raise ValueError(f"Show name '{show_name}' not found in the month section on Agility Plaza.")
 
 Target_show_name = "North Derbyshire Dog Agility Club"
-print(find_show_url("North Derbyshire Dog Agility Club", num_shows=30))
+# print(find_show_url("North Derbyshire Dog Agility Club", num_shows=30))
 
-# check_show_in_closest("Agility Club", num_shows=30)
+"""Now, use saved HTML from a running competition: North Derbyshire show
+The files we have in `NorthDerbySaves` are:
+ - NorthDerbyRunningOrders_LgeJmp.html: Running orders of large jump, 2nd champ round
+ - NorhtDerbyShow_FirstClass.html: HTML of results page while only large agility is shown. This has results link to the first class and links to both running orders.
+ - NorthDerbyShow_SecondClass.html: HTML file of the results page of ND show while the second round of champ is running. 
+ - NorthDerbyShow_LgeAg_complete.html: HTML of large champ agility results (class finished)
+ - NorthDerbyShow_LgeJmp_incomplete.html: HTML of large champ jumping results (class in progress).
+
+ The 2 results files should be accessable from the `NorthDerbyShow_SecondClass.hrml` file. So start the code with that.
+"""
+print_statements2 = False
+def print_debug2(message, *args, **kwargs):
+    if print_statements2 ==True:
+        print(message,*args, **kwargs)
+# def read_from_file(filename="NorthDerbyShow.txt"):
+#     with open(filename, "r", encoding="utf-8") as f:      
+#         html = f.read()
+#     soup = BeautifulSoup(html, 'html.parser')
+#     return soup
+
+## Actual soup from the web, comment out when using saved file.
+# response = requests.get(find_show_url(Target_show_name, num_shows=10))
+# soup = BeautifulSoup(response.content, 'html.parser')
+
+simulation_soup = read_from_file("NorthDerbySaves\\NorthDerbyShow_SecondClass.html")
+
+
+class ClassInfo:
+    def __init__(self, class_type, class_number = None, order = 0, running_orders_url = None, results_url = None):
+        self.class_type = class_type
+        # self.status = status
+        self.order = order
+        self.running_orders_url = running_orders_url
+        self.results_url = results_url
+        self.class_number = class_number
+        self.status = None  # e.g., "completed", "in progress", "not started"
+        self.order_hierarchy = {"first": 0, "second": 1, "same state": 2}
+
+    def __repr__(self):
+        return (f"ShowClassInfo(class_type={self.class_type}, status={self.status}, "
+                f"order={self.order}, running_orders_url={self.running_orders_url}, "
+                f"results_url={self.results_url}, "
+                f"class_number={self.class_number})")
+    
+    def update_status(self):
+        if self.running_orders_url and self.results_url:
+            self.status = 'in progress'
+        elif self.results_url and not self.running_orders_url:
+            self.status = 'completed'
+        elif self.running_orders_url and not self.results_url:
+            self.status = 'not started'
+    def update_order(self, other):
+        status_hierarchy = {"completed": 0, "in progress": 1, "not started": 2}
+        if status_hierarchy[self.status] < status_hierarchy[other.status]:
+            self.order = 0
+            other.order = 1
+        elif status_hierarchy[self.status] > status_hierarchy[other.status]:
+            self.order = 1
+            other.order = 0
+        else:
+            self.order = 2
+            other.order = 2
+            
+def find_champ_classes(soup, height):
+    """
+    Finds all championship classes in the given BeautifulSoup object.
+
+    Args:
+        soup (BeautifulSoup): The BeautifulSoup object to search.
+        height (str): The height category to filter classes by (e.g., 'Lge', 'Int', 'Med', 'Sml').
+    
+    Returns:
+        tuple: A tuple containing two ClassInfo objects (agility_class, jumping_class)."""
+
+    height_list = ['lge', 'int', 'med', 'sml']
+    if height.lower() not in height_list:
+        raise ValueError(f"Height must be one of these: {height_list}.")
+
+    # Headers on Plaza
+    headers = soup.find_all('div', class_='card-header')
+
+    agility_class = ClassInfo("agility")
+    jumping_class = ClassInfo("jumping")
+    found_classes = 0
+    # Find the running orders if availiable
+    for header in headers:
+        header_text = header.get_text(strip=True).lower()
+
+        # Look for running orders
+        if header_text == "running orders":
+            card = header.find_parent('div', class_='card')
+            if card:
+                for span in card.find_all('span'):
+                    text = span.get_text(strip=True)
+                    print_debug2(f"Found running orders text: {text}")
+                    if "championship" in text.lower() and height.lower() in text.lower():
+                        # Store the class number and type
+                        class_number,_,_,class_type = text.split(" ")
+
+                        # Get the URL
+                        link_tag = span.find_parent('a')
+                        if link_tag and link_tag.has_attr('href'):
+                            link = link_tag['href']
+                        else:
+                            raise ValueError(f"No link found for running orders of {text}")
+                        if "Jumping" in text:
+                            jumping_class.class_number = class_number
+                            jumping_class.class_type = class_type
+                            jumping_class.running_orders_url = "https://agilityplaza.com" + link
+                            
+                        elif "Agility" in text:
+                            agility_class.class_number = class_number
+                            agility_class.class_type = class_type
+                            agility_class.running_orders_url = "https://agilityplaza.com" + link
+                        found_classes += 1
+                        print_debug2(f"Class number: {class_number}, Class type: {class_type}, link: {link}")
+                        
+        else:
+            # Each card block contains a table for the days results
+            card_block = header.find_next_sibling('div', class_='card-block')
+            if card_block:
+                print_debug2(f"Found card block for header: {header_text}")
+            else:
+                print_debug2(f"No card block found for header: {header_text}")
+                continue
+
+            for a in card_block.find_all('a'):
+                text = a.get_text(strip=True)
+                if "Championship Jumping" in text and height.lower() in text.lower():
+                    name = text
+                    link = "https://agilityplaza.com" + a.get('href')
+
+                    # Store information in the class object
+                    jumping_class.class_number,_,_,jumping_class.class_type = name.split(" ")
+                    jumping_class.results_url = link
+
+                    found_classes += 1
+                    print_debug2(f"Found Championship Jumping class: {name}, link: {link}")
+
+                elif "Championship Agility" in text and height.lower() in text.lower():
+                    name = text
+                    link = "https://agilityplaza.com" + a.get('href')
+
+                    # Store information in the class object
+                    agility_class.class_number,_,_,agility_class.class_type = name.split(" ")
+                    agility_class.results_url = link
+
+                    found_classes += 1
+                    print_debug2(f"Found Championship Agility class: {name}, link: {link}")
+                    
+    if found_classes == 0:
+        raise ValueError(f"No championship class found for height '{height.capitalize()}'.")
+    # Update status and order
+    agility_class.update_status()
+    jumping_class.update_status()
+    agility_class.update_order(jumping_class)
+    print_debug2(f"Agility Class Info: {agility_class}")
+    print_debug2(f"Jumping Class Info: {jumping_class}")        
+
+    return agility_class, jumping_class
+
+print(find_champ_classes(simulation_soup, 'int'))
