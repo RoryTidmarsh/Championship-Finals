@@ -665,7 +665,7 @@ def import_running_orders(show_class, simulation=False):
     print_debug3(f"Running Orders DataFrame for {show_class.class_type}:\n", df.head())
     return df
 
-def process_df(df):
+def Find_duplicates(df):
     #Validate input
     if df is None or df.empty:
         raise ValueError("Input DataFrame is None or empty")
@@ -689,5 +689,5 @@ if __name__ =="__main__":
     dummy_class = ClassInfo("dummy", results_url=None, running_orders_url=None)
     dummy_class.update_status()
     print(import_results(dummy_class, simulation=False))
-    jumping_running_orders = process_df(import_running_orders(jumping_class, simulation=True))
+    jumping_running_orders = Find_duplicates(import_running_orders(jumping_class, simulation=True))
     agility_running_orders = import_running_orders(agility_class, simulation=True)
