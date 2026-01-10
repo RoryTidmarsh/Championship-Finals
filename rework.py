@@ -1,15 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
+import numpy as np
+import difflib
 from urllib.parse import urljoin
 import pandas as pd
 from datetime import datetime
 import re
 import os
-import sys
-import difflib
-sys.stdout.reconfigure(encoding='utf-8')
-
-print_statements = False
+print_statements = True
 def print_debug(message, *args, **kwargs):
     if print_statements ==True:
         print(message,*args, **kwargs)
