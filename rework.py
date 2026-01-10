@@ -212,7 +212,7 @@ def read_from_file(filename="NorthDerbyShow.txt"):
 # response = requests.get(find_show_url(Target_show_name, num_shows=10))
 # soup = BeautifulSoup(response.content, 'html.parser')
 
-simulation_soup = read_from_file("NorthDerbySaves\\NorthDerbyShow_SecondClass.html")
+
 
 
 class ClassInfo:
@@ -354,9 +354,6 @@ def find_champ_classes(soup, height):
 
     return agility_class, jumping_class
 
-agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
-print(agility_class,"\n", jumping_class)
-
 print_statements3 = True
 def print_debug3(message, *args, **kwargs):
     if print_statements3 ==True:
@@ -418,14 +415,14 @@ def import_results(show_class, simulation=False):
         
         if show_class.class_type.lower() == "agility":
             try:
-                simulation_soup = read_from_file("NorthDerbySaves\\NorthDerbyShow_LgeAg_complete.html")
+                simulation_soup = read_from_file("NorthDerbySaves/NorthDerbyShow_LgeAg_complete.html")
             except FileNotFoundError:
-                raise FileNotFoundError("Simulation file 'NorthDerbySaves\\NorthDerbyShow_LgeAg_complete.html' not found")
+                raise FileNotFoundError("Simulation file 'NorthDerbySaves/NorthDerbyShow_LgeAg_complete.html' not found")
         elif show_class.class_type.lower() == "jumping":
             try:
-                simulation_soup = read_from_file("NorthDerbySaves\\NorthDerbyShow_LgeJmp_incomplete.html")
+                simulation_soup = read_from_file("NorthDerbySaves/NorthDerbyShow_LgeJmp_incomplete.html")
             except FileNotFoundError:
-                raise FileNotFoundError("Simulation file 'NorthDerbySaves\\NorthDerbyShow_LgeJmp_incomplete.html' not found")
+                raise FileNotFoundError("Simulation file 'NorthDerbySaves/NorthDerbyShow_LgeJmp_incomplete.html' not found")
         else:
             raise ValueError(f"Unsupported class type for simulation: '{show_class.class_type}'. "
                            f"Supported types are: 'agility', 'jumping'")
@@ -591,9 +588,9 @@ def import_running_orders(show_class, simulation=False):
             raise ValueError("No simulation file available for agility running orders")
         elif show_class.class_type.lower() == "jumping":
             try:
-                simulation_soup = read_from_file("NorthDerbySaves\\NorthDerbyRunningOrders_LgeJmp.html")
+                simulation_soup = read_from_file("NorthDerbySaves/NorthDerbyRunningOrders_LgeJmp.html")
             except FileNotFoundError:
-                raise FileNotFoundError("Simulation file 'NorthDerbySaves\\NorthDerbyRunningOrders_LgeJmp.html' not found")
+                raise FileNotFoundError("Simulation file 'NorthDerbySaves/NorthDerbyRunningOrders_LgeJmp.html' not found")
         else:
             raise ValueError(f"Unsupported class type for simulation: '{show_class.class_type}'. "
                            f"Supported types are: 'agility', 'jumping'")
@@ -683,6 +680,11 @@ def Find_duplicates(df):
     return df
 
 if __name__ =="__main__":
+    simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
+    agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
+    # print(agility_class,"\n", jumping_class)
+
+    # print(os.listdir( os.getcwd() +"//NorthDerbySaves"))
     jumping_class_results, jumping_class_eliminations = import_results(jumping_class, simulation=True)
     dummy_class = ClassInfo("dummy", results_url=None, running_orders_url=None)
     dummy_class.update_status()
