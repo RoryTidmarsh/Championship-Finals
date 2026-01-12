@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import pandas as pd
 from .constants import PLAZA_RESULTS as base_url
 
-def find_show_url(show_name,*args, **kwargs):
+def find_show_url(show_name, show_date):
     """
     Find the URL of a show given its name.
 
@@ -18,12 +18,12 @@ def find_show_url(show_name,*args, **kwargs):
     Returns:
         str: URL of the show if found, otherwise None.
     """
-    # Finding the date of the target show
-    if 'num_shows' in args or kwargs:
-        print("num_shows found in args or kwargs")
-    closest_shows_df = find_closest_shows(*args, **kwargs)
-    show_name = check_show_in_closest(show_name, *args, **kwargs)
-    show_date = closest_shows_df.loc[closest_shows_df['Show Name'] == show_name, 'Date'].values[0]
+    # Type Checking
+    assert isinstance(show_name, str), "show_name must be a string."
+    assert isinstance(show_date, (str, pd.Timestamp, pd.DatetimeTZDtype)), "show_date must be a string or pandas Timestamp."
+    # closest_shows_df = find_closest_shows(*args, **kwargs)
+    # show_name = check_show_in_closest(show_name, *args, **kwargs)
+    # show_date = closest_shows_df.loc[closest_shows_df['Show Name'] == show_name, 'Date'].values[0]
     show_year, show_month, show_day = pd.to_datetime(show_date).year, pd.to_datetime(show_date).month, pd.to_datetime(show_date).day
     print_debug(f"Searching for show '{show_name}' on date {show_year}-{show_month:02d}-{show_day:02d}")
 

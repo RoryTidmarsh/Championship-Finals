@@ -22,32 +22,34 @@ def find_closest_shows(champ_shows_filepath = "champ shows.csv", days_ahead=0, n
     champ_shows_df['is_future'] = champ_shows_df['Date'].dt.date > tomorrow_date
     champ_shows_df = champ_shows_df.sort_values(by='timedelta')
     champ_shows_df = champ_shows_df.head(num_shows).sort_values(by=['is_future', 'Date'], ascending=[True, False])
-    print_debug(f"Closest Shows from Function:\n", champ_shows_df[["Show Name", "Date", "timedelta", "is_future"]])
+    # print_debug(f"Closest Shows from Function:\n", champ_shows_df[["Show Name", "Date", "timedelta", "is_future"]])
     return champ_shows_df
 
-def check_show_in_closest(Target_show_name, *args, **kwargs):
+def check_show_in_closest(Target_show_name,closest_shows_df):
     """
-    Checks if the target show name exists within the list of closest shows.
+    Checks if the target show name exists within the list of closest shows. using `find_closest_shows` function.
     Args:
         Target_show_name (str): The name of the show to search for.
-        *args: Variable length argument list to be passed to `find_closest_shows`.
-        **kwargs: Arbitrary keyword arguments to be passed to `find_closest_shows`.
+        closest_shows_df (DataFrame): DataFrame of closest shows, usually obtained from `find_closest_shows`.
     Returns:
-        str: The matched show name from the closest shows list.
+        tuple (str, datetime): The matched show name and its date from the closest shows list.
+        
     Raises:
         ValueError: If the target show name is not found in the closest shows.
     Side Effects:
         Prints a debug message if the target show is found.
     """
 
-    closest_shows_function = find_closest_shows(*args, **kwargs)
-    show_names = closest_shows_function["Show Name"].to_list()
+    # closest_shows_df = find_closest_shows(*args, **kwargs)
+    show_names = closest_shows_df["Show Name"].to_list()
     match = next((name for name in show_names if name.strip().lower() == Target_show_name.strip().lower()), None)
+    date = closest_shows_df.loc[closest_shows_df['Show Name'] == match, 'Date'].values[0] if match else None
+    print_debug(f"Date of matched show '{match}': {date}")
     if not match:
         raise ValueError(f"Target show '{Target_show_name}' not found in closest shows.")
     else:
         print_debug(f"Target show '{match}' found in closest shows.")
-        return match
+        return match, date
 
 def is_close_match(target, candidate, threshold=0.7):
     """
@@ -92,6 +94,8 @@ def is_close_match(target, candidate, threshold=0.7):
     return ratio >= threshold
 
 def Find_duplicates(df):
+    """
+    Check for duplicate dog names in the results DataFrame and split the 'Name' column into 'Dog' and 'Handler' columns."""
     #Validate input
     if df is None or df.empty:
         raise ValueError("Input DataFrame is None or empty")
@@ -109,3 +113,14 @@ def Find_duplicates(df):
     else:
         print_debug3("No duplicate dog names found.")
     return df
+
+
+if __name__ == "__main__":
+    test_show_name = "North Derbyshire Dog Agility Club"
+    closest_shows_df = find_closest_shows(days_ahead=0, num_shows=30)
+    print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']]}")
+    try:
+        matched_show,date = check_show_in_closest(test_show_name, closest_shows_df, days_ahead=0, num_shows=30)
+        print_debug(f"Matched Show: {matched_show}, Date: {date} ({type(date)})")
+    except ValueError as e:
+        print_debug(str(e))
