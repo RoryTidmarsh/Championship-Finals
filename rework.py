@@ -18,15 +18,6 @@ The files we have in `NorthDerbySaves` are:
 
  The 2 results files should be accessable from the `NorthDerbyShow_SecondClass.hrml` file. So start the code with that.
 """
-print_statements = False
-def print_debug2(message, *args, **kwargs):
-    if print_statements==True:
-        print(message,*args, **kwargs)
-
-print_statements3 = True
-def print_debug3(message, *args, **kwargs):
-    if print_statements3 ==True:
-        print(message,*args, **kwargs)
 
 if __name__ =="__main__":
     simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))

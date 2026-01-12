@@ -31,4 +31,13 @@
 |-- .gitignore - git ignore file
 ```
 
-Repository and `rework.py` needs to be restructured to create a module with the html reading files, test reading files and the flask app. These need to be in their own respective directories with `__init__.py` files.
+### Current Status
+
+- `rework.py` has been split into a new module structure under `src/core/`. The code has been refactored to improve readability and maintainability.
+- `src/core/` functionality & flow:
+    - `KC_ShowProcesser.py`: processes KC show dataset, finds closest shows & checks for the input show in the data. *use this to find if the show exists as a championship show & find the date of the show*
+    - `plaza_scraper.py`: scrapes Plaza/results website to find class URLs for the specified show. *use this to get the URLs for the input show*
+    - `plaza_resultsRunningOrder.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
+    - `models.py`: defines the `ClassInfo` data model to hold class information, results, and running orders.
+
+
