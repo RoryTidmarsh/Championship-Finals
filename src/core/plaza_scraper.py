@@ -1,9 +1,10 @@
 """Webscraper for agilityplaza.com to find show URLs and championship classes."""
 import requests
+import numpy as np
 from bs4 import BeautifulSoup
 from src.core.models import ClassInfo
 from src.core.debug_logger import print_debug, print_debug2, print_debug3
-from src.core.KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
+# from src.core.KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
 from urllib.parse import urljoin
 import pandas as pd
 from .constants import PLAZA_RESULTS as base_url
@@ -20,10 +21,12 @@ def find_show_url(show_name, show_date):
     """
     # Type Checking
     assert isinstance(show_name, str), "show_name must be a string."
-    assert isinstance(show_date, (str, pd.Timestamp, pd.DatetimeTZDtype)), "show_date must be a string or pandas Timestamp."
+    assert isinstance(show_date, (str, pd.Timestamp, pd.DatetimeTZDtype, np.datetime64)), "show_date must be a string or pandas Timestamp."
     # closest_shows_df = find_closest_shows(*args, **kwargs)
     # show_name = check_show_in_closest(show_name, *args, **kwargs)
     # show_date = closest_shows_df.loc[closest_shows_df['Show Name'] == show_name, 'Date'].values[0]
+
+    # Extract year, month, day from show_date
     show_year, show_month, show_day = pd.to_datetime(show_date).year, pd.to_datetime(show_date).month, pd.to_datetime(show_date).day
     print_debug(f"Searching for show '{show_name}' on date {show_year}-{show_month:02d}-{show_day:02d}")
 
@@ -31,16 +34,25 @@ def find_show_url(show_name, show_date):
                 5: "May", 6: "June", 7: "July", 8: "August",
                 9: "September", 10: "October", 11: "November", 12: "December"}
     
-    response = requests.get(base_url)
+    # Fetch the main results page
+    search_URL = base_url + str(show_year)
+    print_debug(f"Fetching Agility Plaza page for year {show_year} from URL: {search_URL}")
+    response = requests.get(search_URL)
+    if response.status_code != 200:
+        raise ConnectionError(f"Failed to fetch Agility Plaza page for year {show_year}. Status code: {response.status_code}")
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Finding the month section
     target_month = month_map[show_month]
     monthly_soup = soup.find_all('thead')
-    for month in monthly_soup:
+    found_month = False
+    for i, month in enumerate(monthly_soup):
         if target_month in month.get_text():
             print_debug(f"Found month section for {target_month}.")
+            found_month = True
             break
+    if not found_month:
+        raise ValueError(f"Month '{target_month}' not found on Agility Plaza for year {show_year}.")
 
     # Finding the specific show within the month
     show_rows = month.find_next_siblings('tr')
@@ -191,10 +203,18 @@ def find_champ_classes(soup, height):
     return agility_class, jumping_class
 
 if __name__ == "__main__":
-    # Test the find_show_url function
+    from .KC_ShowProcesser import find_closest_shows, check_show_in_closest
     test_show_name = "North Derbyshire Dog Agility Club"
+    closest_shows_df = find_closest_shows(days_ahead=0, num_shows=30)
     try:
-        show_url = find_show_url(test_show_name, num_shows=30)
+        matched_show, matched_showDate = check_show_in_closest(test_show_name, closest_shows_df)
+        print_debug(f"Matched Show: {matched_show}, Date: {matched_showDate} ({type(matched_showDate)})")
+    except ValueError as e:
+        print_debug(str(e))
+    
+    # Test the find_show_url function
+    try:
+        show_url = find_show_url(test_show_name, matched_showDate)
         print_debug(f"Show URL for '{test_show_name}': {show_url}")
     except ValueError as e:
         print_debug(str(e))
