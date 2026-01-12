@@ -34,10 +34,23 @@
 ### Current Status
 
 - `rework.py` has been split into a new module structure under `src/core/`. The code has been refactored to improve readability and maintainability.
-- `src/core/` functionality & flow:
-    - `KC_ShowProcesser.py`: processes KC show dataset, finds closest shows & checks for the input show in the data. *use this to find if the show exists as a championship show & find the date of the show*
-    - `plaza_scraper.py`: scrapes Plaza/results website to find class URLs for the specified show. *use this to get the URLs for the input show*
-    - `plaza_resultsRunningOrder.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
-    - `models.py`: defines the `ClassInfo` data model to hold class information, results, and running orders.
+- `src/core/`, package currently contains modules to find the URLs and status of each championship show. The functionality of modules & flow of processing is as follows:
+    1. `KC_ShowProcesser.py`: processes KC show dataset, finds closest shows & checks for the input show in the data. *use this to find if the show exists as a championship show & find the date of the show*
+    2. `plaza_scraper.py`: scrapes Plaza/results website to find class URLs for the specified show. *use this to get the URLs for the input show*
+    3. `plaza_resultsRunningOrder.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
+    4. `models.py`: defines the `ClassInfo` data model to hold class information, results, and running orders.
 
+- Testing code has been added to the `if __name__ == "__main__":` sections of each module to demonstrate functionality. ***Need to convert these into proper unit tests later.***
+
+### Next Steps
+
+1. unit testing: convert the test code in the `if __name__ == "__main__":` sections into proper unit tests using a testing framework like `unittest` or `pytest`.
+2. integration: create an integration script that ties together the modules to process a show from start to finish. 
+3. Create module for combined processing: have capability for place and results based combination. 
+
+## Website Structure
+- "`/`" - Home page with show input form for users to select show name and height category. (optional URL input form to be kept). Give a dropdown choice of shows listing from the most recent shows in dataset, but allow some future ones if they are close enough.
+- "`/combined-results`" - Page to display combined results of the 2 rounds and the satus of each round (completed/in progress/not started). Show the combined results table with appropriate formatting. This page needs to have the parameters passed in the URL or session to know which show and height category to display, for example: `/combined-results?agility=0123456789&jumping=0987654321&height=Lge`. Where the agility and jumping parameters are the class IDs from Plaza URLs. ***new parameters** purpose is to allow sharing of links to specific show results and refresh of page.*
+- "`/requirements`", Page to display what each competitior needs to make the championship finals based on current results, must have URL parameters. Show a table with competitors and their required scores. 
+    - This will need some logic calculations to determine what each competitor needs based on their current scores and the cutoff for the finals. This does not exist yet.
 

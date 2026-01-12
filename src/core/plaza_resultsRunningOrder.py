@@ -319,6 +319,7 @@ if __name__ == "__main__":
     from .KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
     from .plaza_scraper import find_champ_classes
     from .models import ClassInfo
+    
     print(f"({__name__}) From `plaza_resultsRunningOrder.py` \n({__name__}) Running import_results and import_running_orders tests...")
 
     print("\n==== Testing Results Importer (simulation save)====")
@@ -336,5 +337,5 @@ if __name__ == "__main__":
     assert isinstance(jumping_class_eliminations, list), "Eliminations should be a list"
 
     # Print summaries
-    print(f"({__name__})","Jumping Results DataFrame:\n", jumping_class_results.head())
-    print(f"\n({__name__})","Jumping Running Orders DataFrame:\n", jumping_running_orders.head())
+    print(f"({__name__})",f"Jumping Results DataFrame ({type(jumping_class_results)}):\n", jumping_class_results.head())
+    print(f"\n({__name__})",f"Jumping Running Orders DataFrame ({type(jumping_running_orders)}):\n", jumping_running_orders.head())
