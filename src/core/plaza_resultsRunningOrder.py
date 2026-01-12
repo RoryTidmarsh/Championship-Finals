@@ -69,15 +69,17 @@ def import_results(show_class, simulation=False):
         print_debug3(f"Loading simulation data for class type: {show_class.class_type}")
         
         if show_class.class_type.lower() == "agility":
+            agility_url = os.path.join("NorthDerbySaves", "NorthDerbyShow_LgeAg_compeleted.html")
             try:
-                simulation_soup = read_from_file("NorthDerbySaves/NorthDerbyShow_LgeAg_complete.html")
+                simulation_soup = read_from_file(agility_url)
             except FileNotFoundError:
-                raise FileNotFoundError("Simulation file 'NorthDerbySaves/NorthDerbyShow_LgeAg_complete.html' not found")
+                raise FileNotFoundError(f"Simulation file '{agility_url}' not found")
         elif show_class.class_type.lower() == "jumping":
+            jumping_url = os.path.join("NorthDerbySaves", "NorthDerbyShow_LgeJmp_incomplete.html")
             try:
-                simulation_soup = read_from_file("NorthDerbySaves/NorthDerbyShow_LgeJmp_incomplete.html")
+                simulation_soup = read_from_file(jumping_url)
             except FileNotFoundError:
-                raise FileNotFoundError("Simulation file 'NorthDerbySaves/NorthDerbyShow_LgeJmp_incomplete.html' not found")
+                raise FileNotFoundError(f"Simulation file '{jumping_url}' not found")
         else:
             raise ValueError(f"Unsupported class type for simulation: '{show_class.class_type}'. "
                            f"Supported types are: 'agility', 'jumping'")
@@ -319,7 +321,7 @@ if __name__ == "__main__":
     from .KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
     from .plaza_scraper import find_champ_classes
     from .models import ClassInfo
-    
+
     print(f"({__name__}) From `plaza_resultsRunningOrder.py` \n({__name__}) Running import_results and import_running_orders tests...")
 
     print("\n==== Testing Results Importer (simulation save)====")

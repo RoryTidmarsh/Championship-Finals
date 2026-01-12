@@ -47,6 +47,11 @@
 1. unit testing: convert the test code in the `if __name__ == "__main__":` sections into proper unit tests using a testing framework like `unittest` or `pytest`.
 2. integration: create an integration script that ties together the modules to process a show from start to finish. 
 3. Create module for combined processing: have capability for place and results based combination. 
+4. add the following for webapp response status
+ ```
+response = requests.get(show_class.results_url)
+    response.raise_for_status()
+```
 
 ## Website Structure
 - "`/`" - Home page with show input form for users to select show name and height category. (optional URL input form to be kept). Give a dropdown choice of shows listing from the most recent shows in dataset, but allow some future ones if they are close enough.
