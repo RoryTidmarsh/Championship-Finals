@@ -4,6 +4,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 from src.core.models import ClassInfo
 from src.core.debug_logger import print_debug, print_debug2, print_debug3
+from src.core.KC_ShowProcesser import is_close_match
 # from src.core.KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
 from urllib.parse import urljoin
 import pandas as pd
@@ -15,6 +16,7 @@ def find_show_url(show_name, show_date):
 
         Args:
         show_name (str): Name of the show to find.
+        show_date (str/pd.Timestamp/np.datetime64): Date of the show to find.
 
     Returns:
         str: URL of the show if found, otherwise None.
@@ -208,13 +210,27 @@ if __name__ == "__main__":
     closest_shows_df = find_closest_shows(days_ahead=0, num_shows=30)
     try:
         matched_show, matched_showDate = check_show_in_closest(test_show_name, closest_shows_df)
-        print_debug(f"Matched Show: {matched_show}, Date: {matched_showDate} ({type(matched_showDate)})")
     except ValueError as e:
-        print_debug(str(e))
+        raise ValueError(str(e))
     
-    # Test the find_show_url function
+    print("\n==== Testing Show URL Finder ====")
     try:
         show_url = find_show_url(test_show_name, matched_showDate)
         print_debug(f"Show URL for '{test_show_name}': {show_url}")
     except ValueError as e:
-        print_debug(str(e))
+        raise ValueError(str(e))
+
+    print("\n==== Testing Championship Class Finder ====")
+    height = "Lge"
+
+    # Fetch the show page
+    response = requests.get(show_url)
+    if response.status_code != 200:
+        raise ConnectionError(f"Failed to fetch show page from URL: {show_url}. Status code: {response.status_code}")
+    show_soup = BeautifulSoup(response.content, 'html.parser')
+    try:
+        agility_class, jumping_class = find_champ_classes(show_soup, height)
+        print_debug(f"Agility Class: {agility_class}")
+        print_debug(f"Jumping Class: {jumping_class}")
+    except ValueError as e:
+        raise ValueError(str(e))

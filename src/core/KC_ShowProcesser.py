@@ -117,10 +117,14 @@ def Find_duplicates(df):
 
 if __name__ == "__main__":
     test_show_name = "North Derbyshire Dog Agility Club"
-    closest_shows_df = find_closest_shows(days_ahead=0, num_shows=30)
-    print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']]}")
+
+    print("\n==== Testing find shows function can read csv ====")
+    closest_shows_df = find_closest_shows(champ_shows_filepath="champ shows.csv", days_ahead=0, num_shows=30)
+    print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']].head()}")
+
+    print("\n==== Testing check show in show dataset ====")
     try:
-        matched_show,date = check_show_in_closest(test_show_name, closest_shows_df, days_ahead=0, num_shows=30)
+        matched_show,date = check_show_in_closest(test_show_name, closest_shows_df)
         print_debug(f"Matched Show: {matched_show}, Date: {date} ({type(date)})")
     except ValueError as e:
         print_debug(str(e))
