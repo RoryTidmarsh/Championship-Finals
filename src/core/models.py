@@ -43,3 +43,36 @@ class ClassInfo:
         else:
             self.order = 2
             other.order = 2
+
+class Final:
+    def __init__(self, jumpingClass: ClassInfo, agilityClass: ClassInfo):
+        """information about the final show"""
+        self.jumpingClass = jumpingClass
+        self.agilityClass = agilityClass
+        
+        self.status = self.update_status()
+        self.final_results_df = None  # DataFrame to hold final combined results
+        self.combination_method = None  # e.g., "resultsBased", "positionBased"
+
+
+    def update_status(self):
+        if self.jumpingClass.status == 'completed' and self.agilityClass.status == 'completed':
+            self.status = 'final running order'
+        elif ((self.jumpingClass.status == 'in progress' and self.agilityClass.status == 'completed') or
+             (self.jumpingClass.status == 'completed' and self.agilityClass.status == 'in progress')):
+            self.status = 'partial running order'
+        elif (self.jumpingClass.status == 'not started' and self.agilityClass.status == 'not started'):
+            self.status = 'not started'
+        elif (self.jumpingClass.status == 'in progress' or self.agilityClass.status == 'in progress'):
+            self.status = 'in progress'
+        else:
+            self.status = 'not started'
+
+    def combine_resultsBased(self):
+        """combine results from both classes to create final results. combination via run results (e.g. jumping faults + agility faults)"""
+        self.combination_method = "resultsBased"
+
+    def combine_positionBased(self):
+        """combine results from both classes to create final results. combination via positions (e.g. 1st in jumping + 2nd in agility = 3 overall points)"""
+        self.combination_method = "positionBased"
+    
