@@ -3,11 +3,12 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from .debug_logger import print_debug3
+from .models import ClassInfo
 from urllib.parse import urljoin
 import pandas as pd
 from .constants import PLAZA_RESULTS as base_url
 
-def read_from_file(filename="NorthDerbyShow.txt") -> BeautifulSoup:
+def read_from_file(filename="NorthDerbyShow.txt"):
     with open(filename, "r", encoding="utf-8") as f:      
         html = f.read()
     soup = BeautifulSoup(html, 'html.parser')
@@ -318,7 +319,9 @@ if __name__ == "__main__":
     from .KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
     from .plaza_scraper import find_champ_classes
     from .models import ClassInfo
-    print(f"From `plaza_resultsRunningOrder.py` ({__name__})\nRunning import_results and import_running_orders tests...")
+    print(f"({__name__}) From `plaza_resultsRunningOrder.py` \n({__name__}) Running import_results and import_running_orders tests...")
+
+    print("\n==== Testing Results Importer (simulation save)====")
     # Load simulation data
     simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
     agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
@@ -333,5 +336,5 @@ if __name__ == "__main__":
     assert isinstance(jumping_class_eliminations, list), "Eliminations should be a list"
 
     # Print summaries
-    print("Jumping Results DataFrame:\n", jumping_class_results.head())
-    print("Jumping Running Orders DataFrame:\n", jumping_running_orders.head())
+    print(f"({__name__})","Jumping Results DataFrame:\n", jumping_class_results.head())
+    print(f"\n({__name__})","Jumping Running Orders DataFrame:\n", jumping_running_orders.head())
