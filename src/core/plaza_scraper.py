@@ -1,4 +1,4 @@
-"""web scraper for agility plaza dog agility show processor."""
+"""Webscraper for agilityplaza.com to find show URLs and championship classes."""
 import requests
 from bs4 import BeautifulSoup
 from src.core.models import ClassInfo
@@ -190,3 +190,11 @@ def find_champ_classes(soup, height):
 
     return agility_class, jumping_class
 
+if __name__ == "__main__":
+    # Test the find_show_url function
+    test_show_name = "North Derbyshire Dog Agility Club"
+    try:
+        show_url = find_show_url(test_show_name, num_shows=30)
+        print_debug(f"Show URL for '{test_show_name}': {show_url}")
+    except ValueError as e:
+        print_debug(str(e))

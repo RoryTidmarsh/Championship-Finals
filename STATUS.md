@@ -17,4 +17,4 @@
 |-- requirements.txt - list of Python dependencies for the project
 ```
 
-Repository and `rework.py` needs to be restructured to create a module with the html reading files, test reading files and the flask app. These need to be in their own respective directories with __init__.py files.
+Repository and `rework.py` needs to be restructured to create a module with the html reading files, test reading files and the flask app. These need to be in their own respective directories with `__init__.py` files.

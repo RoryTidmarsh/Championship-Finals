@@ -2,3 +2,5 @@ table.py
 ideas.txt
 tempCodeRunnerFile.py
 Champ_env/
+__pycache__/
+.vscode/

@@ -1,13 +1,13 @@
+"""Module for importing and parsing competition results and running order pages from agilityplaza.com. Returning pandas DataFrames of the main tables."""
 import requests
 from bs4 import BeautifulSoup
-from src.core.models import ClassInfo
-from src.core.debug_logger import print_debug3
-from src.core.KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
+import os
+from .debug_logger import print_debug3
 from urllib.parse import urljoin
 import pandas as pd
 from .constants import PLAZA_RESULTS as base_url
 
-def read_from_file(filename="NorthDerbyShow.txt"):
+def read_from_file(filename="NorthDerbyShow.txt") -> BeautifulSoup:
     with open(filename, "r", encoding="utf-8") as f:      
         html = f.read()
     soup = BeautifulSoup(html, 'html.parser')
@@ -313,3 +313,25 @@ def import_running_orders(show_class, simulation=False):
 
     print_debug3(f"Running Orders DataFrame for {show_class.class_type}:\n", df.head())
     return df
+
+if __name__ == "__main__":
+    from .KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
+    from .plaza_scraper import find_champ_classes
+    from .models import ClassInfo
+    print(f"From `plaza_resultsRunningOrder.py` ({__name__})\nRunning import_results and import_running_orders tests...")
+    # Load simulation data
+    simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
+    agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
+    jumping_class_results, jumping_class_eliminations = import_results(jumping_class, simulation=True)
+    jumping_running_orders = import_running_orders(jumping_class, simulation=True)
+
+    # Check the types of outputs
+    assert isinstance(jumping_class_results, pd.DataFrame), "Results should be a DataFrame"
+    assert isinstance(jumping_running_orders, pd.DataFrame), "Running orders should be a DataFrame"
+    assert isinstance(agility_class, ClassInfo), "Agility class should be a ClassInfo instance"
+    assert isinstance(jumping_class, ClassInfo), "Jumping class should be a ClassInfo instance"
+    assert isinstance(jumping_class_eliminations, list), "Eliminations should be a list"
+
+    # Print summaries
+    print("Jumping Results DataFrame:\n", jumping_class_results.head())
+    print("Jumping Running Orders DataFrame:\n", jumping_running_orders.head())

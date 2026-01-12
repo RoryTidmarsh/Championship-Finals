@@ -22,7 +22,7 @@ def find_closest_shows(champ_shows_filepath = "champ shows.csv", days_ahead=0, n
     champ_shows_df['is_future'] = champ_shows_df['Date'].dt.date > tomorrow_date
     champ_shows_df = champ_shows_df.sort_values(by='timedelta')
     champ_shows_df = champ_shows_df.head(num_shows).sort_values(by=['is_future', 'Date'], ascending=[True, False])
-    print_debug("Closest Shows from Function:\n", champ_shows_df[["Show Name", "Date", "timedelta", "is_future"]])
+    print_debug(f"Closest Shows from Function:\n", champ_shows_df[["Show Name", "Date", "timedelta", "is_future"]])
     return champ_shows_df
 
 def check_show_in_closest(Target_show_name, *args, **kwargs):
