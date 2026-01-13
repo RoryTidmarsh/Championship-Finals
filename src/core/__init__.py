@@ -1,8 +1,6 @@
 """Core functionality for Championship Finals processor."""
 """Core business logic for championship placement tracking."""
-from .models import ClassInfo
-# from .plaza_scraper import plaza
-from .debug_logger import print_debug, print_debug2, print_debug3
+import models, KC_ShowProcesser, plaza_scraper, plaza_R&RO
 from .constants import (
     PLAZA_BASE,
     PLAZA_RESULTS,
@@ -19,7 +17,8 @@ __all__ = [
     'HEIGHTS',
     'HEIGHT_NAMES',
     'REMOVED_WORDS',
-    'print_debug',
-    'print_debug2',
-    'print_debug3',
+    "models",
+    "KC_ShowProcesser",
+    "plaza_scraper",
+    "plaza_R&RO"
 ]
