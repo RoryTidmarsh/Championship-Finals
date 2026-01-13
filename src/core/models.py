@@ -1,6 +1,6 @@
 """Data models for the champPackage core module."""
 from .debug_logger import *
-from .plaza_resultsRunningOrder import import_running_orders
+# from .plaza_resultsRunningOrder import import_running_orders
 
 class ClassInfo:
     def __init__(self, class_type, class_number = None, order = 0, running_orders_url = None, results_url = None):
@@ -30,7 +30,8 @@ class ClassInfo:
                 f"  results_url={self.results_url},\n"
                 f"  class_number={self.class_number}),\n"
                 f"  results_df={results_message},\n"
-                f"  eliminations={len(self.eliminations)})")
+                f"  eliminations={len(self.eliminations)}"
+                f")\n")
     
     def update_status(self):
         if self.running_orders_url and self.results_url:
@@ -81,25 +82,26 @@ class Final:
         else:
             self.status = 'not started'
 
-    def combine_resultsBased(self):
-        """combine results from both classes to create final results. combination via run results (e.g. jumping faults + agility faults). This is Crufts singles style."""
-        self.combination_method = "resultsBased"
+    def combine_dfs(self):
+        """Combine the results DataFrames of the jumping and agility classes, Only for pairs that aren't eliminated in either class."""
 
         # Load round dataframes
         jumping_df = self.jumpingClass.results_df
         agility_df = self.agilityClass.results_df
 
-    def combine_positionBased(self):
-        """combine results from both classes to create final results. combination via positions (e.g. 1st in jumping + 2nd in agility = 3 overall points). This is Champ style."""
-        self.combination_method = "positionBased"
-
-        # Load round dataframes
-        jumping_df = self.jumpingClass.results_df
-        agility_df = self.agilityClass.results_df
-    
-        winners_list = []
         first_class = None
         second_class = None
+
+        # Check that both classes have results
+        if self.jumpingClass.results_df is None or self.agilityClass.results_df is None:
+            missing_results = []
+            if self.jumpingClass.results_df is None:
+                missing_results.append("jumping")
+            if self.agilityClass.results_df is None:
+                missing_results.append("agility")
+            raise ValueError(f"Missing results dataframes for: {', '.join(missing_results)}")
+        
+        # Determine order of classes
         if self.jumpingClass.order < self.agilityClass.order:
             first_class = self.jumpingClass
             second_class = self.agilityClass
@@ -107,43 +109,24 @@ class Final:
             first_class = self.agilityClass
             second_class = self.jumpingClass
 
-        # get running orders for second class
-        second_class.running_orders_df = import_running_orders(second_class)
+        print_debug("Combining results based on position...")
+        # Combine results, joining on 'Name' column (name of pair)
+        combined_df = jumping_df.merge(agility_df, on='Name', suffixes=('_jumping', '_agility'))
 
-        print(second_class.running_orders_df.head())
-        for i, row in first_class.results_df.iterrows():
-            if i ==0:
-                score = {'faults': row['Faults'], 'time': row['Time']}
-                pairing = pairingInfo(row['Name'])
-                # pairing.set_jumping_results(row['Rank'], score)
+        # Check for duplicated in combined df
+        if combined_df['Name'].duplicated().any():
+            duplicated_names = combined_df[combined_df['Name'].duplicated()]['Name'].unique()
+            raise ValueError(f"Warning: Duplicated names found in combined results: {duplicated_names}")
 
-                # Look for matching pairing in agility results
-                second_class_match = second_class.results_df[second_class.results_df['Name'] == row['Name']]
-                
-                # print(agility_match)
-                if not second_class_match.empty:
-                    ag_row = second_class_match.iloc[0]
-                    ag_score = {'faults': ag_row['Faults'], 'time': ag_row['Time']}
-                    pairing.set_agility_results(ag_row['Rank'], ag_score)
-                elif row['Name'] in second_class.eliminations:
-                    print_debug(f"{row['Name']} was eliminated in {second_class.class_type} class.")
-                elif row['Name'] in second_class.running_orders_df['Name'].values:
-                    print_debug(f"{row['Name']} has not yet completed the {second_class.class_type} class.")
-            # elif 
-            # else:
-                # print_debug(f"No matching agility result for {row['Name']}")
-    
+        combined_df['Combined_Points'] = combined_df['Rank_jumping'].astype(int) + combined_df['Rank_agility'].astype(int)
+        combined_df['Combined_Faults'] = combined_df['Faults_jumping'].astype(float) + combined_df['Faults_agility'].astype(float)
+        combined_df['Combined_Time'] = combined_df['Time_jumping'].astype(float) + combined_df['Time_agility'].astype(float)
 
-            # if i == 0:
-            #     winners_list.append(pairing)
+        # Drop unnecessary columns
+        combined_df.drop(columns=['Place (mobile)_jumping', 'Place (mobile)_agility', 'KC names_jumping', 'KC names_agility', 'Run Data_jumping', 'Run Data_agility'], inplace=True)
 
-
-
-        # print_debug(pairing)
-                       
+        print_debug(f"Combined DataFrame:\n{combined_df}")
         
-        # print_debug(jumping_df.head())
-
 class pairingInfo:
     def __init__(self, pairingName):
         """information about a specific pairing of dog and handler"""
@@ -178,20 +161,20 @@ class pairingInfo:
 
 
 
-if __name__ == "__main__":
-    from .plaza_scraper import *
-    from .plaza_resultsRunningOrder import *
+# if __name__ == "__main__":
+#     from .plaza_scraper import *
+#     from .plaza_resultsRunningOrder import *
 
 
-    simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
-    agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
+#     simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
+#     agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
 
-    jumping_class.results_df, jumping_class.eliminations = import_results(jumping_class, simulation=True)
-    agility_class.results_df, agility_class.eliminations = import_results(agility_class, simulation=True)
+#     jumping_class.results_df, jumping_class.eliminations = import_results(jumping_class, simulation=True)
+#     agility_class.results_df, agility_class.eliminations = import_results(agility_class, simulation=True)
 
-    print_debug(agility_class)
-    print_debug(jumping_class)
-    # jumping_running_orders = import_running_orders(jumping_class, simulation=True)
+#     print_debug(agility_class)
+#     print_debug(jumping_class)
+#     # jumping_running_orders = import_running_orders(jumping_class, simulation=True)
 
-    final = Final(jumping_class, agility_class)
-    final.combine_positionBased()
+#     final = Final(jumping_class, agility_class)
+#     final.combine_positionBased()
