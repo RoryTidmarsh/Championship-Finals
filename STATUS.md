@@ -32,21 +32,23 @@
 ```
 
 ### Current Status
+All backend logic for finding championship shows, scraping Plaza for class URLs, importing results and running orders, and combining results has been reworked into a modular structure under `src/core/`. The main functionality is divided into separate modules for better organization and maintainability.
 
-- `rework.py` has been split into a new module structure under `src/core/`. The code has been refactored to improve readability and maintainability.
 - `src/core/`, package currently contains modules to find the URLs and status of each championship show. The functionality of modules & flow of processing is as follows:
     1. `KC_ShowProcesser.py`: processes KC show dataset, finds closest shows & checks for the input show in the data. *use this to find if the show exists as a championship show & find the date of the show*
     2. `plaza_scraper.py`: scrapes Plaza/results website to find class URLs for the specified show. *use this to get the URLs for the input show*
     3. `plaza_resultsRunningOrder.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
-    4. `models.py`: defines the `ClassInfo` data model to hold class information, results, and running orders.
+    4. `models.py`: defines:
+        - `ClassInfo` data model to hold class information, results, and running orders.
+        - `Finals` data model to combine results from 2 classes and determine overall standings.
+        - `pairingInfo` data model to hold pairing information for competitors. ***WIP***
 
 - Testing code has been added to the `if __name__ == "__main__":` sections of each module to demonstrate functionality. ***Need to convert these into proper unit tests later.***
-
 ### Next Steps
 
-1. unit testing: convert the test code in the `if __name__ == "__main__":` sections into proper unit tests using a testing framework like `unittest` or `pytest`.
-2. integration: create an integration script that ties together the modules to process a show from start to finish. 
-3. Create module for combined processing: have capability for place and results based combination. 
+1. Add module for calculations of what each competitor that is yet to run needs to qualify for the championship finals based on current results.
+2. unit testing: convert the test code in the `if __name__ == "__main__":` sections into proper unit tests using a testing framework like `unittest` or `pytest`.
+3. integration: create an integration script that ties together the modules to process a show from start to finish. 
 4. add the following for webapp response status
  ```
 response = requests.get(show_class.results_url)
