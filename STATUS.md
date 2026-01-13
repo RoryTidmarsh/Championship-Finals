@@ -11,13 +11,12 @@
 |
 |-- /templates - directory with HTML templates for the Flask app
 |
-|-- rework.py - main script for the reworked version of the project *has been separated into a new module structure `src/core`*
 |-- /src
-|   |-- /core - core module with all the main functionality of the project
+|   |-- /core - core package with all the main functionality of the project
 |       |-- __init__.py - init file for the core module
 |       |-- KC_ShowProcesser.py - module to process KC show data, find closest shows, and check for matches
 |       |-- plaza_scraper.py - module to scrape Plaza website for show class URLs
-|       |-- plaza_resultsRunningOrder.py - module to import and process results and running orders from Plaza
+|       |-- plaza_R&RO.py - module to import and process results and running orders from Plaza
 |       |-- models.py - module defining data models used in the project (ClassInfo)
 |       |-- debug_logger.py - module for debug logging functionality
 |       |-- constants.py - module defining constants used in the project
@@ -37,7 +36,7 @@ All backend logic for finding championship shows, scraping Plaza for class URLs,
 - `src/core/`, package currently contains modules to find the URLs and status of each championship show. The functionality of modules & flow of processing is as follows:
     1. `KC_ShowProcesser.py`: processes KC show dataset, finds closest shows & checks for the input show in the data. *use this to find if the show exists as a championship show & find the date of the show*
     2. `plaza_scraper.py`: scrapes Plaza/results website to find class URLs for the specified show. *use this to get the URLs for the input show*
-    3. `plaza_resultsRunningOrder.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
+    3. `plaza_R&RO.py`: uses the class URL from the module above to import results and running orders into DataFrames. *use this to get the results and running orders for the input show, output as `ClassInfo` from `models.py`*
     4. `models.py`: defines:
         - `ClassInfo` data model to hold class information, results, and running orders.
         - `Finals` data model to combine results from 2 classes and determine overall standings.
