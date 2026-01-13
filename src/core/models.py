@@ -1,5 +1,6 @@
 """Data models for the champPackage core module."""
 from .debug_logger import *
+from .plaza_resultsRunningOrder import import_running_orders
 
 class ClassInfo:
     def __init__(self, class_type, class_number = None, order = 0, running_orders_url = None, results_url = None):
@@ -106,31 +107,39 @@ class Final:
             first_class = self.agilityClass
             second_class = self.jumpingClass
 
-        # row = first_class.results_df.iloc[0]
-        for i, row in first_class.results_df.iterrows():
-            
-            score = {'faults': row['Faults'], 'time': row['Time']}
-            pairing = pairingInfo(row['Name'])
-            pairing.set_jumping_results(row['Rank'], score)
+        # get running orders for second class
+        second_class.running_orders_df = import_running_orders(second_class)
 
-            # Look for matching pairing in agility results
-            agility_match = second_class.results_df[second_class.results_df['Name'] == row['Name']]
-            ag_elimMatch = second_class.eliminations
-            if not agility_match.empty:
-                ag_row = agility_match.iloc[0]
-                ag_score = {'faults': ag_row['Faults'], 'time': ag_row['Time']}
-                pairing.set_agility_results(ag_row['Rank'], ag_score)
+        print(second_class.running_orders_df.head())
+        for i, row in first_class.results_df.iterrows():
+            if i ==0:
+                score = {'faults': row['Faults'], 'time': row['Time']}
+                pairing = pairingInfo(row['Name'])
+                # pairing.set_jumping_results(row['Rank'], score)
+
+                # Look for matching pairing in agility results
+                second_class_match = second_class.results_df[second_class.results_df['Name'] == row['Name']]
+                
+                # print(agility_match)
+                if not second_class_match.empty:
+                    ag_row = second_class_match.iloc[0]
+                    ag_score = {'faults': ag_row['Faults'], 'time': ag_row['Time']}
+                    pairing.set_agility_results(ag_row['Rank'], ag_score)
+                elif row['Name'] in second_class.eliminations:
+                    print_debug(f"{row['Name']} was eliminated in {second_class.class_type} class.")
+                elif row['Name'] in second_class.running_orders_df['Name'].values:
+                    print_debug(f"{row['Name']} has not yet completed the {second_class.class_type} class.")
             # elif 
-            else:
-                print_debug(f"No matching agility result for {row['Name']}")
+            # else:
+                # print_debug(f"No matching agility result for {row['Name']}")
     
 
-            if i == 0:
-                winners_list.append(pairing)
+            # if i == 0:
+            #     winners_list.append(pairing)
 
 
 
-        print_debug(pairing)
+        # print_debug(pairing)
                        
         
         # print_debug(jumping_df.head())
