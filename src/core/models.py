@@ -93,6 +93,11 @@ class Final:
         jumping_df = self.jumpingClass.results_df
         agility_df = self.agilityClass.results_df
     
+        winners_list = []
+        if self.jumpingClass.order < self.agilityClass.order:
+                       
+        
+        print_debug(jumping_df.head())
 
 class pairingInfo:
     def __init__(self, handler_name, dog_name):
@@ -104,6 +109,10 @@ class pairingInfo:
         self.jumping_position = None
         self.agility_position = None
         self.final_position = None
+
+        self.champFinal_points = None
+        self.combined_faults = None
+        self.combined_time = None
         self.required_score = None
 
     def __repr__(self):
@@ -132,3 +141,6 @@ if __name__ == "__main__":
     print_debug(agility_class)
     print_debug(jumping_class)
     # jumping_running_orders = import_running_orders(jumping_class, simulation=True)
+
+    final = Final(jumping_class, agility_class)
+    final.combine_positionBased()
