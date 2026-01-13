@@ -2,7 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 import os
-from .debug_logger import print_debug3
+from .debug_logger import *
 from .models import ClassInfo
 from urllib.parse import urljoin
 import pandas as pd
@@ -16,11 +16,33 @@ def read_from_file(filename="NorthDerbyShow.txt"):
 
 def process_eliminations(eliminations_text):
     """Process elimination text into a list of eliminated competitors without their prior faults."""
-    eliminations_list = eliminations_text.split(",")
-    eliminations = [entry.strip().split(" (")[0].strip() for entry in eliminations_list if entry.strip()]
-    # eliminations = [entry for entry in eliminations]
-
-    print(f"Processed eliminations: {eliminations}")
+    eliminations = []
+    
+    # Split by comma, but need to handle cases where commas appear inside parentheses
+    current_entry = ""
+    paren_depth = 0
+    
+    for char in eliminations_text:
+        if char == '(':
+            paren_depth += 1
+            current_entry += char
+        elif char == ')':
+            paren_depth -= 1
+            current_entry += char
+        elif char == ',' and paren_depth == 0:
+            # This is a separator comma, not inside parentheses
+            if current_entry.strip():
+                eliminations.append(current_entry.strip())
+            current_entry = ""
+        else:
+            current_entry += char
+    
+    # Don't forget the last entry
+    if current_entry.strip():
+        eliminations.append(current_entry.strip())
+    
+    # Remove fault information in parentheses
+    eliminations = [entry.split(" (")[0].strip() for entry in eliminations]
     return eliminations
 
 def import_results(show_class, simulation=False):
