@@ -163,7 +163,7 @@ class pairingInfo:
 
 if __name__ == "__main__":
     from .plaza_scraper import *
-    from .plaza_resultsRunningOrder import *
+    from .plaza_R_RO import *
     from .models import *
 
 
