@@ -46,6 +46,10 @@ All backend logic for finding championship shows, scraping Plaza for class URLs,
 ### Next Steps
 
 1. Add module for calculations of what each competitor that is yet to run needs to qualify for the championship finals based on current results.
+    - Read Running Orders of live class
+    - See if competitor has run yet, if not continue
+    - load score from first round
+    - Calc what they need to get top 20, score returned should be time and faults or 1st place if that got eliminated in round 1
 2. unit testing: convert the test code in the `if __name__ == "__main__":` sections into proper unit tests using a testing framework like `unittest` or `pytest`.
 3. integration: create an integration script that ties together the modules to process a show from start to finish. 
 4. add the following for webapp response status
