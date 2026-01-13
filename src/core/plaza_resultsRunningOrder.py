@@ -14,6 +14,15 @@ def read_from_file(filename="NorthDerbyShow.txt"):
     soup = BeautifulSoup(html, 'html.parser')
     return soup
 
+def process_eliminations(eliminations_text):
+    """Process elimination text into a list of eliminated competitors without their prior faults."""
+    eliminations_list = eliminations_text.split(",")
+    eliminations = [entry.strip().split(" (")[0].strip() for entry in eliminations_list if entry.strip()]
+    # eliminations = [entry for entry in eliminations]
+
+    print(f"Processed eliminations: {eliminations}")
+    return eliminations
+
 def import_results(show_class, simulation=False):
     """
     Imports and parses competition results from a web page or local file.
@@ -182,7 +191,8 @@ def import_results(show_class, simulation=False):
                 eliminations = []
             else:
                 # Split by comma and clean each entry
-                eliminations = [entry.strip() for entry in eliminations_text.split(",") if entry.strip()]
+                # eliminations = [entry.strip() for entry in eliminations_text.split(",") if entry.strip()]
+                eliminations = process_eliminations(eliminations_text)
             
             print_debug3(f"Parsed {len(eliminations)} eliminations")
 
