@@ -45,6 +45,20 @@ def process_eliminations(eliminations_text):
     eliminations = [entry.split(" (")[0].strip() for entry in eliminations]
     return eliminations
 
+def process_class_df(df):
+    headers = df.columns.tolist()
+    wanted_headers = ['Rank', 'Place (mobile)', 'KC names', 'Name', 'Run Data', 'Faults', 'Time']
+    if "Rank" not in headers and "Place" in headers:
+        # Replace headers to standard ones
+        df.columns = wanted_headers
+
+    # Remove any non numbers from Rank column
+    df['Rank'] = df['Rank'].astype(str).str.extract('(\d+)').astype(int)
+    df['Place (mobile)'] = df['Place (mobile)'].astype(str).str.extract('(\d+)').astype(int)
+    
+    return df
+
+
 def import_results(show_class, simulation=False):
     """
     Imports and parses competition results from a web page or local file.
@@ -222,6 +236,7 @@ def import_results(show_class, simulation=False):
     if df.empty:
         raise ValueError("Resulting DataFrame is empty - no valid competition data found")
 
+    df = process_class_df(df)
     # Output summary information
     print_debug3(f"Results DataFrame for {show_class.class_type}:\n", df.head())
     print_debug3(f"Eliminations array ({len(eliminations)} entries): {eliminations[:3] if len(eliminations) >= 3 else eliminations}")
