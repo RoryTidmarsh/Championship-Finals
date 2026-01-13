@@ -63,10 +63,9 @@ class Final:
         
         self.status = self.update_status()
         self.final_results_df = None  # DataFrame to hold final combined results
-        self.combination_method = None  # e.g., "resultsBased", "positionBased"
 
-        self.jumpingWinner = []
-        self.agilityWinner = []
+        self.jumpingWinner = jumpingClass.results_df.iloc[0]["Name"] if jumpingClass.results_df is not None else None
+        self.agilityWinner = agilityClass.results_df.iloc[0]["Name"] if agilityClass.results_df is not None else None
 
 
     def update_status(self):
@@ -125,7 +124,8 @@ class Final:
         # Drop unnecessary columns
         combined_df.drop(columns=['Place (mobile)_jumping', 'Place (mobile)_agility', 'KC names_jumping', 'KC names_agility', 'Run Data_jumping', 'Run Data_agility'], inplace=True)
 
-        print_debug(f"Combined DataFrame:\n{combined_df}")
+        self.final_results_df = combined_df.sort_values("Combined_Points", ascending=True).reset_index(drop=True)
+        return combined_df
         
 class pairingInfo:
     def __init__(self, pairingName):
@@ -161,20 +161,34 @@ class pairingInfo:
 
 
 
-# if __name__ == "__main__":
-#     from .plaza_scraper import *
-#     from .plaza_resultsRunningOrder import *
+if __name__ == "__main__":
+    from .plaza_scraper import *
+    from .plaza_resultsRunningOrder import *
+    from .models import *
 
 
-#     simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
-#     agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
+    simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
+    agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
 
-#     jumping_class.results_df, jumping_class.eliminations = import_results(jumping_class, simulation=True)
-#     agility_class.results_df, agility_class.eliminations = import_results(agility_class, simulation=True)
+    jumping_class.results_df, jumping_class.eliminations = import_results(jumping_class, simulation=True)
+    agility_class.results_df, agility_class.eliminations = import_results(agility_class, simulation=True)
 
-#     print_debug(agility_class)
-#     print_debug(jumping_class)
-#     # jumping_running_orders = import_running_orders(jumping_class, simulation=True)
+    # Determine order of classes
+    if jumping_class.order < agility_class.order:
+        first_class = jumping_class
+        second_class = agility_class
+    else:
+        first_class = agility_class
+        second_class = jumping_class
+    
+    second_class.running_orders_df = import_running_orders(second_class, simulation=True)
 
-#     final = Final(jumping_class, agility_class)
-#     final.combine_positionBased()
+    print_debug(agility_class)
+    print_debug(jumping_class)
+
+    final = Final(jumping_class, agility_class)
+    final.combine_dfs()
+
+    print_debug(final.final_results_df)
+    print_debug(f"Jumping Winner: {final.jumpingWinner}")
+    print_debug(f"Agility Winner: {final.agilityWinner}")
