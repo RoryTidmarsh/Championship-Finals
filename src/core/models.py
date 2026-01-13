@@ -63,6 +63,9 @@ class Final:
         self.final_results_df = None  # DataFrame to hold final combined results
         self.combination_method = None  # e.g., "resultsBased", "positionBased"
 
+        self.jumpingWinner = []
+        self.agilityWinner = []
+
 
     def update_status(self):
         if self.jumpingClass.status == 'completed' and self.agilityClass.status == 'completed':
@@ -94,36 +97,75 @@ class Final:
         agility_df = self.agilityClass.results_df
     
         winners_list = []
+        first_class = None
+        second_class = None
         if self.jumpingClass.order < self.agilityClass.order:
+            first_class = self.jumpingClass
+            second_class = self.agilityClass
+        else:
+            first_class = self.agilityClass
+            second_class = self.jumpingClass
+
+        # row = first_class.results_df.iloc[0]
+        for i, row in first_class.results_df.iterrows():
+            
+            score = {'faults': row['Faults'], 'time': row['Time']}
+            pairing = pairingInfo(row['Name'])
+            pairing.set_jumping_results(row['Rank'], score)
+
+            # Look for matching pairing in agility results
+            agility_match = second_class.results_df[second_class.results_df['Name'] == row['Name']]
+            ag_elimMatch = second_class.eliminations
+            if not agility_match.empty:
+                ag_row = agility_match.iloc[0]
+                ag_score = {'faults': ag_row['Faults'], 'time': ag_row['Time']}
+                pairing.set_agility_results(ag_row['Rank'], ag_score)
+            # elif 
+            else:
+                print_debug(f"No matching agility result for {row['Name']}")
+    
+
+            if i == 0:
+                winners_list.append(pairing)
+
+
+
+        print_debug(pairing)
                        
         
-        print_debug(jumping_df.head())
+        # print_debug(jumping_df.head())
 
 class pairingInfo:
-    def __init__(self, handler_name, dog_name):
+    def __init__(self, pairingName):
         """information about a specific pairing of dog and handler"""
-        self.handler_name = handler_name
-        self.dog_name = dog_name
-        self.dog_poshName = None
+        self.pairingName = pairingName
 
-        self.jumping_position = None
-        self.agility_position = None
-        self.final_position = None
+        self.jumpingRank = None
+        self.agilityRank = None
+        self.jmpScore = None
+        self.agScore = None
+        self.finalRank = None
 
-        self.champFinal_points = None
-        self.combined_faults = None
-        self.combined_time = None
-        self.required_score = None
+        self.champFinalPoints = None
+        self.combinedFaults = None
+        self.combinedTime = None
+        self.requiredScore = None
+    
+    def set_jumping_results(self, position, score):
+        self.jumpingRank = position
+        self.jmpScore = score
+    
+    def set_agility_results(self, position, score):
+        self.agilityRank = position
+        self.agScore = score
 
     def __repr__(self):
         return f"pairingInfo(\n" \
-        f"  handler_name={self.handler_name},\n" \
-        f"  dog_name={self.dog_name}),\n" \
-        f"  dog_poshName={self.dog_poshName},\n" \
-        f"  jumping_position={self.jumping_position},\n" \
-        f"  agility_position={self.agility_position},\n" \
-        f"  final_position={self.final_position},\n" \
-        f"  required_score={self.required_score})" \
+        f"  pairingName={self.pairingName},\n" \
+        f"  jumpingRank={self.jumpingRank},\n" \
+        f"  agilityRank={self.agilityRank},\n" \
+        f"  jmpScore={self.jmpScore},\n" \
+        f"  agScore={self.agScore},\n" \
 
 
 
