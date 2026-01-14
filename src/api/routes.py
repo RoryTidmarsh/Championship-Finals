@@ -1,9 +1,8 @@
 """Define API routes."""
 from fastapi import APIRouter, Query, HTTPException
+from src.api.session import session
 
 router = APIRouter(prefix="/api", tags=["Championship Finals API"])
-agilityID = None
-jumpingID = None
 
 @router.get("/")
 def home():
@@ -61,3 +60,10 @@ async def get_requirements(
 async def health_check():
     """Check if API is running"""
     return {"status": "healthy"}
+
+@router.get("/status")
+async def get_status():
+    return {
+        "agility": session.agility_class.status if session.agility_class else None,
+        "jumping": session.jumping_class.status if session.jumping_class else None,
+    }

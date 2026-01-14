@@ -10,6 +10,11 @@ class lookupIDsResponse(BaseModel):
     agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
     jumpingID: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
 
+class getStatusResponse(BaseModel):
+    """Response model for getting status of classes."""
+    agilityStatus: str | None
+    jumpingStatus: str | None
+
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""
 #     model_config = ConfigDict(arbitrary_types_allowed=True)

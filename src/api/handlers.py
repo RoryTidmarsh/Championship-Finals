@@ -3,7 +3,7 @@ import src.api.models as API_models
 import pandas as pd
 import asyncio
 ClassInfo = models.ClassInfo
-
+from src.api.session import session
 
 async def get_nearby_shows(days_ahead=5, num_shows=5):
     """Fetch shows around the current date."""
@@ -35,6 +35,8 @@ async def initialise_classInfo(show: str, height: str):
     except ValueError as ve:
         raise ValueError(ve)
 
+    session.initialize_classes(agility_class, jumping_class)
+
     return agility_class, jumping_class
 
 async def get_class_ids(agility_link: str, jumping_link: str):
@@ -51,13 +53,15 @@ async def get_class_ids(agility_link: str, jumping_link: str):
 
     return agility_id, jumping_id
 
-async def update_classInfo(agility_class: ClassInfo, jumping_class: ClassInfo, simulation=False):
+async def update_classInfo(simulation=False):
     """Update ClassInfo object of the qualifying rounds. To be called when finals route is refreshed.
     
     
     Returns:
         Tuple of updated ClassInfo objects (agility_class, jumping_class)
     """
+    agility_class = session.agility_class
+    jumping_class = session.jumping_class
 
     # Import results for agility class
     agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
