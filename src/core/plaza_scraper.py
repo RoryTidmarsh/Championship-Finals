@@ -39,10 +39,8 @@ def find_show_url(show_name, show_date):
     # Fetch the main results page
     search_URL = base_url + str(show_year)
     print_debug(f"Fetching Agility Plaza page for year {show_year} from URL: {search_URL}")
-    response = requests.get(search_URL)
-    if response.status_code != 200:
-        raise ConnectionError(f"Failed to fetch Agility Plaza page for year {show_year}. Status code: {response.status_code}")
-    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    soup = get_soup(search_URL)
 
     # Finding the month section
     target_month = month_map[show_month]
@@ -204,6 +202,14 @@ def find_champ_classes(soup, height):
 
     return agility_class, jumping_class
 
+def get_soup(url):
+    """Fetches the content of a URL and returns a BeautifulSoup object."""
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise ConnectionError(f"Failed to fetch URL: {url}. Status code: {response.status_code}")
+    show_soup = BeautifulSoup(response.content, 'html.parser')
+    return show_soup
+
 if __name__ == "__main__":
     from .KC_ShowProcesser import find_closest_shows, check_show_in_closest
     test_show_name = "North Derbyshire Dog Agility Club"
@@ -224,10 +230,7 @@ if __name__ == "__main__":
     height = "Lge"
 
     # Fetch the show page
-    response = requests.get(show_url)
-    if response.status_code != 200:
-        raise ConnectionError(f"Failed to fetch show page from URL: {show_url}. Status code: {response.status_code}")
-    show_soup = BeautifulSoup(response.content, 'html.parser')
+    show_soup = get_soup(show_url)
     try:
         agility_class, jumping_class = find_champ_classes(show_soup, height)
         print_debug(f"Agility Class: {agility_class}")
