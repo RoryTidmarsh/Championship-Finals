@@ -47,6 +47,7 @@ async def initialise_classes(
     from .handlers import initialise_classInfo
     try:
         agility_class, jumping_class = await initialise_classInfo(show, height)
+        session.initialize_classes(agility_class, jumping_class)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -54,6 +55,24 @@ async def initialise_classes(
         "agilityClass": agility_class,
         "jumpingClass": jumping_class,
         }
+
+@router.get("/update-classes")
+async def update_classes(
+    agility: int = Query(..., description="Agility round ID"), 
+    jumping: int = Query(..., description="Jumping round ID")
+    ):
+    """Update ClassInfo objects with the latest data."""
+    from .handlers import update_classInfo
+    try:
+        agility_class, jumping_class = await update_classInfo(str(agility), str(jumping))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    return {
+        "agilityClass": agility_class,
+        "jumpingClass": jumping_class,
+    }
+
 
 @router.get("/final")
 async def get_final_data(

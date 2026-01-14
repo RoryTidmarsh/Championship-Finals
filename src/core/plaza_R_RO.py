@@ -90,8 +90,7 @@ def import_results(show_class, simulation=False):
     
     # Handle case where results_url is None - return None, None gracefully
     if show_class.results_url is None:
-        print_debug3(f"No results URL provided from {show_class.class_type} - returning None, None. Class status: {show_class.status}")
-        return None, None
+        raise ValueError(f"No results URL provided from {show_class.class_type} - returning None, None. Class status: {show_class.status}")
     
     # Check for empty string URL
     if not show_class.results_url.strip():

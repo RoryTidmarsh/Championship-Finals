@@ -15,6 +15,13 @@ class getStatusResponse(BaseModel):
     agilityStatus: str | None
     jumpingStatus: str | None
 
+class update_classesResponse(BaseModel):
+    """Response model for updating class info."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    agilityClass: ClassInfo
+    jumpingClass: ClassInfo
+
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""
 #     model_config = ConfigDict(arbitrary_types_allowed=True)

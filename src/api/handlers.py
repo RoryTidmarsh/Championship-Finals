@@ -1,6 +1,7 @@
 from src.core import *
 import src.api.models as API_models
 import pandas as pd
+import os
 import asyncio
 ClassInfo = models.ClassInfo
 from src.api.session import session
@@ -53,15 +54,26 @@ async def get_class_ids(agility_link: str, jumping_link: str):
 
     return agility_id, jumping_id
 
-async def update_classInfo(simulation=False):
+async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
     """Update ClassInfo object of the qualifying rounds. To be called when finals route is refreshed.
     
     
     Returns:
         Tuple of updated ClassInfo objects (agility_class, jumping_class)
     """
-    agility_class = session.agility_class
-    jumping_class = session.jumping_class
+    # Construct URLs from IDs
+    agilityURL = os.path.join(PLAZA_BASE, "agilityClass", agilityID,"results")
+    jumpingURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"results")
+
+    agility_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", agilityID,"running_orders")
+    jumping_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"running_orders")
+
+
+    agility_class = ClassInfo("Agility",results_url=agilityURL)
+    jumping_class = ClassInfo("Jumping",results_url=jumpingURL)
+
+    if not agility_class or not jumping_class:
+        raise ValueError("ClassInfo objects not initialized in session. Please initialise first.")
 
     # Import results for agility class
     agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
@@ -78,11 +90,19 @@ async def update_classInfo(simulation=False):
     jumping_class.eliminations = jumping_eliminations
     jumping_class.status = jumping_status
 
+    # Update the class order
     agility_class.update_order(jumping_class)
 
+    # Check expected types
     assert isinstance(agility_class, ClassInfo), "Expected agility_class to be ClassInfo"
     assert isinstance(jumping_class, ClassInfo), "Expected jumping_class to be ClassInfo"
-    assert agility_class.order != jumping_class.order, "Classes should have different orders"
+
+    if jumping_class.status == "in progress":
+        jumping_class.running_orders_url = jumping_RunningOrderURL
+    if agility_class.status == "in progress":
+        agility_class.running_orders_url = agility_RunningOrderURL
+
+    session.initialize_classes(agility_class, jumping_class)
 
     return agility_class, jumping_class
     
@@ -100,13 +120,13 @@ if __name__ == "__main__":
     # show,date = asyncio.run(get_class_ids(test_show, test_date))
     # print(f"Agility ID: {show}, Jumping ID: {date}")
 
-    agililty_class, jumping_class = asyncio.run(initialise_classInfo(test_show, test_date, test_height))
+    agililty_class, jumping_class = asyncio.run(initialise_classInfo(test_show, test_height))
     print(f"({__name__}) Initialised Agility Class: {agililty_class}")
 
     agility_id, jumping_id = asyncio.run(get_class_ids(agililty_class.results_url, jumping_class.results_url))
     print(f"({__name__}) Agility ID: {agility_id}, Jumping ID: {jumping_id}")
 
-    updated_agility_class, updated_jumping_class = asyncio.run(update_classInfo(agililty_class, jumping_class, simulation=True))
+    updated_agility_class, updated_jumping_class = asyncio.run(update_classInfo(agility_id, jumping_id, simulation=True))
     print(f"({__name__}) Updated Agility Class: {updated_agility_class}")
     print(f"({__name__}) Updated Jumping Class: {updated_jumping_class}")
 

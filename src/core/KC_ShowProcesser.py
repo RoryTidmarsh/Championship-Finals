@@ -4,7 +4,7 @@ from datetime import datetime
 from src.core.debug_logger import print_debug,print_debug3
 import difflib
 
-def find_closest_shows(champ_shows_filepath = "champ shows.csv", days_ahead=0, num_shows=5):
+def find_closest_shows(champ_shows_filepath = "Champ shows.csv", days_ahead=0, num_shows=5):
     """
     Find the closest championship shows to a given date.
 
