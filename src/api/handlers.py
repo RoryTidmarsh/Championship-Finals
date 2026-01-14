@@ -16,8 +16,8 @@ async def get_nearby_shows(days_ahead=5, num_shows=5):
     shows_data = shows_df.to_dict(orient='records')
     return API_models.getNearShowsResponse(shows=shows_data)
 
-async def initialise_classInfo(show: str, date: str, height: str):
-    """Initialise ClassInfor objects for a given show, date, and height. This is to be called when the webapp moves from '/' to 'finals' route."""
+async def initialise_classInfo(show: str, height: str):
+    """Initialise ClassInfor objects for a given show height. This is to be called when the webapp moves from '/' to 'finals' route."""
     try:
         # Check if show is in closest shows
         closest_shows_df = KC_ShowProcesser.find_closest_shows()

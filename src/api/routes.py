@@ -27,13 +27,16 @@ async def lookup_ids(
     height: str = Query(..., description="Height category, e.g., 'Large'"),
     ):
 
-    ## ADD LOGIC TO LOOKUP IDS BASED ON SHOW, DATE AND HEIGHT ##
+    from .handlers import initialise_classInfo, get_class_ids
+    try:
+        agility_class, jumping_class = await initialise_classInfo(show, height)
+        agility_id, jumping_id = await get_class_ids(agility_class.results_url, jumping_class.results_url)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    agility = 1234  # Placeholder for actual lookup logic
-    jumping = 5678  # Placeholder for actual lookup logic
     return {
-        "agilityID": agility,
-        "jumpingID": jumping,
+        "agilityID": agility_id,
+        "jumpingID": jumping_id,
         }
 
 @router.get("/final")

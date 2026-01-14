@@ -5,6 +5,11 @@ class getNearShowsResponse(BaseModel):
     """Response model for getting a list of nearby shows & their dates."""
     shows: list[dict[str, str]]
 
+class lookupIDsResponse(BaseModel):
+    """Response model for looking up class IDs."""
+    agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
+    jumpingID: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
+
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""
 #     model_config = ConfigDict(arbitrary_types_allowed=True)
