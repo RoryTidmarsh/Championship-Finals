@@ -38,6 +38,23 @@ async def lookup_ids(
         "jumpingID": jumping_id,
         }
 
+@router.get("/initialise")
+async def initialise_classes(
+    show: str = Query(..., description="Show name, e.g., 'Championship Finals 2024'"),
+    height: str = Query(..., description="Height category, e.g., 'Large'"),
+    ):
+    """Initialise ClassInfo objects for the given show and height."""
+    from .handlers import initialise_classInfo
+    try:
+        agility_class, jumping_class = await initialise_classInfo(show, height)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {
+        "agilityClass": agility_class,
+        "jumpingClass": jumping_class,
+        }
+
 @router.get("/final")
 async def get_final_data(
     agility: int = Query(..., description="Agility round ID"), jumping: int = Query(..., description="Jumping round ID")
