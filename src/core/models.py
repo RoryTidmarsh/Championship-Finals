@@ -5,7 +5,9 @@ from .debug_logger import *
 class ClassInfo:
     def __init__(self, class_type, class_number = None, order = 0, running_orders_url = None, results_url = None):
         """information about a specific class within a show"""
-        self.class_type = class_type
+        if class_type.capitalize() not in ["Agility", "Jumping"]:
+            raise ValueError("class_type must be either 'Agility' or 'Jumping'")
+        self.class_type = class_type.capitalize()
         # self.status = status
         self.order = order
         self.running_orders_url = running_orders_url

@@ -16,6 +16,7 @@ async def get_nearby_shows(days_ahead=5, num_shows=5):
     return API_models.getNearShowsResponse(shows=shows_data)
 
 async def initialise_classInfo(show: str, date: str, height: str):
+    """Initialise ClassInfor objects for a given show, date, and height. This is to be called when the webapp moves from '/' to 'finals' route."""
     try:
         # Check if show is in closest shows
         closest_shows_df = KC_ShowProcesser.find_closest_shows()
@@ -28,21 +29,44 @@ async def initialise_classInfo(show: str, date: str, height: str):
         
         # Get URLS of the show page
         show_soup = plaza_scraper.get_soup(show_url) # Soup first
-        agiltiy_class, jumping_class = plaza_scraper.find_champ_classes(show_soup, height)
+        agility_class, jumping_class = plaza_scraper.find_champ_classes(show_soup, height)
 
     except ValueError as ve:
         raise valueError(ve)
 
-    return agiltiy_class, jumping_class
+    return agility_class, jumping_class
 
-async def get_class_ids(show: str, date: str, height: str):
-    """Fetch class IDs based on show, date, and height."""
-    
-
+async def update_classInfo(agility_class: ClassInfo, jumping_class: ClassInfo):
+    """Update ClassInfo object of the qualifying rounds. To be called when finals route is refreshed.
     
     
-    # return agilityID, jumpingID
+    Returns:
+        Tuple of updated ClassInfo objects (agility_class, jumping_class)
+    """
 
+    # Import results for agility class
+    agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class)
+
+    # Import results for jumping class
+    jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class)
+
+    # Update ClassInfo objects
+    agility_class.results_df = agility_results_df
+    agility_class.eliminations = agility_eliminations
+    agility_class.status = agility_status
+
+    jumping_class.results_df = jumping_results_df
+    jumping_class.eliminations = jumping_eliminations
+    jumping_class.status = jumping_status
+
+    agility_class.update_order(jumping_class)
+
+    assert isinstance(agility_class, ClassInfo), "Expected agility_class to be ClassInfo"
+    assert isinstance(jumping_class, ClassInfo), "Expected jumping_class to be ClassInfo"
+    assert agility_class.order != jumping_class.order, "Classes should have different orders"
+
+    return agility_class, jumping_class
+    
 
 if __name__ == "__main__":
     

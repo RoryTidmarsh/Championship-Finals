@@ -4,6 +4,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 from src.core.models import ClassInfo
 from src.core.debug_logger import print_debug, print_debug2, print_debug3
+from src.core.constants import *
 from src.core.KC_ShowProcesser import is_close_match
 # from src.core.KC_ShowProcesser import find_closest_shows, check_show_in_closest, is_close_match
 from urllib.parse import urljoin
@@ -200,6 +201,29 @@ def find_champ_classes(soup, height):
     print_debug2(f"Agility Class Info: {agility_class}")
     print_debug2(f"Jumping Class Info: {jumping_class}")        
 
+    return agility_class, jumping_class
+
+def find_champClase_fromIDs(agiltiyID, jumpingID):
+    """Find championship classes based on their IDs.
+    
+    Args:
+        agilityID (str/int): Agility class ID, must be a 10-digit numeric string or integer.
+        jumpingID (str/int): Jumping class ID, must be a 10-digit numeric string or integer.
+
+    Returns:
+        tuple: A tuple containing two ClassInfo objects (agility_class, jumping_class).
+    """
+    assert str(agilityID).isdigit(), "agilityID must be numeric."
+    assert str(jumpingID).isdigit(), "jumpingID must be numeric."
+    assert len(str(agilityID)) == 10, "agilityID must be 10 digits."
+    assert len(str(jumpingID)) == 10, "jumpingID must be 10 digits."
+
+    # Create URL from digits
+    agility_url = os.path.join(PLAZA_BASE, str(agilityID), "results/")
+    jumping_url = os.path.join(PLAZA_BASE, str(jumpingID), "results/")
+
+    agility_class = ClassInfo(class_type="Agility", results_url=agility_url)
+    jumping_class = ClassInfo(class_type="Jumping", results_url=jumping_url)
     return agility_class, jumping_class
 
 def get_soup(url):

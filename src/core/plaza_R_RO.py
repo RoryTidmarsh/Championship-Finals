@@ -48,15 +48,17 @@ def process_eliminations(eliminations_text):
 def process_class_df(df):
     headers = df.columns.tolist()
     wanted_headers = ['Rank', 'Place (mobile)', 'KC names', 'Name', 'Run Data', 'Faults', 'Time']
+    status = "in progress"
     if "Rank" not in headers and "Place" in headers:
         # Replace headers to standard ones
         df.columns = wanted_headers
+        status = "omplete"
 
     # Remove any non numbers from Rank column
     df['Rank'] = df['Rank'].astype(str).str.extract('(\d+)').astype(int)
     df['Place (mobile)'] = df['Place (mobile)'].astype(str).str.extract('(\d+)').astype(int)
     
-    return df
+    return df, status
 
 
 def import_results(show_class, simulation=False):
@@ -236,12 +238,15 @@ def import_results(show_class, simulation=False):
     if df.empty:
         raise ValueError("Resulting DataFrame is empty - no valid competition data found")
 
-    df = process_class_df(df)
+    df,status = process_class_df(df)
+    assert isinstance(df, pd.DataFrame), "Processed results should be a DataFrame"
+    assert isinstance(eliminations, list), "Eliminations should be a list"
+    assert isinstance(status, str), "Status should be a string"
     # Output summary information
     print_debug3(f"Results DataFrame for {show_class.class_type}:\n", df.head())
     print_debug3(f"Eliminations array ({len(eliminations)} entries): {eliminations[:3] if len(eliminations) >= 3 else eliminations}")
 
-    return df, eliminations
+    return df, eliminations, status
 
 def import_running_orders(show_class, simulation=False):
     """
@@ -374,8 +379,8 @@ if __name__ == "__main__":
     print("\n==== Testing Results Importer (simulation save)====")
     # Load simulation data
     simulation_soup = read_from_file(os.path.join("NorthDerbySaves", "NorthDerbyShow_SecondClass.html"))
-    agility_class, jumping_class = find_champ_classes(simulation_soup, 'Lge')
-    jumping_class_results, jumping_class_eliminations = import_results(jumping_class, simulation=True)
+    agility_class, jumping_class,_ = find_champ_classes(simulation_soup, 'Lge')
+    jumping_class_results, jumping_class_eliminations,_ = import_results(jumping_class, simulation=True)
     jumping_running_orders = import_running_orders(jumping_class, simulation=True)
 
     # Check the types of outputs
