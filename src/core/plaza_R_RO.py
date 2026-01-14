@@ -52,7 +52,7 @@ def process_class_df(df):
     if "Rank" not in headers and "Place" in headers:
         # Replace headers to standard ones
         df.columns = wanted_headers
-        status = "omplete"
+        status = "completed"
 
     # Remove any non numbers from Rank column
     df['Rank'] = df['Rank'].astype(str).str.extract('(\d+)').astype(int)

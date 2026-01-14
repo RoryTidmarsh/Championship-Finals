@@ -226,6 +226,26 @@ def find_champClase_fromIDs(agiltiyID, jumpingID):
     jumping_class = ClassInfo(class_type="Jumping", results_url=jumping_url)
     return agility_class, jumping_class
 
+def extract_class_id(class_link):
+    """Extracts the class ID from a given class link.
+
+    Args:
+        class_link (str): The URL of the class results page.
+
+    Returns:
+        str: The extracted class ID.
+    """
+    assert isinstance(class_link, str), "class_link must be a string."
+    parts = class_link.strip('/').split('/')
+    
+    assert len(parts) == 6, "class_link format is incorrect."
+    assert parts[2] == "www.agilityplaza.com", "class_link must be from agilityplaza.com."
+    
+    ID = parts[4]
+    assert ID.isdigit() and len(ID) == 10, "Extracted ID is not a valid 10-digit numeric string."
+    
+    return ID
+
 def get_soup(url):
     """Fetches the content of a URL and returns a BeautifulSoup object."""
     response = requests.get(url)

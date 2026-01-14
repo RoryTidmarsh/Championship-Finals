@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from src.core.models import ClassInfo, Final
 
 class getNearShowsResponse(BaseModel):
@@ -14,5 +14,7 @@ class lookupIDsResponse(BaseModel):
 
 class initializeClassInfoResponse(BaseModel):
     """Response model for initializing class info."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     agilityClass: ClassInfo
     jumpingClass: ClassInfo
