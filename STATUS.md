@@ -41,8 +41,8 @@ All backend logic for finding championship shows, scraping Plaza for class URLs,
         - `ClassInfo` data model to hold class information, results, and running orders.
         - `Finals` data model to combine results from 2 classes and determine overall standings.
         - `pairingInfo` data model to hold pairing information for competitors. ***WIP***
-
 - Testing code has been added to the `if __name__ == "__main__":` sections of each module to demonstrate functionality. ***Need to convert these into proper unit tests later.***
+
 ### Next Steps
 
 1. Add module for calculations of what each competitor that is yet to run needs to qualify for the championship finals based on current results.
