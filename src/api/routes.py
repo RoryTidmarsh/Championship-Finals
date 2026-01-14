@@ -1,16 +1,25 @@
 """Define API routes."""
 from fastapi import APIRouter, Query, HTTPException
-import time
 
 router = APIRouter(prefix="/api", tags=["Championship Finals API"])
 agilityID = None
 jumpingID = None
 
-date = time.strftime("%Y-%m-%d")
-
 @router.get("/")
 def home():
     return {"message": "Welcome to the Championship Finals API"}
+
+@router.get("/near-shows")
+async def get_near_shows():
+    """Fetch the shows that are around the current date."""
+    from .handlers import get_nearby_shows
+    try:
+        response = await get_nearby_shows()
+        shows = response.shows
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"shows": shows}
 
 @router.get("/lookup-ids")
 async def lookup_ids(
