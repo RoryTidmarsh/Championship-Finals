@@ -21,6 +21,7 @@ class update_classesResponse(BaseModel):
 
     agilityClass: ClassInfo
     jumpingClass: ClassInfo
+    finalClass: Final
 
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""

@@ -58,6 +58,20 @@ class ClassInfo:
             self.order = 2
             other.order = 2
 
+    def to_dict(self):
+        """Serialize ClassInfo to JSON-serializable dictionary."""
+        return {
+            "class_type": self.class_type,
+            "status": self.status,
+            "order": self.order,
+            "running_orders_url": self.running_orders_url,
+            "results_url": self.results_url,
+            "class_number": self.class_number,
+            "classID": self.classID,
+            "eliminations_count": len(self.eliminations),
+            "results_df_rows": len(self.results_df) if self.results_df is not None else 0,
+        }
+
 class Final:
     def __init__(self, jumpingClass: ClassInfo, agilityClass: ClassInfo):
         """information about the final show"""
@@ -129,6 +143,17 @@ class Final:
 
         self.final_results_df = combined_df.sort_values("Combined_Points", ascending=True).reset_index(drop=True)
         return combined_df
+        
+    def to_dict(self):
+        """Serialize Final to JSON-serializable dictionary."""
+        return {
+            "jumpingClass": self.jumpingClass.to_dict(),
+            "agilityClass": self.agilityClass.to_dict(),
+            "status": self.status,
+            "final_results_df_rows": len(self.final_results_df) if self.final_results_df is not None else 0,
+            "jumpingWinner": self.jumpingWinner,
+            "agilityWinner": self.agilityWinner,
+        }
         
 class pairingInfo:
     def __init__(self, pairingName):

@@ -45,13 +45,16 @@ async def update_classes(
     """Update ClassInfo objects with the latest data."""
     from .handlers import update_classInfo
     try:
-        agility_class, jumping_class = await update_classInfo(str(agility), str(jumping))
+        response = await update_classInfo(str(agility), str(jumping))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    
     
     return {
-        "agilityClass": agility_class,
-        "jumpingClass": jumping_class,
+        "agilityClass": response.agilityClass.to_dict(),
+        "jumpingClass": response.jumpingClass.to_dict(),
+        "finalClass": response.finalClass.to_dict(),
     }
 
 
@@ -59,9 +62,12 @@ async def update_classes(
 async def get_final_data(
     agility: int = Query(..., description="Agility round ID"), jumping: int = Query(..., description="Jumping round ID")
     ):
+    from .handlers import update_classInfo
+    response = await update_classInfo(str(agility), str(jumping))
     return {
-        "agility": agility,
-        "jumping": jumping,
+        "agility": response.agilityClass.to_dict(),
+        "jumping": response.jumpingClass.to_dict(),
+        "final": response.finalClass.to_dict(),
         }
 
 @router.get("/requirements")
@@ -69,8 +75,7 @@ async def get_requirements(
     agility: int = Query(..., description="Agility round ID"), jumping: int = Query(..., description="Jumping round ID")
     ):
     return {
-        "agility": agility,
-        "jumping": jumping,
+        "message": "Requirements endpoint is under construction."
     }
 
 @router.get("/health")

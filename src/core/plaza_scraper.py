@@ -203,7 +203,7 @@ def find_champ_classes(soup, height):
 
     return agility_class, jumping_class
 
-def find_champClase_fromIDs(agiltiyID, jumpingID):
+def find_champClass_fromIDs(agilityID, jumpingID):
     """Find championship classes based on their IDs.
     
     Args:

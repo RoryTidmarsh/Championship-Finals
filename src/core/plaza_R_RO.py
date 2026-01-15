@@ -6,6 +6,7 @@ from .debug_logger import *
 from .models import ClassInfo
 from urllib.parse import urljoin
 import pandas as pd
+from .plaza_scraper import get_soup
 from .constants import PLAZA_RESULTS as base_url
 
 def read_from_file(filename="NorthDerbyShow.txt"):
@@ -98,18 +99,16 @@ def import_results(show_class, simulation=False):
     
     if not hasattr(show_class, 'class_type') or not show_class.class_type:
         raise ValueError("show_class must have a valid class_type attribute")
-    
+   
     soup = None
     
     if not simulation:
         # Fetch results from web
         print_debug3(f"Fetching results from URL: {show_class.results_url}")
         try:
-            response = requests.get(show_class.results_url)
-            response.raise_for_status()  # Raises requests.HTTPError for bad status codes
-            soup = BeautifulSoup(response.content, 'html.parser')
-        except requests.RequestException as e:
-            raise requests.RequestException(f"Failed to fetch results from {show_class.results_url}: {e}")
+            soup = get_soup(show_class.results_url)
+        except Exception as e:
+            raise RuntimeError(f"Failed to fetch results from {show_class.results_url}: {e}")
     else:
         # Load results from local simulation files
         print_debug3(f"Loading simulation data for class type: {show_class.class_type}")

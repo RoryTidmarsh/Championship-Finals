@@ -3,7 +3,7 @@ import src.api.models as API_models
 import pandas as pd
 import os
 import asyncio
-ClassInfo = models.ClassInfo
+from src.core.models import ClassInfo, Final
 from src.api.session import session
 
 async def get_nearby_shows(days_ahead=5, num_shows=5):
@@ -59,7 +59,7 @@ async def initialise_classInfo(show: str, height: str):
     except Exception as e:
         raise ValueError(f"Error initializing ClassInfo objects: {e}")
 
-    return agilityID, jumpingID
+    return API_models.getClassIDsResponse(agilityID=agilityID, jumpingID=jumpingID)
 
 async def get_class_ids(agility_link: str, jumping_link: str):
     """Extract class IDs from the provided class links."""
@@ -73,7 +73,7 @@ async def get_class_ids(agility_link: str, jumping_link: str):
     except Exception as e:
         raise ValueError(f"Error extracting class IDs: {e}")
 
-    return agility_id, jumping_id
+    return API_models.lookupIDsResponse(agilityID=agility_id, jumpingID=jumping_id)
 
 async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
     """Update ClassInfo object of the qualifying rounds. To be called when finals route is refreshed.
@@ -82,25 +82,32 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
     Returns:
         Tuple of updated ClassInfo objects (agility_class, jumping_class)
     """
-    # Construct URLs from IDs
-    agilityURL = os.path.join(PLAZA_BASE, "agilityClass", agilityID,"results")
-    jumpingURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"results")
+    # Construct URLs from IDs (use forward slashes for URLs, not os.path.join)
+    agilityURL = f"{PLAZA_BASE}/agilityClass/{agilityID}/results"
+    jumpingURL = f"{PLAZA_BASE}/agilityClass/{jumpingID}/results"
 
-    agility_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", agilityID,"running_orders")
-    jumping_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"running_orders")
+    print_debug(f"Agility Results URL: {agilityURL}")
+    print_debug(f"Jumping Results URL: {jumpingURL}")
+    # agility_RunningOrderURL = os.path.join(PLAZA_BASE, "/agilityClass", agilityID,"running_orders")
+    # jumping_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"running_orders")
 
 
     agility_class = ClassInfo("Agility",results_url=agilityURL)
     jumping_class = ClassInfo("Jumping",results_url=jumpingURL)
-
+    agility_class.classID = agilityID
+    jumping_class.classID = jumpingID
+    
     if not agility_class or not jumping_class:
         raise ValueError("ClassInfo objects not initialized in session. Please initialise first.")
 
-    # Import results for agility class
-    agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
+    try:
+        # Import results for agility class
+        agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
 
-    # Import results for jumping class
-    jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class, simulation=simulation)
+        # Import results for jumping class
+        jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class, simulation=simulation)
+    except Exception as e:
+        raise ValueError(f"Error importing results: {e}")
 
     # Update ClassInfo objects
     agility_class.results_df = agility_results_df
@@ -123,9 +130,10 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
     if agility_class.status == "in progress":
         agility_class.running_orders_url = agility_RunningOrderURL
 
-    session.initialize_classes(agility_class, jumping_class)
-
-    return agility_class, jumping_class
+    final_class = Final(jumping_class, agility_class)
+    final_class.combine_dfs()
+    final_class.update_status()
+    return API_models.update_classesResponse(agilityClass=agility_class, jumpingClass=jumping_class, finalClass=final_class)
     
 
 if __name__ == "__main__":
@@ -133,5 +141,10 @@ if __name__ == "__main__":
     agility_id, jumping_id = asyncio.run(initialise_classInfo("lisburn", "lge"))
     
     print_debug(f"Agility ID: {agility_id}, Jumping ID: {jumping_id}")
+
+    agility_class, jumping_class = asyncio.run(update_classInfo(agility_id, jumping_id, simulation=False))
+
+    print_debug(agility_class)
+    print_debug(jumping_class)
 
 
