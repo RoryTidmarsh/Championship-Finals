@@ -222,9 +222,7 @@ def find_champClase_fromIDs(agiltiyID, jumpingID):
     agility_url = os.path.join(PLAZA_BASE, str(agilityID), "results/")
     jumping_url = os.path.join(PLAZA_BASE, str(jumpingID), "results/")
 
-    agility_class = ClassInfo(class_type="Agility", results_url=agility_url)
-    jumping_class = ClassInfo(class_type="Jumping", results_url=jumping_url)
-    return agility_class, jumping_class
+    return {agilityID: agility_url, jumpingID: jumping_url}
 
 def extract_class_id(class_link):
     """Extracts the class ID from a given class link.

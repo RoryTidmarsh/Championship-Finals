@@ -2,13 +2,13 @@
 from fastapi import APIRouter, Query, HTTPException
 from src.api.session import session
 
-router = APIRouter(prefix="/api", tags=["Championship Finals API"])
+router = APIRouter(prefix="", tags=["Championship Finals API"])
 
 @router.get("/")
 def home():
     return {"message": "Welcome to the Championship Finals API"}
 
-@router.get("/near-shows")
+@router.get("/api/near-shows")
 async def get_near_shows():
     """Fetch the shows that are around the current date."""
     from .handlers import get_nearby_shows
@@ -20,16 +20,15 @@ async def get_near_shows():
 
     return {"shows": shows}
 
-@router.get("/lookup-ids")
+@router.get("/api/lookup-ids")
 async def lookup_ids(
     show: str = Query(..., description="Show name, e.g., 'Championship Finals 2024'"),
-    height: str = Query(..., description="Height category, e.g., 'Large'"),
+    height: str = Query(..., description="Height category, e.g., 'lge'"),
     ):
 
-    from .handlers import initialise_classInfo, get_class_ids
+    from .handlers import initialise_classInfo
     try:
-        agility_class, jumping_class = await initialise_classInfo(show, height)
-        agility_id, jumping_id = await get_class_ids(agility_class.results_url, jumping_class.results_url)
+        agility_id, jumping_id = await initialise_classInfo(show, height)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -38,25 +37,7 @@ async def lookup_ids(
         "jumpingID": jumping_id,
         }
 
-@router.get("/initialise")
-async def initialise_classes(
-    show: str = Query(..., description="Show name, e.g., 'Championship Finals 2024'"),
-    height: str = Query(..., description="Height category, e.g., 'Large'"),
-    ):
-    """Initialise ClassInfo objects for the given show and height."""
-    from .handlers import initialise_classInfo
-    try:
-        agility_class, jumping_class = await initialise_classInfo(show, height)
-        session.initialize_classes(agility_class, jumping_class)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    return {
-        "agilityClass": agility_class,
-        "jumpingClass": jumping_class,
-        }
-
-@router.get("/update-classes")
+@router.get("/api/update-classes")
 async def update_classes(
     agility: int = Query(..., description="Agility round ID"), 
     jumping: int = Query(..., description="Jumping round ID")

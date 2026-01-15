@@ -15,6 +15,7 @@ class ClassInfo:
         self.class_number = class_number
         self.status = None  # e.g., "completed", "in progress", "not started"
         self.order_hierarchy = {"first": 0, "second": 1, "same state": 2}
+        self.classID = None  # unique identifier for the class
 
         self.results_df = None  # DataFrame to hold results
         self.eliminations = []  # List to hold eliminations

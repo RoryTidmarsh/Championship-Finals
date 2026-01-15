@@ -8,8 +8,11 @@ from src.api.session import session
 
 async def get_nearby_shows(days_ahead=5, num_shows=5):
     """Fetch shows around the current date."""
-    shows_df = KC_ShowProcesser.find_closest_shows(days_ahead=days_ahead, num_shows=num_shows)
-    assert isinstance(shows_df, pd.DataFrame), "Expected shows to be a DataFrame"
+    try:
+        shows_df = KC_ShowProcesser.find_closest_shows(days_ahead=days_ahead, num_shows=num_shows)
+        assert isinstance(shows_df, pd.DataFrame), "Expected shows to be a DataFrame"
+    except Exception as e:
+        raise ValueError(f"Error fetching nearby shows: {e}")
 
     # Format DataFrame into relevant cols only
     shows_df = shows_df[['Show Name', 'Date']].rename(columns={'Show Name': 'show', 'Date': 'date'})
@@ -23,22 +26,40 @@ async def initialise_classInfo(show: str, height: str):
         # Check if show is in closest shows
         closest_shows_df = KC_ShowProcesser.find_closest_shows()
         matched_show, matched_date = KC_ShowProcesser.check_show_in_closest(show, closest_shows_df)
-
+        print_debug(f"Matched show: {matched_show} on {matched_date}")
+    except Exception as e:
+        raise ValueError(f"Error finding show '{show}': {e}")
+    try:
         # Get show URL
         show_url = plaza_scraper.find_show_url(matched_show, matched_date)
         assert show_url, f"Show URL not found for {matched_show} on {matched_date}"
         assert isinstance(show_url, str), "Expected show_url to be a string"
-        
+        print_debug(f"Found show URL: {show_url}")
+    except Exception as e:
+        raise ValueError(f"Error getting show URL: {e}")
+
+    try:
         # Get URLS of the show page
         show_soup = plaza_scraper.get_soup(show_url) # Soup first
+
+        assert show_soup, "Failed to retrieve show page soup"
+        print_debug(f"Retrieved show page soup for URL: {show_url}")
+    except Exception as e:
+        raise ValueError(f"Error fetching show page soup: {e}")
+    try:
         agility_class, jumping_class = plaza_scraper.find_champ_classes(show_soup, height)
 
-    except ValueError as ve:
-        raise ValueError(ve)
+        assert isinstance(agility_class, ClassInfo), "Expected agility_class to be ClassInfo"
+        assert isinstance(jumping_class, ClassInfo), "Expected jumping_class to be ClassInfo"
 
-    session.initialize_classes(agility_class, jumping_class)
+        agilityID = plaza_scraper.extract_class_id(agility_class.results_url)
+        jumpingID = plaza_scraper.extract_class_id(jumping_class.results_url)
+        
+        print_debug(f"agilityID: {agilityID}, jumpingID: {jumpingID}")
+    except Exception as e:
+        raise ValueError(f"Error initializing ClassInfo objects: {e}")
 
-    return agility_class, jumping_class
+    return agilityID, jumpingID
 
 async def get_class_ids(agility_link: str, jumping_link: str):
     """Extract class IDs from the provided class links."""
@@ -109,25 +130,8 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
 
 if __name__ == "__main__":
     
-    print("Running API handlers module tests...")
+    agility_id, jumping_id = asyncio.run(initialise_classInfo("lisburn", "lge"))
     
-    print(asyncio.run(get_nearby_shows()))
-
-    print("\n==== Testing get_class_ids function ====")
-    test_show = "North Derbyshire Dog Agility Club"
-    test_date = "2025-09-14"
-    test_height = "lge"
-    # show,date = asyncio.run(get_class_ids(test_show, test_date))
-    # print(f"Agility ID: {show}, Jumping ID: {date}")
-
-    agililty_class, jumping_class = asyncio.run(initialise_classInfo(test_show, test_height))
-    print(f"({__name__}) Initialised Agility Class: {agililty_class}")
-
-    agility_id, jumping_id = asyncio.run(get_class_ids(agililty_class.results_url, jumping_class.results_url))
-    print(f"({__name__}) Agility ID: {agility_id}, Jumping ID: {jumping_id}")
-
-    updated_agility_class, updated_jumping_class = asyncio.run(update_classInfo(agility_id, jumping_id, simulation=True))
-    print(f"({__name__}) Updated Agility Class: {updated_agility_class}")
-    print(f"({__name__}) Updated Jumping Class: {updated_jumping_class}")
+    print_debug(f"Agility ID: {agility_id}, Jumping ID: {jumping_id}")
 
 
