@@ -7,13 +7,10 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Manage FastAPI app lifespan - startup and shutdown.
-    Prevents asyncio.exceptions.CancelledError on shutdown.
     """
     # Startup
-    print("App starting up...")
     yield
-    # Shutdown
-    print("App shutting down...")
+    # Shutdown - no cleanup needed for now
 
 app = FastAPI(
     title="Champ Finals API",

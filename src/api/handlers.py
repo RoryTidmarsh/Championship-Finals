@@ -82,58 +82,67 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
     Returns:
         Tuple of updated ClassInfo objects (agility_class, jumping_class)
     """
-    # Construct URLs from IDs (use forward slashes for URLs, not os.path.join)
-    agilityURL = f"{PLAZA_BASE}/agilityClass/{agilityID}/results"
-    jumpingURL = f"{PLAZA_BASE}/agilityClass/{jumpingID}/results"
-
-    print_debug(f"Agility Results URL: {agilityURL}")
-    print_debug(f"Jumping Results URL: {jumpingURL}")
-    # agility_RunningOrderURL = os.path.join(PLAZA_BASE, "/agilityClass", agilityID,"running_orders")
-    # jumping_RunningOrderURL = os.path.join(PLAZA_BASE, "agilityClass", jumpingID,"running_orders")
-
-
-    agility_class = ClassInfo("Agility",results_url=agilityURL)
-    jumping_class = ClassInfo("Jumping",results_url=jumpingURL)
-    agility_class.classID = agilityID
-    jumping_class.classID = jumpingID
-    
-    if not agility_class or not jumping_class:
-        raise ValueError("ClassInfo objects not initialized in session. Please initialise first.")
-
     try:
+        # Construct URLs from IDs (use forward slashes for URLs, not os.path.join)
+        agilityURL = f"{PLAZA_BASE}/agilityClass/{agilityID}/results"
+        jumpingURL = f"{PLAZA_BASE}/agilityClass/{jumpingID}/results"
+
+        print_debug(f"[START] Updating class info for agility={agilityID}, jumping={jumpingID}")
+        print_debug(f"Agility Results URL: {agilityURL}")
+        print_debug(f"Jumping Results URL: {jumpingURL}")
+
+        agility_class = ClassInfo("Agility",results_url=agilityURL)
+        jumping_class = ClassInfo("Jumping",results_url=jumpingURL)
+        agility_class.classID = agilityID
+        jumping_class.classID = jumpingID
+        
+        if not agility_class or not jumping_class:
+            raise ValueError("ClassInfo objects not initialized in session. Please initialise first.")
+
+        print_debug(f"[STEP] Importing agility results...")
         # Import results for agility class
         agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
 
+        print_debug(f"[STEP] Importing jumping results...")
         # Import results for jumping class
         jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class, simulation=simulation)
+
+        print_debug(f"[STEP] Updating class info...")
+        # Update ClassInfo objects
+        agility_class.results_df = agility_results_df
+        agility_class.eliminations = agility_eliminations
+        agility_class.status = agility_status
+
+        jumping_class.results_df = jumping_results_df
+        jumping_class.eliminations = jumping_eliminations
+        jumping_class.status = jumping_status
+
+        # Update the class order
+        agility_class.update_order(jumping_class)
+
+        # Check expected types
+        assert isinstance(agility_class, ClassInfo), "Expected agility_class to be ClassInfo"
+        assert isinstance(jumping_class, ClassInfo), "Expected jumping_class to be ClassInfo"
+
+        if jumping_class.status == "in progress":
+            jumping_class.running_orders_url = jumping_RunningOrderURL
+        if agility_class.status == "in progress":
+            agility_class.running_orders_url = agility_RunningOrderURL
+
+        print_debug(f"[STEP] Creating final class...")
+        try:
+            final_class = Final(jumping_class, agility_class)
+            final_class.combine_dfs()
+            final_class.update_status()
+        except Exception as e:
+            print_debug(f"Error combining dfs or updating status: {e}")
+            raise ValueError(f"Error creating final class: {e}")
+        
+        print_debug(f"[END] Successfully completed update_classInfo")
+        return API_models.update_classesResponse(agilityClass=agility_class, jumpingClass=jumping_class, finalClass=final_class)
     except Exception as e:
-        raise ValueError(f"Error importing results: {e}")
-
-    # Update ClassInfo objects
-    agility_class.results_df = agility_results_df
-    agility_class.eliminations = agility_eliminations
-    agility_class.status = agility_status
-
-    jumping_class.results_df = jumping_results_df
-    jumping_class.eliminations = jumping_eliminations
-    jumping_class.status = jumping_status
-
-    # Update the class order
-    agility_class.update_order(jumping_class)
-
-    # Check expected types
-    assert isinstance(agility_class, ClassInfo), "Expected agility_class to be ClassInfo"
-    assert isinstance(jumping_class, ClassInfo), "Expected jumping_class to be ClassInfo"
-
-    if jumping_class.status == "in progress":
-        jumping_class.running_orders_url = jumping_RunningOrderURL
-    if agility_class.status == "in progress":
-        agility_class.running_orders_url = agility_RunningOrderURL
-
-    final_class = Final(jumping_class, agility_class)
-    final_class.combine_dfs()
-    final_class.update_status()
-    return API_models.update_classesResponse(agilityClass=agility_class, jumpingClass=jumping_class, finalClass=final_class)
+        print_debug(f"[ERROR] Exception in update_classInfo: {str(e)}")
+        raise
     
 
 if __name__ == "__main__":
