@@ -9,7 +9,7 @@ from .constants import (
     HEIGHT_NAMES,
     REMOVED_WORDS
 )
-
+from .debug_logger import print_debug, print_debug2, print_debug3
 __all__ = [
     'PLAZA_BASE', 
     'PLAZA_RESULTS',
@@ -20,5 +20,6 @@ __all__ = [
     "models",
     "KC_ShowProcesser",
     "plaza_scraper",
-    "plaza_R_RO"
+    "plaza_R_RO",
+    "print_debug",
 ]
