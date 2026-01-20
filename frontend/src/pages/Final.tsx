@@ -1,9 +1,12 @@
-function Final() {
+import Header from "../components/layout/Header";
+
+function Home() {
   return (
     <>
-      <p>Hello World</p>
+      <Header />
+      <p>Hello from the '/Final' page</p>
     </>
   );
 }
 
-export default Final;
+export default Home;

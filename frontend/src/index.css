@@ -1,5 +1,6 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --primary-color: #37c15e;
   line-height: 1.5;
   font-weight: 400;
 
@@ -42,12 +43,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-color);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.25s;
+  color: white;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #74c98b;
 }
 button:focus,
 button:focus-visible {
@@ -63,6 +65,11 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--primary-color);
   }
+}
+
+img.Logo {
+  width: 4rem;
+  height: 4rem;
 }
