@@ -21,7 +21,6 @@ function Home() {
         }}
       >
         <Selection />
-        <p>Hello from the '/Home' page</p>
         <button
           onClick={() => (window.location.href = "/final")}
           style={{ borderRadius: "10px" }}
