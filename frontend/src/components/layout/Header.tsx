@@ -6,9 +6,10 @@ function Header() {
         style={{
           top: 10,
           backgroundColor: "rgba(0, 0, 0, 0.8)",
-          padding: "0.75rem 1rem",
+          padding: "1rem 1.5rem",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          position: "fixed",
+          position: "relative",
+          width: "fit-content",
           borderRadius: "15px",
           left: "50%",
           transform: "translateX(-50%)",
