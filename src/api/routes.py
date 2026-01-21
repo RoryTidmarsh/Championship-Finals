@@ -2,13 +2,13 @@
 from fastapi import APIRouter, Query, HTTPException
 from src.api.session import session
 
-router = APIRouter(prefix="", tags=["Championship Finals API"])
+router = APIRouter(prefix="/api", tags=["Championship Finals API"])
 
 @router.get("/")
 def home():
     return {"message": "Welcome to the Championship Finals API"}
 
-@router.get("/api/near-shows")
+@router.get("/near-shows")
 async def get_near_shows():
     """Fetch the shows that are around the current date."""
     from .handlers import get_nearby_shows
@@ -20,7 +20,7 @@ async def get_near_shows():
 
     return {"shows": shows}
 
-@router.get("/api/lookup-ids")
+@router.get("/lookup-ids")
 async def lookup_ids(
     show: str = Query(..., description="Show name, e.g., 'Championship Finals 2024'"),
     height: str = Query(..., description="Height category, e.g., 'lge'"),
@@ -37,7 +37,7 @@ async def lookup_ids(
         "jumpingID": jumping_id,
         }
 
-@router.get("/api/update-classes")
+@router.get("/update-classes")
 async def update_classes(
     agility: int = Query(..., description="Agility round ID"), 
     jumping: int = Query(..., description="Jumping round ID")

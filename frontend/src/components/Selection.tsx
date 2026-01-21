@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+
+const ApiUrl = import.meta.env.VITE_API_URL;
+
 function dropdownForm() {
   const [btnState, setButtonState] = useState(false);
   const [agilityUrl, setAgilityUrl] = useState("");
@@ -73,13 +76,29 @@ function dropdownForm() {
 }
 
 function Selection() {
-  // Form for selecing the show and the height
-
-  const shows = ["Show 1", "Show 2", "Show 3"];
-  const heights = ["Height 1", "Height 2", "Height 3"];
-
+  const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
+  // const [heights, setHeights] = useState(["Height 1", "Height 2", "Height 3"]);
+  const heights = ["Lge", "Int", "Med", "Sml"];
   const [selectedShow, setSelectedShow] = useState("Select Show");
   const [selectedHeight, setSelectedHeight] = useState("Select height");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchShows();
+  }, []);
+
+  const fetchShows = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(ApiUrl + "/near-shows");
+      const data = await response.json();
+      setShows(data.shows);
+    } catch (error) {
+      console.error("Error fetching shows:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -99,21 +118,27 @@ function Selection() {
           id="showDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          disabled={loading}
         >
           {selectedShow}
         </button>
         <ul className="dropdown-menu" aria-labelledby="showDropdown">
+          {loading && (
+            <li>
+              <span className="dropdown-item">Loading...</span>
+            </li>
+          )}
           {shows.map((show) => (
-            <li key={show}>
+            <li key={show.show}>
               <a
                 className="dropdown-item"
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  setSelectedShow(show);
+                  setSelectedShow(show.show);
                 }}
               >
-                {show}
+                {show.show} - {show.date}
               </a>
             </li>
           ))}
@@ -148,6 +173,8 @@ function Selection() {
           ))}
         </ul>
       </div>
+      <p>Selected Show: {selectedShow}</p>
+      <p>Selected height: {selectedHeight}</p>
 
       {dropdownForm()}
     </>
