@@ -1,6 +1,6 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --primary-color: #37c15e;
+  --primary-color: #4CAF50;
   line-height: 1.5;
   font-weight: 400;
 
@@ -65,7 +65,10 @@ button {
   color: white;
 }
 button:hover {
-  background-color: #74c98b;
+  /* background-color: #51875f; */
+  translate: 0 -5px;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 20px 1px rgba(55, 193, 94, 0.4);
 }
 button:focus,
 button:focus-visible {

@@ -1,4 +1,5 @@
 import Header from "../components/layout/Header";
+import Selection from "../components/Selection";
 
 function Home() {
   return (
@@ -19,6 +20,7 @@ function Home() {
           textAlign: "center",
         }}
       >
+        <Selection />
         <p>Hello from the '/Home' page</p>
         <button
           onClick={() => (window.location.href = "/final")}
