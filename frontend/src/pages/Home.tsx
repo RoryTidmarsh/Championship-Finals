@@ -10,6 +10,8 @@ function Home() {
   const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
   const [loading, setLoading] = useState(false);
 
+  const showSelected = false;
+
   useEffect(() => {
     fetchShows();
   }, []);
@@ -50,12 +52,14 @@ function Home() {
           onShowSelect={handleShowSelect}
           onHeightSelect={handleHeightSelect}
         />
-        <div className="secondary-data-box slide-down">
-          <p>Selected Show: {selectedShow}</p>
-          <p>Selected Date: {selectedDate}</p>
-          <p>Selected Height: {selectedHeight}</p>
-          <UrlDropdown />
-        </div>
+        {showSelected && (
+          <div className="secondary-data-box">
+            <p>Selected Show: {selectedShow}</p>
+            <p>Selected Date: {selectedDate}</p>
+            <p>Selected Height: {selectedHeight}</p>
+          </div>
+        )}
+        <UrlDropdown />
         <button
           onClick={() => (window.location.href = "/final")}
           style={{ borderRadius: "10px" }}

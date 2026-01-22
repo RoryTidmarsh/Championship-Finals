@@ -29,16 +29,18 @@ function UrlDropdown() {
 
         {btnState && (
           <div
-            className="d-flex align-items-center gap-2 justify-content-center flex-column slide-down"
-            style={{
-              backgroundColor: "rgba(45, 45, 45)",
-              width: "100%",
-              padding: "0.75rem",
-              marginTop: "0.5rem",
-              borderRadius: "11px",
-              border: "1px solid #000000",
-              color: "white",
-            }}
+            // className="d-flex align-items-center gap-2 justify-content-center flex-column slide-down"
+            // style={{
+            //   backgroundColor: "rgba(45, 45, 45)",
+            //   width: "100%",
+            //   padding: "0.75rem",
+            //   marginTop: "0.5rem",
+            //   borderRadius: "11px",
+            //   border: "1px solid #000000",
+            //   color: "white",
+            // }}
+            className="secondary-data-box"
+            style={{ marginTop: "0.5rem", color: "white" }}
           >
             <h4>Input the link to results below</h4>
             <div style={{ width: "100%", maxWidth: "600px" }}>
