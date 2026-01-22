@@ -31,6 +31,18 @@ function Home() {
     }
   };
 
+  const fetchIds = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(import.meta.env.VITE_API_URL + "/");
+    } catch (error) {
+      console.error("Error fetching IDs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleShowSelect = (show: string, date: string) => {
     setSelectedShow(show);
     setSelectedDate(date);

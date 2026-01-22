@@ -1,6 +1,7 @@
 """Define API routes."""
 from fastapi import APIRouter, Query, HTTPException
 from src.api.session import session
+from src.api.models import *
 
 router = APIRouter(prefix="/api", tags=["Championship Finals API"])
 
@@ -20,10 +21,9 @@ async def get_near_shows():
 
     return {"shows": shows}
 
-@router.get("/lookup-ids")
+@router.post("/lookup-ids")
 async def lookup_ids(
-    show: str = Query(..., description="Show name, e.g., 'Championship Finals 2024'"),
-    height: str = Query(..., description="Height category, e.g., 'lge'"),
+    request: lookupIDsRequest
     ):
 
     from .handlers import initialise_classInfo
