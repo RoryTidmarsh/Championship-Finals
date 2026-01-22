@@ -47,7 +47,7 @@ function Selection({
                   onShowSelect(show.show, show.date);
                 }}
               >
-                {show.show} - {show.date}
+                {show.show} ({show.date})
               </a>
             </li>
           ))}

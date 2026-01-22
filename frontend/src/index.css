@@ -94,6 +94,7 @@ button:disabled{
   background-color: rgb(34, 109, 55);
   pointer-events: none;
   cursor: not-allowed;
+  color:#424141b1;
 }
 button:disabled:hover {
   translate: none;
