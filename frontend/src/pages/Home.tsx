@@ -9,6 +9,8 @@ function Home() {
   const [selectedDate, setSelectedDate] = useState("");
   const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
   const [loading, setLoading] = useState(false);
+  const [agilityID, setAgilityID] = useState("");
+  const [jumpingID, setJumpingID] = useState("");
 
   const showSelected = false;
 
@@ -50,11 +52,25 @@ function Home() {
       );
       const data = await response.json();
       console.log(`AgilityID: ${data.agilityID}, JumpingID: ${data.jumpingID}`);
+
+      setAgilityID(data.agilityID);
+      setJumpingID(data.jumpingID);
     } catch (error) {
       console.error("Error fetching IDs:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async () => {
+    await fetchIds();
+    console.log(agilityID, jumpingID);
+    const params = new URLSearchParams({
+      agility: agilityID,
+      jumping: jumpingID,
+    });
+    window.location.href = `/final?${params.toString()}`;
+    // console.log(`/final?${params.toString()}`);
   };
 
   const handleShowSelect = (show: string, date: string) => {
@@ -87,7 +103,7 @@ function Home() {
         )}
         <UrlDropdown />
         <button
-          onClick={fetchIds}
+          onClick={handleSubmit}
           style={{ borderRadius: "10px" }}
           disabled={
             selectedShow === "Select Show" ||
