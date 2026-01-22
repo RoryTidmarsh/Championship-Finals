@@ -11,8 +11,6 @@ function Home() {
   const [selectedDate, setSelectedDate] = useState("");
   const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
   const [loading, setLoading] = useState(false);
-  const [agilityID, setAgilityID] = useState("");
-  const [jumpingID, setJumpingID] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const showSelected = false;
@@ -35,8 +33,8 @@ function Home() {
       setLoading(false);
     }
   };
-
-  const fetchIds = async () => {
+  const handleSubmit = async () => {
+    setError(null);
     setLoading(true);
 
     try {
@@ -45,7 +43,7 @@ function Home() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json", // Let backend know a json request
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             show: selectedShow,
@@ -53,30 +51,31 @@ function Home() {
           }),
         },
       );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage =
+          errorData.detail ||
+          "Failed to fetch IDs. Please check your selection and try again.";
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
+
       const data = await response.json();
       console.log(`AgilityID: ${data.agilityID}, JumpingID: ${data.jumpingID}`);
 
-      setAgilityID(data.agilityID);
-      setJumpingID(data.jumpingID);
+      // Use response data directly for navigation (don't wait for state)
+      const params = new URLSearchParams({
+        agility: data.agilityID,
+        jumping: data.jumpingID,
+      });
+      window.location.href = `/final?${params.toString()}`;
     } catch (error) {
       console.error("Error fetching IDs:", error);
-      setError(
-        "Failed to fetch IDs. Please check your selection and try again.",
-      );
-    } finally {
+      setError("Failed to connect to the server. Please try again.");
       setLoading(false);
     }
-  };
-
-  const handleSubmit = async () => {
-    await fetchIds();
-    console.log(agilityID, jumpingID);
-    const params = new URLSearchParams({
-      agility: agilityID,
-      jumping: jumpingID,
-    });
-    window.location.href = `/final?${params.toString()}`;
-    // console.log(`/final?${params.toString()}`);
   };
 
   const handleShowSelect = (show: string, date: string) => {
