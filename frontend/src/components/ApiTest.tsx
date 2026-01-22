@@ -69,7 +69,7 @@ function ApiTest() {
     <div>
       <h2>API Test</h2>
       <button onClick={fetchHealth}>Test API</button>
-      <p>Status: {message}</p>
+      <p className="text-warning">Status: {message}</p>
       <br></br>
 
       <ShowList />

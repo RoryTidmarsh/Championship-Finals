@@ -1,104 +1,21 @@
-import { useState, useEffect } from "react";
-
-const ApiUrl = import.meta.env.VITE_API_URL;
-
-function dropdownForm() {
-  const [btnState, setButtonState] = useState(false);
-  const [agilityUrl, setAgilityUrl] = useState("");
-  const [jumpingUrl, setJumpingUrl] = useState("");
-
-  return (
-    <>
-      <div
-        className="dropdown"
-        style={{
-          width: "100%",
-        }}
-      >
-        <button
-          type="button"
-          className="btn btn-secondary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          data-bs-auto-close="outside"
-          style={{
-            width: "80%",
-            boxShadow: "0 0 10px rgba(40, 40, 40, 0.2)",
-          }}
-          onClick={() => setButtonState(!btnState)}
-        >
-          Can't find the class you're looking for?
-        </button>
-
-        {btnState && (
-          <div
-            className="d-flex align-items-center gap-2 justify-content-center flex-column"
-            style={{
-              backgroundColor: "rgba(45, 45, 45, 0.65)",
-              width: "100%",
-              padding: "0.75rem",
-              marginTop: "0.5rem",
-              borderRadius: "11px",
-              // left: "50%",
-              // transform: "translateX(-50%)",
-              color: "white",
-            }}
-          >
-            <h4>Input the link to results below</h4>
-            <div style={{ width: "100%", maxWidth: "600px" }}>
-              <div className="mb-3">
-                <label>Agility Class URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="e.g. www.agilityplaza.co.uk/agilityClass/0123456789/results"
-                  value={agilityUrl}
-                  onChange={(e) => setAgilityUrl(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <label>Jumping Class URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="e.g. www.agilityplaza.co.uk/agilityClass/9876543210/results"
-                  style={{ fontStyle: "italic" }}
-                  value={jumpingUrl}
-                  onChange={(e) => setJumpingUrl(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
-  );
+interface SelectionProps {
+  shows: Array<{ show: string; date: string }>;
+  loading: boolean;
+  selectedShow: string;
+  selectedHeight: string;
+  onShowSelect: (show: string, date: string) => void;
+  onHeightSelect: (height: string) => void;
 }
 
-function Selection() {
-  const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
-  // const [heights, setHeights] = useState(["Height 1", "Height 2", "Height 3"]);
+function Selection({
+  shows,
+  loading,
+  selectedShow,
+  selectedHeight,
+  onShowSelect,
+  onHeightSelect,
+}: SelectionProps) {
   const heights = ["Lge", "Int", "Med", "Sml"];
-  const [selectedShow, setSelectedShow] = useState("Select Show");
-  const [selectedHeight, setSelectedHeight] = useState("Select height");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchShows();
-  }, []);
-
-  const fetchShows = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(ApiUrl + "/near-shows");
-      const data = await response.json();
-      setShows(data.shows);
-    } catch (error) {
-      console.error("Error fetching shows:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -118,7 +35,7 @@ function Selection() {
           id="showDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          disabled={loading}
+          // disabled={loading}
         >
           {selectedShow}
         </button>
@@ -135,7 +52,7 @@ function Selection() {
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  setSelectedShow(show.show);
+                  onShowSelect(show.show, show.date);
                 }}
               >
                 {show.show} - {show.date}
@@ -164,7 +81,7 @@ function Selection() {
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  setSelectedHeight(height);
+                  onHeightSelect(height);
                 }}
               >
                 {height}
@@ -173,10 +90,6 @@ function Selection() {
           ))}
         </ul>
       </div>
-      <p>Selected Show: {selectedShow}</p>
-      <p>Selected height: {selectedHeight}</p>
-
-      {dropdownForm()}
     </>
   );
 }
