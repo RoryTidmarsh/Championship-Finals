@@ -35,7 +35,21 @@ function Home() {
     setLoading(true);
 
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + "/");
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + "/lookup-ids",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Let backend know a json request
+          },
+          body: JSON.stringify({
+            show: selectedShow,
+            height: selectedHeight,
+          }),
+        },
+      );
+      const data = await response.json();
+      console.log(`AgilityID: ${data.agilityID}, JumpingID: ${data.jumpingID}`);
     } catch (error) {
       console.error("Error fetching IDs:", error);
     } finally {
@@ -73,8 +87,13 @@ function Home() {
         )}
         <UrlDropdown />
         <button
-          onClick={() => (window.location.href = "/final")}
+          onClick={fetchIds}
           style={{ borderRadius: "10px" }}
+          disabled={
+            selectedShow === "Select Show" ||
+            selectedHeight === "Select height" ||
+            loading
+          }
         >
           Go to Final Page
         </button>

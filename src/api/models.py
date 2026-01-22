@@ -10,8 +10,8 @@ class lookUpIdsRequest(BaseModel):
     show: str
     height: str
 
-class lookupIDsResponse(BaseModel):
-    """Response model for looking up class IDs."""
+class getClassIDsResponse(BaseModel):
+    """Response model for getting the ID"""
     agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
     jumpingID: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
 
@@ -27,6 +27,8 @@ class update_classesResponse(BaseModel):
     agilityClass: ClassInfo
     jumpingClass: ClassInfo
     finalClass: Final
+
+
 
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""

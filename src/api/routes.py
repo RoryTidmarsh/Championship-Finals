@@ -22,20 +22,23 @@ async def get_near_shows():
     return {"shows": shows}
 
 @router.post("/lookup-ids")
-async def lookup_ids(
-    request: lookupIDsRequest
-    ):
-
+async def lookup_ids(request: lookUpIdsRequest):
+    """Look up class IDs for a show and height"""
+    print(f"DEBUG: Received request - show: {request.show}, height: {request.height}")
+    
     from .handlers import initialise_classInfo
     try:
-        agility_id, jumping_id = await initialise_classInfo(show, height)
+        response = await initialise_classInfo(request.show, request.height)
+        agility_id = response.agilityID
+        jumping_id = response.jumpingID
     except Exception as e:
+        print(f"DEBUG: Error - {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
     return {
         "agilityID": agility_id,
         "jumpingID": jumping_id,
-        }
+    }
 
 @router.get("/update-classes")
 async def update_classes(
