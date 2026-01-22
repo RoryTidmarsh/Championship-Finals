@@ -32,6 +32,9 @@ class update_classesResponse(BaseModel):
     jumpingClass: ClassInfo
     finalClass: Final
 
+class lookupIDsResponse(BaseModel):
+    agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
+    jumpingID: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
 
 
 # class initialiseClassInfoResponse(BaseModel):

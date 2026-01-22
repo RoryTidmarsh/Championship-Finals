@@ -40,10 +40,10 @@ async def lookup_ids(request: lookUpIdsRequest):
         "jumpingID": jumping_id,
     }
 
-@router.post("/lookup-url-ids", response_model=getClassIDsResponse)
+@router.post("/lookup-ids-url", response_model=getClassIDsResponse)
 async def lookup_url_ids(request: lookUpUrlIdsRequest):
     """get IDs for backup url input"""
-    print(f"DEBUG: Received request - agilityURL: {request.agilityUrl} | jumpingURL: {request.jumpingURL}")
+    print(f"DEBUG: Received request - agilityURL: {request.agilityUrl} | jumpingURL: {request.jumpingUrl}")
 
     from .handlers import get_class_ids
     try:
@@ -70,8 +70,7 @@ async def update_classes(
         response = await update_classInfo(str(agility), str(jumping))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-    
+   
     
     return {
         "agilityClass": response.agilityClass.to_dict(),

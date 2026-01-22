@@ -52,7 +52,7 @@ function Home() {
 
     let endpoint = hasUrls ? "/lookup-ids-url" : "/lookup-ids";
     let requestBody = hasUrls
-      ? { agilityUrl, jumpingUrl }
+      ? { agilityUrl: agilityUrl, jumpingUrl: jumpingUrl }
       : { show: selectedShow, height: selectedHeight };
 
     try {
@@ -130,8 +130,10 @@ function Home() {
           onClick={handleSubmit}
           style={{ borderRadius: "10px" }}
           disabled={
-            selectedShow === "Select Show" ||
-            selectedHeight === "Select height" ||
+            ((selectedShow === "Select Show" ||
+              selectedHeight === "Select height") &&
+              !agilityUrl) ||
+            !jumpingUrl ||
             loading
           }
         >

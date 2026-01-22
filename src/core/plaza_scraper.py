@@ -237,7 +237,7 @@ def extract_class_id(class_link):
     parts = class_link.strip('/').split('/')
     
     assert len(parts) == 6, "class_link format is incorrect."
-    assert parts[2] == "www.agilityplaza.com", "class_link must be from agilityplaza.com."
+    assert parts[2] == "www.agilityplaza.com" or "www.agilityplaza.co.uk", "class_link must be from agilityplaza.com."
     
     ID = parts[4]
     assert ID.isdigit() and len(ID) == 10, "Extracted ID is not a valid 10-digit numeric string."
