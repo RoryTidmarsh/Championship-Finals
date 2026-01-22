@@ -76,7 +76,7 @@ button {
   font-family: inherit;
   background-color: var(--primary-color);
   cursor: pointer;
-  transition: background-color 0.25s;
+  transition: all 0.25s;
   color: white;
 }
 button:hover {
@@ -88,6 +88,18 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+button:disabled{
+  background-color: rgb(34, 109, 55);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  translate: none;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 @media (prefers-color-scheme: light) {
