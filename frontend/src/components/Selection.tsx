@@ -19,15 +19,7 @@ function Selection({
 
   return (
     <>
-      <div
-        className="dropdown d-flex align-items-center gap-2 justify-content-center"
-        style={{
-          backgroundColor: "rgba(45, 45, 45, 0.65)",
-          width: "80%",
-          padding: "0.75rem",
-          borderRadius: "11px",
-        }}
-      >
+      <div className="secondary-data-box secondary-data-box--row">
         <p className="mb-0">Show:</p>
         <button
           className="btn btn-secondary dropdown-toggle"

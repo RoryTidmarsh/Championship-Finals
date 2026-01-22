@@ -19,6 +19,21 @@
   height: 100vh;
 }
 
+@keyframes slideDownFromAbove {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-down {
+  animation: slideDownFromAbove 0.4s ease-out forwards;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -91,4 +106,43 @@ button:focus-visible {
 img.Logo {
   width: 4rem;
   height: 4rem;
+}
+
+.main-data-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-direction: column;
+  margin-top: 2.5rem;
+  background-color: rgba(70, 70, 70, 0.65);
+  width: 80%;
+  padding: 2rem;
+  border-radius: 15px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: rgba(0, 0, 0);
+  border: 1px solid #000000;
+}
+
+.secondary-data-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-direction: column;
+  background-color: rgba(45, 45, 45, 0.65);
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 11px;
+  text-align: center;
+  border: rgba(0, 0, 0);
+  border: 1px solid #000000;
+}
+
+.secondary-data-box--row {
+  flex-direction: row;
 }
