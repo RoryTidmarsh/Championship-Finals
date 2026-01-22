@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Header from "../components/layout/Header";
 import Selection from "../components/Selection";
 import UrlDropdown from "../components/URLdropdown";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorPopup from "../components/ErrorPopup";
 
 function Home() {
   const [selectedShow, setSelectedShow] = useState("Select Show");
@@ -11,6 +13,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [agilityID, setAgilityID] = useState("");
   const [jumpingID, setJumpingID] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const showSelected = false;
 
@@ -57,6 +60,9 @@ function Home() {
       setJumpingID(data.jumpingID);
     } catch (error) {
       console.error("Error fetching IDs:", error);
+      setError(
+        "Failed to fetch IDs. Please check your selection and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -85,6 +91,8 @@ function Home() {
   return (
     <>
       <Header />
+      {loading && <LoadingSpinner />}
+      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
       <div className="main-data-box">
         <Selection
           shows={shows}
@@ -111,7 +119,7 @@ function Home() {
             loading
           }
         >
-          Go to Final Page
+          Submit
         </button>
       </div>
     </>
