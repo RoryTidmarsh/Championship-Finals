@@ -10,7 +10,7 @@ def home():
     return {"message": "Welcome to the Championship Finals API"}
 
 @router.get("/near-shows")
-async def get_near_shows():
+async def get_near_shows(response_model=getNearShowsResponse):
     """Fetch the shows that are around the current date."""
     from .handlers import get_nearby_shows
     try:
@@ -21,7 +21,7 @@ async def get_near_shows():
 
     return {"shows": shows}
 
-@router.post("/lookup-ids")
+@router.post("/lookup-ids", response_model=getClassIDsResponse)
 async def lookup_ids(request: lookUpIdsRequest):
     """Look up class IDs for a show and height"""
     print(f"DEBUG: Received request - show: {request.show}, height: {request.height}")
@@ -39,6 +39,25 @@ async def lookup_ids(request: lookUpIdsRequest):
         "agilityID": agility_id,
         "jumpingID": jumping_id,
     }
+
+@router.post("/lookup-url-ids", response_model=getClassIDsResponse)
+async def lookup_url_ids(request: lookUpUrlIdsRequest):
+    """get IDs for backup url input"""
+    print(f"DEBUG: Received request - agilityURL: {request.agilityUrl} | jumpingURL: {request.jumpingURL}")
+
+    from .handlers import get_class_ids
+    try:
+        response = await get_class_ids(request.agilityUrl, request.jumpingUrl)
+        agility_id = response.agilityID
+        jumping_id = response.jumpingID
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    return {
+        "agilityID": agility_id,
+        "jumpingID": jumping_id,
+    }
+        
 
 @router.get("/update-classes")
 async def update_classes(

@@ -10,6 +10,10 @@ class lookUpIdsRequest(BaseModel):
     show: str
     height: str
 
+class lookUpUrlIdsRequest(BaseModel):
+    agilityUrl: str
+    jumpingUrl: str
+
 class getClassIDsResponse(BaseModel):
     """Response model for getting the ID"""
     agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
