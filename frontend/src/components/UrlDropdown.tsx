@@ -1,8 +1,20 @@
 import { useState } from "react";
-function UrlDropdown() {
+interface UrlDropdownProps {
+  agilityUrl: string;
+  jumpingUrl: string;
+  onAgilityUrlChange: (url: string) => void;
+  onJumpingUrlChange: (url: string) => void;
+}
+
+function UrlDropdown({
+  agilityUrl,
+  jumpingUrl,
+  onAgilityUrlChange,
+  onJumpingUrlChange,
+}: UrlDropdownProps) {
   const [btnState, setButtonState] = useState(false);
-  const [agilityUrl, setAgilityUrl] = useState("");
-  const [jumpingUrl, setJumpingUrl] = useState("");
+  // const [agilityUrl, setAgilityUrl] = useState("");
+  // const [jumpingUrl, setJumpingUrl] = useState("");
 
   return (
     <>
@@ -51,7 +63,7 @@ function UrlDropdown() {
                   className="form-control"
                   placeholder="e.g. www.agilityplaza.co.uk/agilityClass/0123456789/results"
                   value={agilityUrl}
-                  onChange={(e) => setAgilityUrl(e.target.value)}
+                  onChange={(e) => onAgilityUrlChange(e.target.value)}
                 />
               </div>
               <div className="mb-3">
@@ -60,9 +72,8 @@ function UrlDropdown() {
                   type="text"
                   className="form-control"
                   placeholder="e.g. www.agilityplaza.co.uk/agilityClass/9876543210/results"
-                  style={{ fontStyle: "italic" }}
                   value={jumpingUrl}
-                  onChange={(e) => setJumpingUrl(e.target.value)}
+                  onChange={(e) => onJumpingUrlChange(e.target.value)}
                 />
               </div>
             </div>

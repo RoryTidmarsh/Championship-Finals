@@ -12,8 +12,10 @@ function Home() {
   const [shows, setShows] = useState<Array<{ show: string; date: string }>>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const showSelected = false;
+
+  const [agilityUrl, setAgilityUrl] = useState("");
+  const [jumpingUrl, setJumpingUrl] = useState("");
 
   useEffect(() => {
     fetchShows();
@@ -37,20 +39,30 @@ function Home() {
     setError(null);
     setLoading(true);
 
+    // Prep for 2 types of processing
+    const hasUrls = agilityUrl && jumpingUrl;
+    const hasSelection =
+      selectedShow !== "Select Show" && selectedHeight !== "Select height";
+
+    // Error parsing
+    if (!hasUrls && !hasSelection) {
+      setError("Either select show/height or input class urls");
+      return;
+    }
+
+    let endpoint = hasUrls ? "/lookup-ids-url" : "/lookup-ids";
+    let requestBody = hasUrls
+      ? { agilityUrl, jumpingUrl }
+      : { show: selectedShow, height: selectedHeight };
+
     try {
-      const response = await fetch(
-        import.meta.env.VITE_API_URL + "/lookup-ids",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            show: selectedShow,
-            height: selectedHeight,
-          }),
+      const response = await fetch(import.meta.env.VITE_API_URL + endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(requestBody),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -108,7 +120,12 @@ function Home() {
             <p>Selected Height: {selectedHeight}</p>
           </div>
         )}
-        <UrlDropdown />
+        <UrlDropdown
+          agilityUrl={agilityUrl}
+          jumpingUrl={jumpingUrl}
+          onAgilityUrlChange={setAgilityUrl}
+          onJumpingUrlChange={setJumpingUrl}
+        />
         <button
           onClick={handleSubmit}
           style={{ borderRadius: "10px" }}
