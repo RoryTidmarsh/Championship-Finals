@@ -1,28 +1,51 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
+import ResultsTable from "../components/Table";
 
-function Home() {
+function Final() {
+  const queryParams = new URLSearchParams(window.location.search);
+  const [agilityID, setAgilityID] = useState("");
+  const [jumpingID, setJumpingID] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getIds();
+  }, []);
+
+  const getIds = () => {
+    setAgilityID(queryParams.get("agility") || "");
+    setJumpingID(queryParams.get("jumping") || "");
+  };
+
+  const fetchFinal = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(import.meta.env.VITE_API_URL + "/final");
+    } catch (error) {
+      console.error("Error fetching final data:", error);
+    } finally {
+      setLoading(false);
+    }
+
+    return null;
+  };
+
   return (
     <>
       <Header />
-      <div
-        className="main-data-box d-flex align-items-center justify-content-center gap-3 flex-column"
-        style={{
-          marginTop: "2.5rem",
-          backgroundColor: "rgba(70, 70, 70, 0.65)",
-          width: "80%",
-          padding: "2rem",
-          borderRadius: "15px",
-          position: "relative", //
-          left: "50%", // Center horizontally
-          transform: "translateX(-50%)", // Center horizontally
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          textAlign: "center",
-        }}
-      >
+      <div className="main-data-box">
         <p>Hello from the '/Final' page</p>
+
+        <p>Agility ID: {agilityID}</p>
+        <p>Jumping ID: {jumpingID}</p>
+
+        <div className="secondary-data-box">
+          <ResultsTable />
+        </div>
       </div>
     </>
   );
 }
 
-export default Home;
+export default Final;
