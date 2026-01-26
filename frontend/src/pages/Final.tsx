@@ -19,9 +19,20 @@ function Final() {
   };
 
   const fetchFinal = async () => {
+    if (!agilityID || !jumpingID) {
+      console.warn("Missing agility or jumping IDs");
+      return null;
+    }
+
     setLoading(true);
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + "/final");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/final?agility=${agilityID}&jumping=${jumpingID}`,
+      );
+      if (!response.ok) throw new Error("Failed to fetch final data");
+      const data = await response.json();
+      console.log("Final data:", data);
+      return data;
     } catch (error) {
       console.error("Error fetching final data:", error);
     } finally {

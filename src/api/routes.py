@@ -81,10 +81,15 @@ async def update_classes(
 
 @router.get("/final")
 async def get_final_data(
-    agility: int = Query(..., description="Agility round ID"), jumping: int = Query(..., description="Jumping round ID")
+    agility: int = Query(..., description="Agility round ID"), 
+    jumping: int = Query(..., description="Jumping round ID")
     ):
     from .handlers import update_classInfo
-    response = await update_classInfo(str(agility), str(jumping))
+    try:
+        response = await update_classInfo(str(agility), str(jumping))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
     return {
         "agility": response.agilityClass.to_dict(),
         "jumping": response.jumpingClass.to_dict(),

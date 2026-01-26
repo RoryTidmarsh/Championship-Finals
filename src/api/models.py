@@ -36,6 +36,10 @@ class lookupIDsResponse(BaseModel):
     agilityID: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
     jumpingID: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
 
+class IdRequest(BaseModel):
+    agility: str = Field(..., pattern=r"^\d+$", description="Agility class ID")
+    jumping: str = Field(..., pattern=r"^\d+$", description="Jumping class ID")
+
 
 # class initialiseClassInfoResponse(BaseModel):
 #     """Response model for initializing class info."""
