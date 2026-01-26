@@ -108,7 +108,6 @@ function Final() {
                 Jumping Winner: {finalData.jumpingWinner}
               </h3>
               <ResultsTable
-                loading={loading}
                 data={
                   finalData.finalResults
                     ? JSON.parse(finalData.finalResults)
