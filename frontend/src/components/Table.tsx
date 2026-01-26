@@ -1,16 +1,11 @@
 import { getReadableColumnName } from "./columnMap";
 
 interface TableProps {
-  loading: boolean;
   data: any;
   positionBased?: boolean;
 }
 
-function ResultsTable({
-  loading = false,
-  data = [],
-  positionBased = true,
-}: TableProps) {
+function ResultsTable({ data = [], positionBased = true }: TableProps) {
   // Convert pandas JSON format to array of objects
   const convertPandasFormat = (pandasData: any) => {
     // If it's already an array, return it
@@ -38,9 +33,6 @@ function ResultsTable({
 
   // Get rows in array format
   const rows = convertPandasFormat(data);
-
-  // Get column names from first row
-  const colNames = rows.length > 0 ? Object.keys(rows[0]) : [];
 
   // Determine columns and sort based on positionBased prop
   let displayedCols: string[];
