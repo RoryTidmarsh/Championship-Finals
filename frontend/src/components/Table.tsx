@@ -1,3 +1,5 @@
+import { getReadableColumnName } from "./columnMap";
+
 interface TableProps {
   loading: boolean;
   data: any;
@@ -40,20 +42,59 @@ function ResultsTable({
   // Get column names from first row
   const colNames = rows.length > 0 ? Object.keys(rows[0]) : [];
 
+  // Determine columns and sort based on positionBased prop
+  let displayedCols: string[];
+  let sortedRows: typeof rows;
+
+  if (positionBased) {
+    // Position-based: show ranks, sort by Combined_Points
+    displayedCols = ["Name", "Rank_jumping", "Rank_agility", "Combined_Points"];
+    sortedRows = [...rows].sort((a, b) => {
+      const pointsA = parseFloat(a["Combined_Points"]);
+      const pointsB = parseFloat(b["Combined_Points"]);
+      return pointsA - pointsB;
+    });
+  } else {
+    // Faults-based: show faults, sort by Combined_Faults
+    displayedCols = [
+      "Name",
+      "Faults_jumping",
+      "Time_jumping",
+      "Faults_agility",
+      "Time_agility",
+      "Combined_Faults",
+      "Combined_Time",
+    ];
+    sortedRows = [...rows].sort((a, b) => {
+      const faultsA = parseFloat(a["Combined_Faults"]);
+      const faultsB = parseFloat(b["Combined_Faults"]);
+
+      // Primary sort: by faults
+      if (faultsA !== faultsB) {
+        return faultsA - faultsB;
+      }
+
+      // Secondary sort: if faults are equal, sort by time
+      const timeA = parseFloat(a["Combined_Time"]);
+      const timeB = parseFloat(b["Combined_Time"]);
+      return timeA - timeB;
+    });
+  }
+
   return (
     <>
       <table className="table">
         <thead>
           <tr>
-            {colNames.map((column) => (
-              <th key={column}>{column}</th>
+            {displayedCols.map((column) => (
+              <th key={column}>{getReadableColumnName(column)}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, rowIndex) => (
+          {sortedRows.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {colNames.map((colName) => (
+              {displayedCols.map((colName) => (
                 <td key={colName}>{row[colName]}</td>
               ))}
             </tr>

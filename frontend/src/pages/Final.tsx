@@ -9,6 +9,8 @@ function Final() {
   const [error, setError] = useState<string | null>(null);
   const [finalData, setFinalData] = useState<any>(null);
 
+  const [positionBased, setPositionBased] = useState(true);
+
   useEffect(() => {
     const fetchFinalData = async () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -59,6 +61,44 @@ function Final() {
         )}
 
         <div className="secondary-data-box">
+          <div className="d-flex align-items-center gap-3">
+            <p
+              className="mb-0"
+              style={{
+                fontWeight: "600",
+                fontSize: "1.1rem",
+              }}
+            >
+              Combine by:{" "}
+            </p>
+            <div
+              className="btn-group align-items-center justify-content-center"
+              role="group"
+            >
+              <button
+                onClick={() => setPositionBased(true)}
+                style={{
+                  backgroundColor: positionBased
+                    ? "var(--primary-color)"
+                    : "rgba(4, 64, 31, 0.8)",
+                  borderRadius: "15px 0 0 15px",
+                }}
+              >
+                {"Position"}
+              </button>
+              <button
+                onClick={() => setPositionBased(false)}
+                style={{
+                  backgroundColor: !positionBased
+                    ? "var(--primary-color)"
+                    : "rgba(4, 64, 31, 0.8)",
+                  borderRadius: "0 15px 15px 0",
+                }}
+              >
+                {"Faults & Time"}
+              </button>
+            </div>
+          </div>
           {finalData && (
             <>
               <h3 className="text-white">
@@ -74,7 +114,7 @@ function Final() {
                     ? JSON.parse(finalData.finalResults)
                     : { rows: [] }
                 }
-                positionBased={true}
+                positionBased={positionBased}
               />
             </>
           )}
