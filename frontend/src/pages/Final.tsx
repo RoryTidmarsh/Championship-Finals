@@ -51,15 +51,33 @@ function Final() {
       {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
       <div className="main-data-box">
         <p>Hello from the '/Final' page</p>
+        {finalData && (
+          <>
+            <p>Agility Status: {finalData.agilityStatus}</p>
+            <p>Jumping Status: {finalData.jumpingStatus}</p>
+          </>
+        )}
 
         <div className="secondary-data-box">
           {finalData && (
-            <ResultsTable
-              loading={loading}
-              data={finalData.final || { rows: [] }}
-              columns={[]}
-              positionBased={true}
-            />
+            <>
+              <h3 className="text-white">
+                Agility Winner: {finalData.agilityWinner}
+              </h3>
+              <h3 className="text-white">
+                Jumping Winner: {finalData.jumpingWinner}
+              </h3>
+              <ResultsTable
+                loading={loading}
+                data={
+                  finalData.finalResults
+                    ? JSON.parse(finalData.finalResults)
+                    : { rows: [] }
+                }
+                columns={[]}
+                positionBased={true}
+              />
+            </>
           )}
         </div>
       </div>

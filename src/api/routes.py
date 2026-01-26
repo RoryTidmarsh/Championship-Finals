@@ -90,11 +90,32 @@ async def get_final_data(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+    # Get the status of the classes
+    agilityStatus = response.agilityClass.status
+    jumpingStatus = response.jumpingClass.status
+
+    # Access the winners
+    agilityWinner = response.finalClass.agilityWinner
+    jumpingWinner = response.finalClass.jumpingWinner
+
+    # Accessing final dataframe
+    finalClass = response.finalClass.final_results_df
+
+    # Convert final dataframe to json object
+    final_json = finalClass.to_json()
+
+    # print the types to the console
+    print(f"agilityStatus type: {type(agilityStatus)}, jumpingStatus type: {type(jumpingStatus)}")
+    print(f"agilityWinner type: {type(agilityWinner)}, jumpingWinner type: {type(jumpingWinner)}")
+    print(f"finalClass type: {type(final_json)}")
+
     return {
-        "agility": response.agilityClass.to_dict(),
-        "jumping": response.jumpingClass.to_dict(),
-        "final": response.finalClass.to_dict(),
-        }
+        "agilityStatus": agilityStatus,
+        "jumpingStatus": jumpingStatus,
+        "agilityWinner": agilityWinner,
+        "jumpingWinner": jumpingWinner,
+        "finalResults": final_json,
+    }
 
 @router.get("/requirements")
 async def get_requirements(
