@@ -103,6 +103,8 @@ async def get_final_data(
 
     # Convert final dataframe to json object
     final_json = finalClass.to_json()
+    print(finalClass.columns.tolist())
+    print(final_json)
 
     # print the types to the console
     print(f"agilityStatus type: {type(agilityStatus)}, jumpingStatus type: {type(jumpingStatus)}")

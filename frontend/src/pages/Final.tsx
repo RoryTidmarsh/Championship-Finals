@@ -74,7 +74,6 @@ function Final() {
                     ? JSON.parse(finalData.finalResults)
                     : { rows: [] }
                 }
-                columns={[]}
                 positionBased={true}
               />
             </>
