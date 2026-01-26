@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
 import ResultsTable from "../components/Table";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorPopup from "../components/ErrorPopup";
 
 function Final() {
   const queryParams = new URLSearchParams(window.location.search);
   const [agilityID, setAgilityID] = useState("");
   const [jumpingID, setJumpingID] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getIds();
@@ -45,6 +48,8 @@ function Final() {
   return (
     <>
       <Header />
+      {loading && <LoadingSpinner />}
+      {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
       <div className="main-data-box">
         <p>Hello from the '/Final' page</p>
 
