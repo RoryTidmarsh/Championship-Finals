@@ -3,6 +3,7 @@ import Header from "../components/layout/Header";
 import ResultsTable from "../components/Table";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorPopup from "../components/ErrorPopup";
+import WinnerBox from "../components/layout/WinnerBox";
 
 function Final() {
   const [loading, setLoading] = useState(true);
@@ -103,12 +104,14 @@ function Final() {
           </div>
           {finalData && (
             <>
-              <h3 className="text-white">
-                Agility Winner: {finalData.agilityWinner}
-              </h3>
-              <h3 className="text-white">
-                Jumping Winner: {finalData.jumpingWinner}
-              </h3>
+              <div className="btn-group align-items-center justify-content-center">
+                <WinnerBox className="agility-winner">
+                  <h3>Agility Winner: {finalData.agilityWinner}</h3>
+                </WinnerBox>
+                <WinnerBox className="jumping-winner">
+                  <h3>Jumping Winner: {finalData.jumpingWinner}</h3>
+                </WinnerBox>
+              </div>
               <ResultsTable
                 data={
                   finalData.finalResults

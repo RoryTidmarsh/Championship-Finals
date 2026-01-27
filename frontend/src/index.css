@@ -1,6 +1,8 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   --primary-color: #4CAF50;
+  --agility-color: 154, 82, 161;
+  --jumping-color: 82, 141, 161;
   line-height: 1.5;
   font-weight: 400;
 
@@ -329,11 +331,11 @@ tbody tr {
 }
 
 tbody tr.jmp-win {
-  background-color: rgba(82, 141, 161, 0.62) !important;
+  background-color: rgba(var(--jumping-color), 0.62) !important;
 }
 
 tbody tr.ag-win {
-  background-color: rgba(84, 161, 82, 0.62) !important;
+  background-color: rgba(var(--agility-color), 0.52) !important;
 }
 
 tbody tr.cut-off {
@@ -353,16 +355,16 @@ tbody tr:hover {
 
 /* Jumping winner hover */
 tbody tr.jmp-win:hover {
-  background-color: rgba(82, 141, 161, 0.85) !important; /* Lighter/darker */
+  background-color: rgba(var(--jumping-color), 0.85) !important; /* Lighter/darker */
   transform: scale(1.01); /* Slight grow */
-  box-shadow: 0 2px 8px rgba(82, 141, 161, 0.5); /* Glow effect */
+  box-shadow: 0 2px 8px rgba(var(--jumping-color), 0.5); /* Glow effect */
 }
 
 /* Agility winner hover */
 tbody tr.ag-win:hover {
-  background-color: rgba(84, 161, 82, 0.85) !important;
+  background-color: rgba(var(--agility-color), 0.85) !important;
   transform: scale(1.01);
-  box-shadow: 0 2px 8px rgba(84, 161, 82, 0.5);
+  box-shadow: 0 2px 8px rgba(var(--agility-color), 0.5);
 }
 
 /* Cut-off line hover */
@@ -370,4 +372,52 @@ tbody tr.cut-off:hover {
   background-color: rgba(135, 155, 54, 0.85) !important;
   transform: scale(1.01);
   box-shadow: 0 2px 8px rgba(84, 161, 82, 0.5);
+}
+
+/* Winner Boxes */
+.agility-winner,
+.jumping-winner {
+  padding: 1rem;
+  border-radius: 12px;
+  margin: 0.5rem;
+  border: 3px solid;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.agility-winner {
+  background-color: rgba(var(--agility-color), 0.15);
+  border-color: rgba(var(--agility-color), 1);
+}
+
+.agility-winner h3 {
+  color: rgba(var(--agility-color), 1) !important;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(var(--agility-color), 0.6);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.jumping-winner {
+  background-color: rgba(var(--jumping-color), 0.15);
+  border-color: rgba(var(--jumping-color), 1);
+}
+
+.jumping-winner h3 {
+  color: rgba(var(--jumping-color), 1) !important;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(var(--jumping-color), 0.6);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.agility-winner:hover,
+.jumping-winner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
