@@ -130,11 +130,11 @@ function Home() {
           onClick={handleSubmit}
           style={{ borderRadius: "10px" }}
           disabled={
-            ((selectedShow === "Select Show" ||
-              selectedHeight === "Select height") &&
-              !agilityUrl) ||
-            !jumpingUrl ||
-            loading
+            !(
+              (selectedShow !== "Select Show" &&
+                selectedHeight !== "Select height") ||
+              (agilityUrl && jumpingUrl)
+            ) || loading
           }
         >
           Submit

@@ -129,8 +129,8 @@ img.Logo {
   flex-direction: column;
   margin-top: 2.5rem;
   background-color: rgba(70, 70, 70, 0.65);
-  width: 80%;
-  padding: 2rem;
+  width: auto;
+  padding: 5%;
   border-radius: 15px;
   position: relative;
   left: 50%;
@@ -140,6 +140,15 @@ img.Logo {
   border: rgba(0, 0, 0);
   border: 1px solid #000000;
 }
+
+@media (max-width: 768px) {
+  .main-data-box {
+    width: 105%;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+}
+
 
 .secondary-data-box{
   display: flex;
@@ -276,4 +285,52 @@ img.Logo {
   background-color: #ff5252;
   translate: 0 -3px;
   box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Table formatting  */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: auto;
+  background-color: #303030d4;
+  color: rgb(218, 218, 218);
+  font-size: 1em;
+}
+thead {
+  border-bottom: 1px solid rgb(123, 123, 123);
+  background-color: var(--primary-color);
+  color: white;
+}
+thead th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  border-left: none;
+  border-right: none;
+}
+
+/* Rounded top corners */
+thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+thead th:last-child {
+  border-top-right-radius: 8px;
+}
+tbody td {
+  padding: 3px;
+  line-height: 1.8;
+}
+/* Table Rows */
+tbody tr {
+  border-bottom: 1px solid rgb(79, 79, 79);
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #252525d4;
+}
+
+tbody tr:hover {
+  background-color: #000000;
 }

@@ -75,9 +75,10 @@ function ResultsTable({ data = [], positionBased = true }: TableProps) {
 
   return (
     <>
-      <table className="table">
+      <table>
         <thead>
           <tr>
+            <th>Place</th>
             {displayedCols.map((column) => (
               <th key={column}>{getReadableColumnName(column)}</th>
             ))}
@@ -86,6 +87,7 @@ function ResultsTable({ data = [], positionBased = true }: TableProps) {
         <tbody>
           {sortedRows.map((row, rowIndex) => (
             <tr key={rowIndex}>
+              <td>{rowIndex + 1}</td>
               {displayedCols.map((colName) => (
                 <td key={colName}>{row[colName]}</td>
               ))}
