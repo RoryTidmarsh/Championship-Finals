@@ -116,6 +116,8 @@ function Final() {
                     : { rows: [] }
                 }
                 positionBased={positionBased}
+                jumpingWinner={finalData.jumpingWinner}
+                agilityWinner={finalData.agilityWinner}
               />
             </>
           )}

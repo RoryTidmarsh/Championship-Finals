@@ -328,10 +328,46 @@ tbody tr {
   border-bottom: 1px solid rgb(79, 79, 79);
 }
 
+tbody tr.jmp-win {
+  background-color: rgba(82, 141, 161, 0.62) !important;
+}
+
+tbody tr.ag-win {
+  background-color: rgba(84, 161, 82, 0.62) !important;
+}
+
+tbody tr.cut-off {
+  background-color: rgba(135, 155, 54, 0.62) !important;
+}
+
 tbody tr:nth-child(odd) {
   background-color: #252525d4;
 }
 
+/* Normal hover - for rows without special classes */
 tbody tr:hover {
   background-color: #000000;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px #000000a6;
+}
+
+/* Jumping winner hover */
+tbody tr.jmp-win:hover {
+  background-color: rgba(82, 141, 161, 0.85) !important; /* Lighter/darker */
+  transform: scale(1.01); /* Slight grow */
+  box-shadow: 0 2px 8px rgba(82, 141, 161, 0.5); /* Glow effect */
+}
+
+/* Agility winner hover */
+tbody tr.ag-win:hover {
+  background-color: rgba(84, 161, 82, 0.85) !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(84, 161, 82, 0.5);
+}
+
+/* Cut-off line hover */
+tbody tr.cut-off:hover {
+  background-color: rgba(135, 155, 54, 0.85) !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(84, 161, 82, 0.5);
 }

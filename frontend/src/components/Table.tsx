@@ -3,9 +3,16 @@ import { getReadableColumnName } from "./columnMap";
 interface TableProps {
   data: any;
   positionBased?: boolean;
+  agilityWinner?: string;
+  jumpingWinner?: string;
 }
 
-function ResultsTable({ data = [], positionBased = true }: TableProps) {
+function ResultsTable({
+  data = [],
+  positionBased = true,
+  agilityWinner = "",
+  jumpingWinner = "",
+}: TableProps) {
   // Convert pandas JSON format to array of objects
   const convertPandasFormat = (pandasData: any) => {
     // If it's already an array, return it
@@ -88,13 +95,11 @@ function ResultsTable({ data = [], positionBased = true }: TableProps) {
           {sortedRows.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              style={
-                rowIndex === 19
-                  ? {
-                      backgroundColor: "rgba(135, 155, 54, 0.62)",
-                    }
-                  : {}
-              }
+              className={`
+                ${rowIndex === 19 ? "cut-off" : ""}
+                ${row["Name"] === agilityWinner ? "ag-win" : ""}
+                ${row["Name"] === jumpingWinner ? "jmp-win" : ""}
+              `.trim()}
             >
               <td>{rowIndex + 1}</td>
               {displayedCols.map((colName) => (
