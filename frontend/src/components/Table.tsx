@@ -96,9 +96,15 @@ function ResultsTable({
             <tr
               key={rowIndex}
               className={`
-                ${rowIndex === 19 ? "cut-off" : ""}
-                ${row["Name"] === agilityWinner ? "ag-win" : ""}
-                ${row["Name"] === jumpingWinner ? "jmp-win" : ""}
+                ${
+                  row["Name"] === agilityWinner
+                    ? "ag-win"
+                    : row["Name"] === jumpingWinner
+                      ? "jmp-win"
+                      : rowIndex === 19
+                        ? "cut-off"
+                        : ""
+                }
               `.trim()}
             >
               <td>{rowIndex + 1}</td>
