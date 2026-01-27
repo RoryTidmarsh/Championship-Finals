@@ -86,7 +86,16 @@ function ResultsTable({ data = [], positionBased = true }: TableProps) {
         </thead>
         <tbody>
           {sortedRows.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr
+              key={rowIndex}
+              style={
+                rowIndex === 19
+                  ? {
+                      backgroundColor: "rgba(135, 155, 54, 0.62)",
+                    }
+                  : {}
+              }
+            >
               <td>{rowIndex + 1}</td>
               {displayedCols.map((colName) => (
                 <td key={colName}>{row[colName]}</td>
