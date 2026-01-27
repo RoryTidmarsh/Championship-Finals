@@ -100,6 +100,7 @@ async def get_final_data(
 
     # Accessing final dataframe
     finalClass = response.finalClass.final_results_df
+    finalStatus = response.finalClass.status
 
     # Convert final dataframe to json object
     final_json = finalClass.to_json()
@@ -114,6 +115,7 @@ async def get_final_data(
     return {
         "agilityStatus": agilityStatus,
         "jumpingStatus": jumpingStatus,
+        "finalStatus": finalStatus,
         "agilityWinner": agilityWinner,
         "jumpingWinner": jumpingWinner,
         "finalResults": final_json,
@@ -131,10 +133,3 @@ async def get_requirements(
 async def health_check():
     """Check if API is running"""
     return {"status": "healthy"}
-
-@router.get("/status")
-async def get_status():
-    return {
-        "agility": session.agility_class.status if session.agility_class else None,
-        "jumping": session.jumping_class.status if session.jumping_class else None,
-    }

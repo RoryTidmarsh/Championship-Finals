@@ -53,12 +53,30 @@ function Final() {
       {loading && <LoadingSpinner />}
       {error && <ErrorPopup message={error} onClose={() => setError(null)} />}
       <div className="main-data-box">
-        <p>Hello from the '/Final' page</p>
         {finalData && (
-          <>
-            <p>Agility Status: {finalData.agilityStatus}</p>
-            <p>Jumping Status: {finalData.jumpingStatus}</p>
-          </>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <div className="status-box">
+              <span className="status-label">Agility:</span>
+              <span className="status-value">{finalData.agilityStatus}</span>
+            </div>
+            <div className="status-box">
+              <span className="status-label">Jumping:</span>
+              <span className="status-value">{finalData.jumpingStatus}</span>
+            </div>
+            <div className="status-box">
+              <span className="status-label">Final:</span>
+              <span className="status-value">
+                {finalData.finalStatus || "Complete"}
+              </span>
+            </div>
+          </div>
         )}
 
         <div className="secondary-data-box">
