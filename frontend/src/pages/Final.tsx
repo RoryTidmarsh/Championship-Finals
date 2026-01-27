@@ -78,22 +78,24 @@ function Final() {
               <button
                 onClick={() => setPositionBased(true)}
                 style={{
-                  backgroundColor: !positionBased
+                  backgroundColor: positionBased
                     ? "var(--primary-color)"
                     : "rgba(4, 64, 31, 0.8)",
                   borderRadius: "15px 0 0 15px",
                 }}
+                disabled={positionBased}
               >
                 {"Position"}
               </button>
               <button
                 onClick={() => setPositionBased(false)}
                 style={{
-                  backgroundColor: positionBased
+                  backgroundColor: !positionBased
                     ? "var(--primary-color)"
                     : "rgba(4, 64, 31, 0.8)",
                   borderRadius: "0 15px 15px 0",
                 }}
+                disabled={!positionBased}
               >
                 {"Faults & Time"}
               </button>

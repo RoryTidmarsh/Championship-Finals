@@ -16,7 +16,7 @@
 
 #root {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 @keyframes slideDownFromAbove {
@@ -49,6 +49,10 @@ p {
   color:#ffffff;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -58,8 +62,6 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  display: flex;
-  place-items: center;
 }
 
 h1 {
@@ -106,7 +108,6 @@ button:disabled:hover {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
   }
   a:hover {
     color: #747bff;
