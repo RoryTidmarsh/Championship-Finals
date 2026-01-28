@@ -595,3 +595,63 @@ tbody tr.cut-off:hover {
   color: var(--primary-color);
   font-weight: 600;
 }
+
+/* Add these rules to your existing table styles */
+
+/* Limit Name column width and wrap text */
+table td:nth-child(2),
+table th:nth-child(2) {
+  max-width: 150px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+}
+
+/* Optional: Give other columns fixed widths to prevent them from shrinking */
+table td:not(:nth-child(2)),
+table th:not(:nth-child(2)) {
+  white-space: nowrap;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  table td:nth-child(2),
+  table th:nth-child(2) {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  table td:nth-child(2),
+  table th:nth-child(2) {
+    max-width: 80px;
+  }
+}
+
+/* Reduce horizontal padding for table cells */
+table td,
+table th {
+  padding: 8px 4px; /* vertical horizontal */
+}
+
+/* Or if you want even less padding */
+table td,
+table th {
+  padding: 8px 2px;
+}
+
+/* Mobile adjustments - even less padding on small screens */
+@media (max-width: 768px) {
+  table td,
+  table th {
+    padding: 6px 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  table td,
+  table th {
+    padding: 4px 2px;
+  }
+}
