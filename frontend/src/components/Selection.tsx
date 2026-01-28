@@ -30,9 +30,8 @@ function Selection({
   return (
     <>
       <div 
-        className="secondary-data-box" 
+        className="secondary-data-box secondary-data-box--row" 
         style={{ 
-          flexDirection: "row",
           flexWrap: "wrap",
           gap: "0.75rem",
           alignItems: "center"
