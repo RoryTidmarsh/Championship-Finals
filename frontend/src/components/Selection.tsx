@@ -17,6 +17,16 @@ function Selection({
 }: SelectionProps) {
   const heights = ["Lge", "Int", "Med", "Sml"];
 
+  const formatDate = (date: string) => {
+    // Date comes in at YYYY-MM-DD
+    // Convert to DD-MMM-YY
+    const dateObj = new Date(date);
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const month = dateObj.toLocaleString("en-US", { month: "short" });
+    const year = String(dateObj.getFullYear()).slice(-2);
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <>
       <div className="secondary-data-box secondary-data-box--row">
@@ -47,7 +57,7 @@ function Selection({
                   onShowSelect(show.show, show.date);
                 }}
               >
-                {show.show} ({show.date})
+                {show.show} ({formatDate(show.date)})
               </a>
             </li>
           ))}
