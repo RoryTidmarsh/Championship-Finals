@@ -17,7 +17,8 @@ def find_closest_shows(champ_shows_filepath = "Champ shows.csv", days_ahead=0, n
         Pandas Dataframe: Dataframe of the closest shows with columns added columns 'timedelta', and 'is_future'.
     """
     tomorrow_date = datetime.now().date() + pd.Timedelta(days=days_ahead)
-    champ_shows_df = pd.read_csv(champ_shows_filepath, parse_dates=['Date'])
+    champ_shows_df = pd.read_csv(champ_shows_filepath)
+    champ_shows_df["Date"] = pd.to_datetime(champ_shows_df["Date"], format="%d/%m/%Y")
     champ_shows_df['timedelta'] = (champ_shows_df['Date'].dt.date - tomorrow_date).abs()
     champ_shows_df['is_future'] = champ_shows_df['Date'].dt.date > tomorrow_date
     champ_shows_df = champ_shows_df.sort_values(by='timedelta')
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     test_show_name = "North Derbyshire Dog Agility Club"
 
     print("\n==== Testing find shows function can read csv ====")
-    closest_shows_df = find_closest_shows(champ_shows_filepath="champ shows.csv", days_ahead=0, num_shows=30)
+    closest_shows_df = find_closest_shows(champ_shows_filepath="Champ shows.csv", days_ahead=0, num_shows=30)
     print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']].head()}")
 
     print("\n==== Testing check show in show dataset ====")
