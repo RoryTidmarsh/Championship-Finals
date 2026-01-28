@@ -10,9 +10,11 @@ function Header() {
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           position: "relative",
           width: "fit-content",
+          maxWidth: "95%",
           borderRadius: "15px",
           left: "50%",
           transform: "translateX(-50%)",
+          flexWrap: "wrap",
         }}
       >
         <img
@@ -24,7 +26,12 @@ function Header() {
         ></img>
         <h1
           className="mt-0 text-green fw-bold"
-          style={{ fontSize: "2.25rem", color: "#37c15e" }}
+          style={{ 
+            fontSize: "2.25rem", 
+            color: "#37c15e",
+            textAlign: "center",
+            wordBreak: "break-word"
+          }}
         >
           Champ Finals <strong>Live</strong>
         </h1>

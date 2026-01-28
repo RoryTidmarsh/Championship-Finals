@@ -97,7 +97,7 @@ function ResultsTable({
   }
 
   return (
-    <>
+    <div className="table-container">
       <table>
         <thead>
           <tr>
@@ -131,7 +131,7 @@ function ResultsTable({
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
