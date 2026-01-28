@@ -46,15 +46,24 @@ function ResultsTable({
   let sortedRows: typeof rows;
 
   if (positionBased) {
-    // Position-based: show ranks, sort by Combined_Points
+    // Position-based: show ranks, sort by Combined_Points, then by Rank_agility
     displayedCols = ["Name", "Rank_jumping", "Rank_agility", "Combined_Points"];
     sortedRows = [...rows].sort((a, b) => {
       const pointsA = parseFloat(a["Combined_Points"]);
       const pointsB = parseFloat(b["Combined_Points"]);
-      return pointsA - pointsB;
+
+      // Primary sort: by combined points
+      if (pointsA !== pointsB) {
+        return pointsA - pointsB;
+      }
+
+      // Tiebreaker: if points are equal, better agility rank goes first
+      const agilityRankA = parseFloat(a["Rank_agility"]);
+      const agilityRankB = parseFloat(b["Rank_agility"]);
+      return agilityRankA - agilityRankB;
     });
   } else {
-    // Faults-based: show faults, sort by Combined_Faults
+    // Faults-based: show faults, sort by Combined_Faults, then by Combined_Time, then by Rank_agility
     displayedCols = [
       "Name",
       "Faults_jumping",
@@ -76,7 +85,14 @@ function ResultsTable({
       // Secondary sort: if faults are equal, sort by time
       const timeA = parseFloat(a["Combined_Time"]);
       const timeB = parseFloat(b["Combined_Time"]);
-      return timeA - timeB;
+      if (timeA !== timeB) {
+        return timeA - timeB;
+      }
+
+      // Tertiary sort: if both faults and time are equal, better agility rank goes first
+      const agilityRankA = parseFloat(a["Rank_agility"]);
+      const agilityRankB = parseFloat(b["Rank_agility"]);
+      return agilityRankA - agilityRankB;
     });
   }
 
