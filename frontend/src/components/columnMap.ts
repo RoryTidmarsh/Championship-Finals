@@ -11,18 +11,18 @@ const columnMap = {
     'Combined_Time': 'Total Time'
 };
 
-// Mobile-friendly shortened column names
+// Mobile-friendly shortened column names with line breaks for compact display
 const columnMapMobile = {
-    'Rank_jumping': 'Jmp Rank',
+    'Rank_jumping': 'Jmp\nRank',
     'Name': 'Name',
-    'Faults_jumping': 'Jmp Faults',
-    'Time_jumping': 'Jmp Time',
-    'Rank_agility': 'Ag Rank',
-    'Faults_agility': 'Ag Faults',
-    'Time_agility': 'Ag Time',
+    'Faults_jumping': 'Jmp\nFaults',
+    'Time_jumping': 'Jmp\nTime',
+    'Rank_agility': 'Ag\nRank',
+    'Faults_agility': 'Ag\nFaults',
+    'Time_agility': 'Ag\nTime',
     'Combined_Points': 'Total',
-    'Combined_Faults': 'Tot Faults',
-    'Combined_Time': 'Tot Time'
+    'Combined_Faults': 'Tot\nFaults',
+    'Combined_Time': 'Tot\nTime'
 };
 
 type ColumnKey = keyof typeof columnMap;

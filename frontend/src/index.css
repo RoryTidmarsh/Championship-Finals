@@ -164,17 +164,19 @@ img.Logo {
   /* Make table more readable on mobile */
   table {
     font-size: 0.85em;
-    min-width: 500px;
+    min-width: 450px;
   }
 
   /* Faults & Time table on mobile */
   table.faults-time-table {
-    min-width: 650px;
+    min-width: 600px;
   }
 
   thead th {
     padding: 8px 4px;
     font-size: 0.9em;
+    white-space: pre-line;
+    line-height: 1.2;
   }
 
   tbody td {
@@ -238,16 +240,18 @@ img.Logo {
   /* Even smaller table text on small phones */
   table {
     font-size: 0.75em;
-    min-width: 450px;
+    min-width: 400px;
   }
 
   /* Faults & Time table on small phones */
   table.faults-time-table {
-    min-width: 550px;
+    min-width: 500px;
   }
 
   thead th {
     padding: 6px 2px;
+    white-space: pre-line;
+    line-height: 1.2;
   }
 
   tbody td {
