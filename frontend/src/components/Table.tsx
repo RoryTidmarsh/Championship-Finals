@@ -14,18 +14,36 @@ function ResultsTable({
   agilityWinner = "",
   jumpingWinner = "",
 }: TableProps) {
-  // Track if we're on mobile
-  const [isMobile, setIsMobile] = useState(false);
+  // Track if we're on mobile - initialize with current window width if available
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
 
   useEffect(() => {
+    // Throttle resize handler to prevent excessive re-renders
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        setIsMobile(window.innerWidth <= 768);
+      }, 150);
     };
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   // Convert pandas JSON format to array of objects

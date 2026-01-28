@@ -25,7 +25,9 @@ const columnMapMobile = {
     'Combined_Time': 'Tot Time'
 };
 
+type ColumnKey = keyof typeof columnMap;
+
 export function getReadableColumnName(apiName: string, isMobile: boolean = false): string {
     const map = isMobile ? columnMapMobile : columnMap;
-    return map[apiName as keyof typeof columnMap] || apiName;
+    return map[apiName as ColumnKey] || apiName;
 }
