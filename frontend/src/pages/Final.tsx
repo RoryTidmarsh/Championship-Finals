@@ -57,9 +57,10 @@ function Final() {
           <div
             style={{
               display: "flex",
-              gap: "1rem",
+              gap: "0.5rem",
               justifyContent: "center",
               flexWrap: "wrap",
+              width: "100%",
             }}
           >
             <div className="status-box">
@@ -80,7 +81,7 @@ function Final() {
         )}
 
         <div className="secondary-data-box">
-          <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center gap-3" style={{ flexWrap: "wrap", justifyContent: "center" }}>
             <p
               className="mb-0"
               style={{
@@ -93,6 +94,7 @@ function Final() {
             <div
               className="btn-group align-items-center justify-content-center"
               role="group"
+              style={{ flexShrink: 0 }}
             >
               <button
                 onClick={() => setPositionBased(true)}
@@ -122,11 +124,20 @@ function Final() {
           </div>
           {finalData && (
             <>
-              <div className="btn-group align-items-center justify-content-center">
-                <WinnerBox className="agility-winner">
+              <div 
+                className="btn-group align-items-center justify-content-center"
+                style={{ 
+                  display: "flex", 
+                  flexDirection: "row", 
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                  width: "100%"
+                }}
+              >
+                <WinnerBox className="agility-winner" style={{ flex: "1 1 250px", minWidth: "200px" }}>
                   <h3>Agility Winner: {finalData.agilityWinner}</h3>
                 </WinnerBox>
-                <WinnerBox className="jumping-winner">
+                <WinnerBox className="jumping-winner" style={{ flex: "1 1 250px", minWidth: "200px" }}>
                   <h3>Jumping Winner: {finalData.jumpingWinner}</h3>
                 </WinnerBox>
               </div>

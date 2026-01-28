@@ -1,4 +1,5 @@
 import { getReadableColumnName } from "./columnMap";
+import { useState, useEffect } from "react";
 
 interface TableProps {
   data: any;
@@ -13,6 +14,38 @@ function ResultsTable({
   agilityWinner = "",
   jumpingWinner = "",
 }: TableProps) {
+  // Track if we're on mobile - initialize with current window width if available
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    // Throttle resize handler to prevent excessive re-renders
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    
+    const checkMobile = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        setIsMobile(window.innerWidth <= 768);
+      }, 150);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
   // Convert pandas JSON format to array of objects
   const convertPandasFormat = (pandasData: any) => {
     // If it's already an array, return it
@@ -97,13 +130,13 @@ function ResultsTable({
   }
 
   return (
-    <>
-      <table>
+    <div className="table-container">
+      <table className={positionBased ? "" : "faults-time-table"}>
         <thead>
           <tr>
             <th>Place</th>
             {displayedCols.map((column) => (
-              <th key={column}>{getReadableColumnName(column)}</th>
+              <th key={column}>{getReadableColumnName(column, isMobile)}</th>
             ))}
           </tr>
         </thead>
@@ -131,7 +164,7 @@ function ResultsTable({
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 

@@ -29,7 +29,14 @@ function Selection({
 
   return (
     <>
-      <div className="secondary-data-box secondary-data-box--row">
+      <div 
+        className="secondary-data-box secondary-data-box--row" 
+        style={{ 
+          flexWrap: "wrap",
+          gap: "0.75rem",
+          alignItems: "center"
+        }}
+      >
         <p className="mb-0">Show:</p>
         <button
           className="btn btn-secondary dropdown-toggle"
@@ -37,6 +44,7 @@ function Selection({
           id="showDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          style={{ minWidth: "150px" }}
           // disabled={loading}
         >
           {selectedShow}
@@ -63,7 +71,7 @@ function Selection({
           ))}
         </ul>
 
-        <p className="mb-0" style={{ marginLeft: "2rem" }}>
+        <p className="mb-0">
           Height:
         </p>
         <button
@@ -72,6 +80,7 @@ function Selection({
           id="heightDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          style={{ minWidth: "120px" }}
         >
           {selectedHeight}
         </button>
