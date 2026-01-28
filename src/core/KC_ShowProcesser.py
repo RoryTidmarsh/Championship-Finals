@@ -130,7 +130,8 @@ if __name__ == "__main__":
 
     print("\n==== Testing find shows function can read csv ====")
     closest_shows_df = find_closest_shows(champ_shows_filepath="Champ shows.csv", days_ahead=0, num_shows=30)
-    print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']].head()}")
+    # print_debug(f"Closest Shows:\n{closest_shows_df[['Show Name', 'Date']].head()}")
+    print_debug(f"Closest Shows:\n{closest_shows_df.info()}")
 
     print("\n==== Testing check show in show dataset ====")
     try:

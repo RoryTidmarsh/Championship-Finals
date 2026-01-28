@@ -15,7 +15,7 @@ async def get_nearby_shows(days_ahead=5, num_shows=5):
         raise ValueError(f"Error fetching nearby shows: {e}")
 
     # Format DataFrame into relevant cols only
-    shows_df = shows_df[['Show Name', 'Date']].rename(columns={'Show Name': 'show', 'Date': 'date'})
+    shows_df = shows_df[['Show Name', 'Date']].rename(columns={'Show Name': 'show', 'Date': 'date', 'Small': 'sml', 'Medium': 'med', 'Intermediate': 'Int', 'Large': 'Lge'})
     shows_df['date'] = shows_df['date'].dt.strftime('%Y-%m-%d')
     shows_data = shows_df.to_dict(orient='records')
     return API_models.getNearShowsResponse(shows=shows_data)
