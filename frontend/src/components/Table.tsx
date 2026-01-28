@@ -1,4 +1,5 @@
 import { getReadableColumnName } from "./columnMap";
+import { useState, useEffect } from "react";
 
 interface TableProps {
   data: any;
@@ -13,6 +14,20 @@ function ResultsTable({
   agilityWinner = "",
   jumpingWinner = "",
 }: TableProps) {
+  // Track if we're on mobile
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Convert pandas JSON format to array of objects
   const convertPandasFormat = (pandasData: any) => {
     // If it's already an array, return it
@@ -98,12 +113,12 @@ function ResultsTable({
 
   return (
     <div className="table-container">
-      <table>
+      <table className={positionBased ? "" : "faults-time-table"}>
         <thead>
           <tr>
             <th>Place</th>
             {displayedCols.map((column) => (
-              <th key={column}>{getReadableColumnName(column)}</th>
+              <th key={column}>{getReadableColumnName(column, isMobile)}</th>
             ))}
           </tr>
         </thead>

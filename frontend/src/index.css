@@ -167,13 +167,18 @@ img.Logo {
     min-width: 500px;
   }
 
+  /* Faults & Time table on mobile */
+  table.faults-time-table {
+    min-width: 650px;
+  }
+
   thead th {
-    padding: 8px 6px;
+    padding: 8px 4px;
     font-size: 0.9em;
   }
 
   tbody td {
-    padding: 6px 4px;
+    padding: 6px 3px;
   }
 
   /* Winner boxes stack vertically */
@@ -236,8 +241,13 @@ img.Logo {
     min-width: 450px;
   }
 
+  /* Faults & Time table on small phones */
+  table.faults-time-table {
+    min-width: 550px;
+  }
+
   thead th {
-    padding: 6px 3px;
+    padding: 6px 2px;
   }
 
   tbody td {
@@ -432,6 +442,11 @@ table {
   background-color: #303030d4;
   color: rgb(218, 218, 218);
   font-size: 1em;
+}
+
+/* Faults & Time table needs more width due to additional columns */
+table.faults-time-table {
+  min-width: 800px;
 }
 thead {
   border-bottom: 1px solid rgb(123, 123, 123);

@@ -11,6 +11,21 @@ const columnMap = {
     'Combined_Time': 'Total Time'
 };
 
-export function getReadableColumnName(apiName: string): string {
-    return columnMap[apiName as keyof typeof columnMap] || apiName;
+// Mobile-friendly shortened column names
+const columnMapMobile = {
+    'Rank_jumping': 'Jmp Rank',
+    'Name': 'Name',
+    'Faults_jumping': 'Jmp Faults',
+    'Time_jumping': 'Jmp Time',
+    'Rank_agility': 'Ag Rank',
+    'Faults_agility': 'Ag Faults',
+    'Time_agility': 'Ag Time',
+    'Combined_Points': 'Total',
+    'Combined_Faults': 'Tot Faults',
+    'Combined_Time': 'Tot Time'
+};
+
+export function getReadableColumnName(apiName: string, isMobile: boolean = false): string {
+    const map = isMobile ? columnMapMobile : columnMap;
+    return map[apiName as keyof typeof columnMap] || apiName;
 }
