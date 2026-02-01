@@ -111,4 +111,54 @@ def test_class_info_update_order(status1, status2, expected_order1, expected_ord
     assert class1.order == expected_order1
     assert class2.order == expected_order2
 
+# Test ClassInfo to_dict method
+def test_class_info_to_dict_basic():
+    class_info = ClassInfo(
+        class_type="Agility",
+        class_number=5,
+        order=1,
+        running_orders_url="http://example.com/ro",
+        results_url="http://example.com/results"
+    )
+    class_info.status = "completed"
+    class_info.classID = "ABC123"
     
+    result = class_info.to_dict()
+    
+    assert result["class_type"] == "Agility"
+    assert result["class_number"] == 5
+    assert result["order"] == 1
+    assert result["running_orders_url"] == "http://example.com/ro"
+    assert result["results_url"] == "http://example.com/results"
+    assert result["status"] == "completed"
+    assert result["classID"] == "ABC123"
+    assert result["eliminations_count"] == 0
+    assert result["results_df_rows"] == 0
+
+
+def test_class_info_to_dict_with_data():
+    class_info = ClassInfo(class_type="Jumping", class_number=3)
+    class_info.status = "in progress"
+    class_info.eliminations = ["Dog1", "Dog2", "Dog3"]
+    class_info.results_df = [1, 2, 3, 4, 5]  # Mock DataFrame as list with 5 items
+    
+    result = class_info.to_dict()
+    
+    assert result["class_type"] == "Jumping"
+    assert result["eliminations_count"] == 3
+    assert result["results_df_rows"] == 5
+
+
+def test_class_info_to_dict_none_values():
+    class_info = ClassInfo(class_type="Agility")
+    
+    result = class_info.to_dict()
+    
+    assert result["class_number"] is None
+    assert result["running_orders_url"] is None
+    assert result["results_url"] is None
+    assert result["status"] is None
+    assert result["classID"] is None
+    assert result["eliminations_count"] == 0
+    assert result["results_df_rows"] == 0
+
