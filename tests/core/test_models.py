@@ -86,3 +86,29 @@ def test_class_info_update_status(running_orders_url, results_url, expected_stat
                            results_url=results_url)
     class_info.update_status()
     assert class_info.status == expected_status
+
+# Test ClassInfo update_order method
+@pytest.mark.parametrize(
+        "status1,status2,expected_order1,expected_order2",
+    [
+        ("completed", "completed", 2, 2),
+        ("in progress", "in progress", 2, 2),
+        ("not started", "not started", 2, 2),
+        ("completed", "in progress", 0, 1),
+        ("in progress", "not started", 0, 1),
+        ("completed", "not started", 0, 1),
+    ],
+)
+def test_class_info_update_order(status1, status2, expected_order1, expected_order2):
+    class1 = ClassInfo(class_type="Agility")
+    class2 = ClassInfo(class_type="Jumping")
+    
+    class1.status = status1
+    class2.status = status2
+
+    class1.update_order(class2)
+
+    assert class1.order == expected_order1
+    assert class2.order == expected_order2
+
+    
