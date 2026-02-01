@@ -3,8 +3,19 @@ from .debug_logger import *
 # from .plaza_resultsRunningOrder import import_running_orders
 
 class ClassInfo:
-    def __init__(self, class_type, class_number = None, order = 0, running_orders_url = None, results_url = None):
+    def __init__(self, class_type: str, class_number: int = None, order: int = 0, running_orders_url: str = None, results_url: str = None):
         """information about a specific class within a show"""
+        
+        if not isinstance(class_type, str):
+            raise TypeError("class_type must be a string")
+        if not isinstance(class_number, (int, type(None))):
+            raise TypeError("class_number must be an integer or None")
+        if not isinstance(order, int):
+            raise TypeError("order must be an integer")
+        if not isinstance(running_orders_url, (str, type(None))):
+            raise TypeError("running_orders_url must be a string or None")
+        if not isinstance(results_url, (str, type(None))):
+            raise TypeError("results_url must be a string or None")
         if class_type.capitalize() not in ["Agility", "Jumping"]:
             raise ValueError("class_type must be either 'Agility' or 'Jumping'")
         self.class_type = class_type.capitalize()
@@ -156,8 +167,10 @@ class Final:
         }
         
 class pairingInfo:
-    def __init__(self, pairingName):
+    def __init__(self, pairingName: str):
         """information about a specific pairing of dog and handler"""
+        if not isinstance(pairingName, str):
+            raise TypeError("pairingName must be a string")
         self.pairingName = pairingName
 
         self.jumpingRank = None
