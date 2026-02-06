@@ -258,3 +258,26 @@ def test_find_champClass_fromIDs_valid(agilityID, jumpingID, expected_ag_url, ex
 
     assert agility_url == expected_ag_url, f"Expected agility URL '{expected_ag_url}', got '{agility_url}'"
     assert jumping_url == expected_jump_url, f"Expected jumping URL '{expected_jump_url}', got '{jumping_url}'"
+
+@pytest.mark.parametrize(
+    "agilityID,jumpingID",
+    [
+        (None, 9876543210), #agilityID not provided
+        (1234567890, None), #jumpingID not provided
+        ("notanumber", 9876543210), #agilityID not a number
+        (1234567890, "notanumber"), #jumpingID not a number
+        (123, 9876543210), #agilityID not 10 digits
+        (1234567890, 123), #jumpingID not 10 digits
+    ],
+    ids=[
+        "agilityID-none",
+        "jumpingID-none",
+        "agilityID-not-number",
+        "jumpingID-not-number",
+        "agilityID-not-10-digits",
+        "jumpingID-not-10-digits"
+    ]
+)
+def test_find_champClass_fromIDs_invalid(agilityID, jumpingID):
+    with pytest.raises(AssertionError):
+        ps.find_champClass_fromIDs(agilityID, jumpingID)
