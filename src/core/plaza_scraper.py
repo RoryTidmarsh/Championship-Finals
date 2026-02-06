@@ -153,6 +153,8 @@ def find_champ_classes(soup, height):
     """
 
     height_list = ["lge", "int", "med", "sml"]
+    if type(height) != str:
+        raise TypeError("Height must be a string.")
     if height.lower() not in height_list:
         raise ValueError(f"Height must be one of these: {height_list}.")
 

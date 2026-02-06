@@ -196,4 +196,32 @@ def test_find_champ_classes_invalid_soup():
     with pytest.raises(ValueError):
         ps.find_champ_classes(soup, "Lge")
 
+def test_find_champ_classes_valid_height_capitalisation():
+    soup = BeautifulSoup(HTML_FIXTURE_1CLASS, "html.parser")
+    result = ps.find_champ_classes(soup, "lge")
+    assert type(result) == tuple, "Expected function to return a tuple. error arises from capitalisation not being managed correctly. (it shouldn't matter if height is 'Lge' or 'lge')"
 
+@pytest.mark.parametrize(
+    "html_fixture,height,error",
+    [
+        (HTML_FIXTURE_1CLASS, "Sml",ValueError), #height not at the show
+        (HTML_FIXTURE_1CLASS, 123, TypeError), #height not a string
+        (HTML_FIXTURE_1CLASS, None, TypeError), #height not a string
+        (HTML_FIXTURE_1CLASS, "bananana", ValueError), #height not in height list
+    ],
+    ids=[
+        "height-not-at-show",
+        "height-not-string",
+        "height-not-string-none",
+        "height-not-in-list"
+    ]
+)
+def test_find_champ_classes_invalid_heights(html_fixture, height, error):
+    soup = BeautifulSoup(html_fixture, "html.parser")
+    with pytest.raises(error):
+        ps.find_champ_classes(soup, height)
+
+def test_find_champ_classes_no_classes():
+    soup = BeautifulSoup(HTML_FIXTURE_INVALID, "html.parser")
+    with pytest.raises(ValueError):
+        ps.find_champ_classes(soup, "Lge")
