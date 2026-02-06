@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pytest
 from bs4 import BeautifulSoup
+
 import src.core.plaza_scraper as ps
-from pathlib import Path
 
 HTML_FIXTURE = (Path(__file__).parent.parent / "fixtures" / "2025.html").read_text(
     encoding="utf-8"
