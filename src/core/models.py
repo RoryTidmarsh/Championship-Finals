@@ -55,7 +55,7 @@ class ClassInfo:
         elif self.running_orders_url and not self.results_url:
             self.status = 'not started'
         else:
-            self.status = 'not started, no running orders'
+            self.status = 'not started, missing running orders and results URLs'
 
     def update_order(self, other):
         status_hierarchy = {"completed": 0, "in progress": 1, "not started": 2}

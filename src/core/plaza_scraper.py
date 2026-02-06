@@ -1,5 +1,5 @@
 """Webscraper for agilityplaza.com to find show URLs and championship classes."""
-
+import os
 import requests
 import numpy as np
 from bs4 import BeautifulSoup

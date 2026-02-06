@@ -86,9 +86,82 @@ def test_find_show_url_invalid_types(monkeypatch, show_name, show_date):
     with pytest.raises(AssertionError):
         ps.find_show_url(show_name, show_date)
 
+# Test HTML scenarios
+HTML_FIXTURE_1CLASS = (Path(__file__).parent.parent / "fixtures" / "findClass_oneClass.html").read_text(
+    encoding="utf-8"
+)
+HTML_FIXTURE_2CLASS = (Path(__file__).parent.parent / "fixtures" / "findClass_twoClasses.html").read_text(
+    encoding="utf-8"
+)
+HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_twoClassesFinished.html").read_text(
+    encoding="utf-8"
+)
+@pytest.mark.parametrize(
+    "html_fixture,agility_status,jumping_status,agility_order,jumping_order,agility_results_url,jumping_results_url, agility_ro_url, jumping_ro_url",
+    [
+        (
+         HTML_FIXTURE_1CLASS, 
+         "in progress", 
+         "not started",
+         0,
+         1,
+         "https://www.agilityplaza.co.uk/agilityClass/1263911657/results",
+         None,
+         "https://www.agilityplaza.co.uk/agilityClass/1263911657/running_orders",
+         "https://www.agilityplaza.co.uk/agilityClass/1799909160/running_orders"        
+        ),
+        (
+         HTML_FIXTURE_2CLASS, 
+         "completed", 
+         "in progress",
+         0,
+         1,
+         "https://www.agilityplaza.co.uk/agilityClass/1263911657/results",
+         "https://www.agilityplaza.co.uk/agilityClass/1799909160/results",
+         None,
+         "https://www.agilityplaza.co.uk/agilityClass/1799909160/running_orders"        
+        ),
+        (
+         HTML_FIXTURE_FINISHED, 
+         "completed", 
+         "completed",
+         2,
+         2,
+         "https://www.agilityplaza.co.uk/agilityClass/1263911657/results",
+         "https://www.agilityplaza.co.uk/agilityClass/1799909160/results",
+         None,
+         None        
+        ),
+        
+        
+    ])
+def test_find_champ_classes_valid(html_fixture, agility_status, jumping_status, agility_order, jumping_order, agility_results_url, jumping_results_url, agility_ro_url, jumping_ro_url):
 
-def test_find_champ_classes_valid():
-    pass
+    soup = BeautifulSoup(html_fixture, "html.parser")
+    result = ps.find_champ_classes(soup, "Lge")
+    assert type(result) == tuple
+
+    agility,jumping = result
+
+    # Check tuple returns in correct order
+    assert agility.class_type == "Agility", "expected agility class first in tuple"
+    assert jumping.class_type == "Jumping", "expected jumping class second in tuple"
+
+    # Check status
+    assert agility.status == agility_status, f"agility status expected '{agility_status}', got {agility.status}"
+    assert jumping.status == jumping_status, f"jumping status expected '{jumping_status}', got {jumping.status}"
+
+    # Check order
+    assert agility.order == agility_order, f"agility order expected '{agility_order}', got {agility.order}"
+    assert jumping.order == jumping_order, f"jumping order expected '{jumping_order}', got {jumping.order}"
+
+    # Check results URLs
+    assert agility.results_url == agility_results_url, f"agility results URL expected '{agility_results_url}', got {agility.results_url}"
+    assert jumping.results_url == jumping_results_url, f"jumping results URL expected '{jumping_results_url}', got {jumping.results_url}"
+
+    # Check running orders URLs
+    assert agility.running_orders_url == agility_ro_url, f"agility running orders URL expected '{agility_ro_url}', got {agility.running_orders_url}"
+    assert jumping.running_orders_url == jumping_ro_url, f"jumping running orders URL expected '{jumping_ro_url}', got {jumping.running_orders_url}"    
 
 def test_find_champ_classes_invalid():
     pass
