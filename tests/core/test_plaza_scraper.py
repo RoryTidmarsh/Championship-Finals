@@ -98,6 +98,10 @@ HTML_FIXTURE_2CLASS = (Path(__file__).parent.parent / "fixtures" / "findClass_tw
 HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_twoClassesFinished.html").read_text(
     encoding="utf-8"
 )
+
+HTML_FIXTURE_NOT_STARTED = (Path(__file__).parent.parent / "fixtures" / "findClass_runningOrdersOnly.html").read_text(
+    encoding="utf-8"
+)
 @pytest.mark.parametrize(
     "html_fixture,agility_status,jumping_status,agility_order,jumping_order,agility_results_url,jumping_results_url, agility_ro_url, jumping_ro_url",
     [
@@ -134,6 +138,17 @@ HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_
          None,
          None        
         ),
+        (
+            HTML_FIXTURE_NOT_STARTED,
+            "not started",
+            "not started",
+            2,
+            2,
+            None,
+            None,
+            "https://www.agilityplaza.co.uk/agilityClass/1263911657/running_orders",
+            "https://www.agilityplaza.co.uk/agilityClass/1799909160/running_orders"
+        )
         
         
     ],
@@ -141,6 +156,7 @@ HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_
         "one-class-in-progress",
         "two-classes-jumping-in-progress",
         "two-classes-completed",
+        "two-classes-not-started"
     ],
 )
 def test_find_champ_classes_valid(html_fixture, agility_status, jumping_status, agility_order, jumping_order, agility_results_url, jumping_results_url, agility_ro_url, jumping_ro_url):
@@ -171,6 +187,13 @@ def test_find_champ_classes_valid(html_fixture, agility_status, jumping_status, 
     assert agility.running_orders_url == agility_ro_url, f"agility running orders URL expected '{agility_ro_url}', got {agility.running_orders_url}"
     assert jumping.running_orders_url == jumping_ro_url, f"jumping running orders URL expected '{jumping_ro_url}', got {jumping.running_orders_url}"    
 
-def test_find_champ_classes_invalid():
-    pass
+HTML_FIXTURE_INVALID = (Path(__file__).parent.parent / "fixtures" / "findClass_noLargeChampionship.html").read_text(
+    encoding="utf-8"
+)
+
+def test_find_champ_classes_invalid_soup():
+    soup = BeautifulSoup(HTML_FIXTURE_INVALID, "html.parser")
+    with pytest.raises(ValueError):
+        ps.find_champ_classes(soup, "Lge")
+
 
