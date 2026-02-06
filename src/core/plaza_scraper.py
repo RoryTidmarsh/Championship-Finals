@@ -293,12 +293,14 @@ def extract_class_id(class_link):
     Returns:
         str: The extracted class ID.
     """
-    assert isinstance(class_link, str), "class_link must be a string."
+    if not isinstance(class_link, str):
+        raise TypeError("class_link must be a string.")
+    
     parts = class_link.strip("/").split("/")
 
     assert len(parts) == 6, "class_link format is incorrect."
     assert (
-        parts[2] == "www.agilityplaza.com" or "www.agilityplaza.co.uk"
+        parts[2] == "www.agilityplaza.com" or parts[2] ==  "www.agilityplaza.co.uk"
     ), "class_link must be from agilityplaza.com."
 
     ID = parts[4]

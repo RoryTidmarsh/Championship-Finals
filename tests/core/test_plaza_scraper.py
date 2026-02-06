@@ -281,3 +281,76 @@ def test_find_champClass_fromIDs_valid(agilityID, jumpingID, expected_ag_url, ex
 def test_find_champClass_fromIDs_invalid(agilityID, jumpingID):
     with pytest.raises(AssertionError):
         ps.find_champClass_fromIDs(agilityID, jumpingID)
+
+### Test extract_class_id
+@pytest.mark.parametrize(
+    "url,expected_id",
+    [
+        (
+            "https://www.agilityplaza.co.uk/agilityClass/1234567890/results",
+            "1234567890",
+        ),
+        (
+            "https://www.agilityplaza.com/agilityClass/1234567890/results",
+            "1234567890",
+        ),
+        (
+            "https://www.agilityplaza.co.uk/agilityClass/1234567890/running_orders",
+            "1234567890",
+        ),
+    ],
+    ids=[
+        "co-uk-results",
+        "com-results",
+        "co-uk-running-orders",
+    ],
+)
+def test_extract_class_id_valid(url, expected_id):
+    result = ps.extract_class_id(url)
+    assert result == expected_id, f"Expected class ID '{expected_id}', got '{result}'"
+
+@pytest.mark.parametrize(
+    "url,error",
+    [
+        (
+            1234, # url not a string
+            TypeError
+        ),
+        (
+            None, # url not a string
+            TypeError
+        ),
+        (
+            "0/1/2/3/random3/random4/random5/random6", # url in wrong format
+            AssertionError
+        ),
+        (
+            "https://www.facebook.com/agilityClass/1234567890/results", # wrong base URL
+            AssertionError
+        ),
+        (
+            "https://www.agilityplaza.co.uk/agilityClass/notanumber/results", # class ID not a number
+            AssertionError
+        ),
+        (
+            "https://www.agilityplaza.co.uk/agilityClass/12345/results", # class ID not 10 digits
+            AssertionError
+        ),
+        (
+            "https://www.agilityplaza.co.uk/agilityClass//results", # class ID more than 10 digits
+            AssertionError
+        )
+    ],
+    ids=[
+        "url-not-string-int",
+        "url-not-string-none",
+        "url-wrong-format",
+        "url-wrong-base",
+        "classID-not-number",
+        "classID-not-10-digits",
+        "no-classID"
+    ]
+)
+def test_extract_class_id_invalid(url, error):
+    with pytest.raises(error):
+        ps.extract_class_id(url)
