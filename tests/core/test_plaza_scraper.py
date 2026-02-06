@@ -225,3 +225,36 @@ def test_find_champ_classes_no_classes():
     soup = BeautifulSoup(HTML_FIXTURE_INVALID, "html.parser")
     with pytest.raises(ValueError):
         ps.find_champ_classes(soup, "Lge")
+
+
+### Find Champ Class from IDs test
+@pytest.mark.parametrize(
+    "agilityID,jumpingID,expected_ag_url,expected_jump_url",
+    [
+        (
+            1234567890,
+            9876543210,
+            "https://www.agilityplaza.co.uk/agilityClass/1234567890/results",
+            "https://www.agilityplaza.co.uk/agilityClass/9876543210/results",
+        ),
+        (
+            "123456890",
+            "9876543210",
+            "https://www.agilityplaza.co.uk/agilityClass/123456890/results",
+            "https://www.agilityplaza.co.uk/agilityClass/9876543210/results",
+        )
+    ],
+    ids=[
+        "IDs as integers",
+        "IDs as strings"
+    ]
+)
+def test_find_champClass_fromIDs_valid(agilityID, jumpingID, expected_ag_url, expected_jump_url):
+    result = ps.find_champClass_fromIDs(agilityID, jumpingID)
+    assert type(result) == dict, "Expected function to return a dictionary."
+    
+    agility_url = result["agility_url"]
+    jumping_url = result["jumping_url"]
+
+    assert agility_url == expected_ag_url, f"Expected agility URL '{expected_ag_url}', got '{agility_url}'"
+    assert jumping_url == expected_jump_url, f"Expected jumping URL '{expected_jump_url}', got '{jumping_url}'"

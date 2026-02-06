@@ -263,22 +263,25 @@ def find_champClass_fromIDs(agilityID, jumpingID):
     """Find championship classes based on their IDs.
 
     Args:
-        agilityID (str/int): Agility class ID, must be a 10-digit numeric string or integer.
-        jumpingID (str/int): Jumping class ID, must be a 10-digit numeric string or integer.
+        agilityID (str/int): Agility class ID, must be a 9- or 10-digit numeric string or integer.
+        jumpingID (str/int): Jumping class ID, must be a 9- or 10-digit numeric string or integer.
 
     Returns:
         tuple: A tuple containing two ClassInfo objects (agility_class, jumping_class).
     """
-    assert str(agilityID).isdigit(), "agilityID must be numeric."
-    assert str(jumpingID).isdigit(), "jumpingID must be numeric."
-    assert len(str(agilityID)) == 10, "agilityID must be 10 digits."
-    assert len(str(jumpingID)) == 10, "jumpingID must be 10 digits."
+    agility_str = str(agilityID)
+    jumping_str = str(jumpingID)
+
+    assert agility_str.isdigit(), "agilityID must be numeric."
+    assert jumping_str.isdigit(), "jumpingID must be numeric."
+    assert len(agility_str) in (9, 10), "agilityID must be 9 or 10 digits."
+    assert len(jumping_str) in (9, 10), "jumpingID must be 9 or 10 digits."
 
     # Create URL from digits
-    agility_url = os.path.join(PLAZA_BASE, str(agilityID), "results/")
-    jumping_url = os.path.join(PLAZA_BASE, str(jumpingID), "results/")
+    agility_url = f"{PLAZA_BASE}/agilityClass/{agility_str}/results"
+    jumping_url = f"{PLAZA_BASE}/agilityClass/{jumping_str}/results"
 
-    return {agilityID: agility_url, jumpingID: jumping_url}
+    return {"agility_url": agility_url, "jumping_url": jumping_url}
 
 
 def extract_class_id(class_link):
