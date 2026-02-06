@@ -72,20 +72,24 @@ def test_class_info_repr():
 
 # Test ClassInfo update_status method
 @pytest.mark.parametrize(
-    "running_orders_url,results_url,expected_status",
+    "running_orders_url,results_url,expected_status,expected_exception",
     [
-        ("http://example.com/running_orders", "http://example.com/results", "in progress"),
-        (None, "http://example.com/results", "completed"),
-        ("http://example.com/running_orders", None, "not started"),
-        (None, None, "not started, no running orders"),
+        ("http://example.com/running_orders", "http://example.com/results", "in progress", None),
+        (None, "http://example.com/results", "completed", None),
+        ("http://example.com/running_orders", None, "not started", None),
+        (None, None, None, ValueError),
     ],
 )
-def test_class_info_update_status(running_orders_url, results_url, expected_status):
+def test_class_info_update_status(running_orders_url, results_url, expected_status, expected_exception):
     class_info = ClassInfo(class_type="Agility", class_number=1,
                            running_orders_url=running_orders_url,
                            results_url=results_url)
-    class_info.update_status()
-    assert class_info.status == expected_status
+    if expected_exception:
+        with pytest.raises(expected_exception):
+            class_info.update_status()
+    else:
+        class_info.update_status()
+        assert class_info.status == expected_status
 
 # Test ClassInfo update_order method
 @pytest.mark.parametrize(

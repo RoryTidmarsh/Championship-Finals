@@ -102,9 +102,9 @@ HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_
     "html_fixture,agility_status,jumping_status,agility_order,jumping_order,agility_results_url,jumping_results_url, agility_ro_url, jumping_ro_url",
     [
         (
-         HTML_FIXTURE_1CLASS, 
-         "in progress", 
-         "not started",
+         HTML_FIXTURE_1CLASS, #html fixture
+         "in progress",  #expected agility status
+         "not started",  #expected jumping status
          0,
          1,
          "https://www.agilityplaza.co.uk/agilityClass/1263911657/results",
@@ -136,7 +136,13 @@ HTML_FIXTURE_FINISHED = (Path(__file__).parent.parent / "fixtures" / "findClass_
         ),
         
         
-    ])
+    ],
+    ids=[
+        "one-class-in-progress",
+        "two-classes-jumping-in-progress",
+        "two-classes-completed",
+    ],
+)
 def test_find_champ_classes_valid(html_fixture, agility_status, jumping_status, agility_order, jumping_order, agility_results_url, jumping_results_url, agility_ro_url, jumping_ro_url):
 
     soup = BeautifulSoup(html_fixture, "html.parser")
