@@ -85,3 +85,11 @@ def test_find_show_url_invalid_types(monkeypatch, show_name, show_date):
 
     with pytest.raises(AssertionError):
         ps.find_show_url(show_name, show_date)
+
+
+def test_find_champ_classes_valid():
+    pass
+
+def test_find_champ_classes_invalid():
+    pass
+
