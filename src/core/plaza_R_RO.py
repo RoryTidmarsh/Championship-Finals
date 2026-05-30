@@ -8,6 +8,7 @@ from urllib.parse import urljoin
 import pandas as pd
 from .plaza_scraper import get_soup
 from .constants import PLAZA_RESULTS as base_url
+from .error_logger import log_error, log_info
 
 def read_from_file(filename="NorthDerbyShow.txt"):
     with open(filename, "r", encoding="utf-8") as f:      
@@ -46,35 +47,136 @@ def process_eliminations(eliminations_text):
     eliminations = [entry.split(" (")[0].strip() for entry in eliminations]
     return eliminations
 
-def process_class_df(df):
-    headers = df.columns.tolist()
-    wanted_headers = ['Rank', 'Place (mobile)', 'KC names', 'Name', 'Run Data', 'Faults', 'Time']
-    status = "in progress"
-    if "Rank" not in headers and "Place" in headers:
-        # Replace headers to standard ones
-        df.columns = wanted_headers
-        status = "completed"
+def process_class_df(df, request_id=None):
+    """Normalise a raw results DataFrame to a standard column set and detect class status.
 
-    # Remove any non numbers from Rank column
-    df['Rank'] = df['Rank'].astype(str).str.extract('(\d+)').astype(int)
-    df['Place (mobile)'] = df['Place (mobile)'].astype(str).str.extract('(\d+)').astype(int)
-    
+    The Agility Plaza website uses different header names depending on whether a
+    class is still running ("Rank") or has finished ("Place").  Both pages also
+    include two hidden mobile/KC columns that are not reflected in the <th> tags
+    but ARE present as <td> cells.
+
+    After this function, columns are always:
+        ['Rank', 'Place (mobile)', 'KC names', 'Name', 'Run Data', 'Faults', 'Time']
+
+    Args:
+        df:         Raw DataFrame built directly from the HTML table.
+        request_id: Optional request identifier for error-log correlation.
+
+    Returns:
+        (df, status) where status is "completed" or "in progress".
+    """
+    WANTED = ['Rank', 'Place (mobile)', 'KC names', 'Name', 'Run Data', 'Faults', 'Time']
+    headers = df.columns.tolist()
+
+    log_info(
+        source="process_class_df",
+        message=f"Raw table headers: {headers}",
+        request_id=request_id,
+        context={"actual_headers": headers, "expected_headers": WANTED},
+    )
+
+    # Detect status from the first column name.
+    # Completed pages use "Place"; in-progress pages use "Rank".
+    first_col = headers[0] if headers else ""
+    if first_col == "Place":
+        status = "completed"
+    elif first_col == "Rank":
+        status = "in progress"
+    else:
+        # Unknown first column – log the anomaly and treat as in-progress so we
+        # still attempt to show partial data rather than crashing outright.
+        log_error(
+            error_type="ColumnMismatch",
+            source="process_class_df",
+            cause=(
+                f"Unexpected first column '{first_col}'. "
+                f"Expected 'Rank' (in-progress) or 'Place' (completed). "
+                f"Full headers received: {headers}. "
+                f"Expected headers: {WANTED}. "
+                "Treating class as in-progress; results may be incomplete."
+            ),
+            request_id=request_id,
+            context={"actual_headers": headers, "expected_headers": WANTED},
+        )
+        status = "in progress"
+
+    # Warn if the number of columns differs from expected
+    if len(headers) != len(WANTED):
+        log_error(
+            error_type="ColumnCountMismatch",
+            source="process_class_df",
+            cause=(
+                f"Table has {len(headers)} columns but {len(WANTED)} were expected. "
+                f"Actual columns: {headers}. "
+                f"Expected columns: {WANTED}. "
+                "This usually means the Agility Plaza page structure has changed. "
+                "Column data may be misaligned."
+            ),
+            request_id=request_id,
+            context={"actual_headers": headers, "expected_headers": WANTED, "col_count": len(headers)},
+        )
+
+    # Always rename to the standard set so downstream merge logic is consistent.
+    # If there is a column-count mismatch we pad / trim to avoid crashing.
+    if len(headers) < len(WANTED):
+        for col in WANTED[len(headers):]:
+            df[col] = None
+    df.columns = WANTED[:len(df.columns)]
+
+    # Extract numeric Rank and mobile-Place, stripping any non-digit characters
+    # (e.g. "1(T)" for ties on completed pages).
+    try:
+        df['Rank'] = df['Rank'].astype(str).str.extract(r'(\d+)').astype(int)
+    except (ValueError, TypeError) as exc:
+        log_error(
+            error_type="ColumnParseError",
+            source="process_class_df",
+            cause=f"Could not parse 'Rank' column to integers: {exc}. Values: {df['Rank'].tolist()[:5]}",
+            request_id=request_id,
+            exc=exc,
+        )
+        raise ValueError(
+            f"'Rank' column contains non-numeric values that could not be parsed. "
+            f"Sample values: {df['Rank'].tolist()[:5]}. Original error: {exc}"
+        ) from exc
+
+    try:
+        df['Place (mobile)'] = df['Place (mobile)'].astype(str).str.extract(r'(\d+)').astype(int)
+    except (ValueError, TypeError) as exc:
+        log_error(
+            error_type="ColumnParseError",
+            source="process_class_df",
+            cause=f"Could not parse 'Place (mobile)' column to integers: {exc}. Values: {df['Place (mobile)'].tolist()[:5]}",
+            request_id=request_id,
+            exc=exc,
+        )
+        raise ValueError(
+            f"'Place (mobile)' column contains non-numeric values that could not be parsed. "
+            f"Sample values: {df['Place (mobile)'].tolist()[:5]}. Original error: {exc}"
+        ) from exc
+
+    log_info(
+        source="process_class_df",
+        message=f"Normalised to {len(WANTED)} columns, status='{status}', rows={len(df)}",
+        request_id=request_id,
+    )
     return df, status
 
 
-def import_results(show_class, simulation=False):
+def import_results(show_class, simulation=False, request_id=None):
     """
     Imports and parses competition results from a web page or local file.
     
     Args:
         show_class (ClassInfo): The ClassInfo object containing the results URL and class type.
         simulation (bool): If True, reads from local HTML files instead of web scraping.
+        request_id (str|None): Optional ID for error-log correlation.
     
     Returns:
-        tuple: (DataFrame, list) containing:
-            - df: pandas DataFrame with competition results (or None if no results_url)
-            - eliminations: list of eliminated competitors (or None if no results_url)
-        Returns (None, None) if no results URL is provided.
+        tuple: (DataFrame, list, str) containing:
+            - df: pandas DataFrame with competition results
+            - eliminations: list of eliminated competitors
+            - status: "completed" or "in progress"
     
     Raises:
         ValueError: If show_class is invalid, class_type unsupported, or HTML structure unexpected
@@ -89,9 +191,13 @@ def import_results(show_class, simulation=False):
     if not hasattr(show_class, 'results_url'):
         raise ValueError("show_class must have a results_url attribute")
     
-    # Handle case where results_url is None - return None, None gracefully
+    # Handle case where results_url is None
     if show_class.results_url is None:
-        raise ValueError(f"No results URL provided from {show_class.class_type} - returning None, None. Class status: {show_class.status}")
+        raise ValueError(
+            f"No results URL set on the {show_class.class_type} class. "
+            f"Current class status: {show_class.status}. "
+            "A results URL is required before results can be imported."
+        )
     
     # Check for empty string URL
     if not show_class.results_url.strip():
@@ -101,14 +207,51 @@ def import_results(show_class, simulation=False):
         raise ValueError("show_class must have a valid class_type attribute")
    
     soup = None
+    raw_html: str | None = None  # kept for HTML snapshot on error
     
     if not simulation:
-        # Fetch results from web
-        print_debug3(f"Fetching results from URL: {show_class.results_url}")
+        url = show_class.results_url
+        print_debug3(f"Fetching results from URL: {url}")
+        log_info(
+            source="import_results",
+            message=f"Fetching {show_class.class_type} results from Agility Plaza",
+            request_id=request_id,
+            context={"url": url, "class_type": show_class.class_type},
+        )
         try:
-            soup = get_soup(show_class.results_url)
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch results from {show_class.results_url}: {e}")
+            response = requests.get(url, timeout=15)
+            if response.status_code != 200:
+                raw_html = response.text
+                log_error(
+                    error_type="NetworkError",
+                    source="import_results",
+                    cause=(
+                        f"HTTP {response.status_code} fetching {show_class.class_type} results "
+                        f"from {url}. "
+                        "The Agility Plaza page may be temporarily unavailable."
+                    ),
+                    request_id=request_id,
+                    context={"url": url, "class_type": show_class.class_type, "http_status": response.status_code},
+                    html_snapshot=raw_html,
+                )
+                raise RuntimeError(
+                    f"HTTP {response.status_code} received when fetching {show_class.class_type} results from {url}. "
+                    "Agility Plaza may be temporarily unavailable."
+                )
+            raw_html = response.text
+            soup = BeautifulSoup(raw_html, "html.parser")
+        except requests.RequestException as e:
+            log_error(
+                error_type="NetworkError",
+                source="import_results",
+                cause=f"Network request failed for {show_class.class_type} results at {url}: {e}",
+                request_id=request_id,
+                context={"url": url, "class_type": show_class.class_type},
+                exc=e,
+            )
+            raise RuntimeError(
+                f"Network error fetching {show_class.class_type} results from {url}: {e}"
+            ) from e
     else:
         # Load results from local simulation files
         print_debug3(f"Loading simulation data for class type: {show_class.class_type}")
@@ -137,16 +280,42 @@ def import_results(show_class, simulation=False):
     # Find and parse the results table
     table = soup.find('table')
     if not table:
-        raise ValueError("No HTML table found in the results page. "
-                        "The page structure may have changed or the URL may be incorrect.")
+        error_msg = (
+            f"No HTML table found in the {show_class.class_type} results page at "
+            f"{show_class.results_url}. "
+            "The Agility Plaza page structure may have changed, or the URL may point to "
+            "a page that doesn't contain results yet."
+        )
+        log_error(
+            error_type="ScrapingError",
+            source="import_results",
+            cause=error_msg,
+            request_id=request_id,
+            context={"url": show_class.results_url, "class_type": show_class.class_type},
+            html_snapshot=raw_html,
+        )
+        raise ValueError(error_msg)
     
     print_debug3("Table found, extracting data...")
     
     # Extract all table rows
     rows = table.find_all('tr')
     if len(rows) < 2:
-        raise ValueError(f"Table has insufficient rows ({len(rows)}). "
-                        f"Expected at least 2 rows (header + data), but found {len(rows)}")
+        error_msg = (
+            f"The {show_class.class_type} results table at {show_class.results_url} "
+            f"contains only {len(rows)} row(s) but at least 2 are required "
+            "(1 header row + at least 1 data row). "
+            "The class may not have any results yet."
+        )
+        log_error(
+            error_type="ScrapingError",
+            source="import_results",
+            cause=error_msg,
+            request_id=request_id,
+            context={"url": show_class.results_url, "class_type": show_class.class_type, "row_count": len(rows)},
+            html_snapshot=raw_html,
+        )
+        raise ValueError(error_msg)
     
     table_data = []
     for i, row in enumerate(rows):
@@ -165,13 +334,38 @@ def import_results(show_class, simulation=False):
             table_data.append(row_data)
     
     if len(table_data) < 2:
-        raise ValueError(f"Insufficient data rows found ({len(table_data)}). "
-                        f"Expected at least 2 rows (data + eliminations)")
+        error_msg = (
+            f"The {show_class.class_type} results table has only {len(table_data)} data row(s). "
+            "At least 2 are needed (1 results row + 1 eliminations row). "
+            "The class may not have any competitors yet."
+        )
+        log_error(
+            error_type="ScrapingError",
+            source="import_results",
+            cause=error_msg,
+            request_id=request_id,
+            context={"url": show_class.results_url, "class_type": show_class.class_type, "row_count": len(table_data)},
+            html_snapshot=raw_html,
+        )
+        raise ValueError(error_msg)
 
     # Extract and process table headers
     headers = table.find_all('th')
     if not headers:
-        raise ValueError("No table headers (th elements) found. Cannot determine column structure.")
+        error_msg = (
+            f"No <th> header elements found in the {show_class.class_type} results table at "
+            f"{show_class.results_url}. "
+            "The Agility Plaza page structure may have changed."
+        )
+        log_error(
+            error_type="ScrapingError",
+            source="import_results",
+            cause=error_msg,
+            request_id=request_id,
+            context={"url": show_class.results_url, "class_type": show_class.class_type},
+            html_snapshot=raw_html,
+        )
+        raise ValueError(error_msg)
     
     header_row = [header.get_text().strip() for header in headers]
     if not header_row or not any(header_row):
@@ -202,7 +396,19 @@ def import_results(show_class, simulation=False):
         df = pd.DataFrame(data_rows, columns=header_row)
         print_debug3(f"DataFrame created with {len(df)} rows and {len(df.columns)} columns")
     except Exception as e:
-        raise RuntimeError(f"Failed to create pandas DataFrame: {e}")
+        log_error(
+            error_type="ScrapingError",
+            source="import_results",
+            cause=f"Failed to build DataFrame for {show_class.class_type} results: {e}. Headers: {header_row}",
+            request_id=request_id,
+            context={"url": show_class.results_url, "class_type": show_class.class_type, "headers": header_row},
+            html_snapshot=raw_html,
+            exc=e,
+        )
+        raise RuntimeError(
+            f"Could not build a DataFrame from the {show_class.class_type} results table. "
+            f"Headers found: {header_row}. Original error: {e}"
+        ) from e
 
     # Parse elimination data from the last row
     elimination_row = table_data[-1]
@@ -226,8 +432,6 @@ def import_results(show_class, simulation=False):
             if not eliminations_text:
                 eliminations = []
             else:
-                # Split by comma and clean each entry
-                # eliminations = [entry.strip() for entry in eliminations_text.split(",") if entry.strip()]
                 eliminations = process_eliminations(eliminations_text)
             
             print_debug3(f"Parsed {len(eliminations)} eliminations")
@@ -236,7 +440,7 @@ def import_results(show_class, simulation=False):
     if df.empty:
         raise ValueError("Resulting DataFrame is empty - no valid competition data found")
 
-    df,status = process_class_df(df)
+    df, status = process_class_df(df, request_id=request_id)
     assert isinstance(df, pd.DataFrame), "Processed results should be a DataFrame"
     assert isinstance(eliminations, list), "Eliminations should be a list"
     assert isinstance(status, str), "Status should be a string"
@@ -245,6 +449,7 @@ def import_results(show_class, simulation=False):
     print_debug3(f"Eliminations array ({len(eliminations)} entries): {eliminations[:3] if len(eliminations) >= 3 else eliminations}")
 
     return df, eliminations, status
+
 
 def import_running_orders(show_class, simulation=False):
     """

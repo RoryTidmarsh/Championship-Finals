@@ -1,5 +1,7 @@
 """Data models for the champPackage core module."""
 from .debug_logger import *
+from .error_logger import log_error, log_info
+import pandas as pd
 # from .plaza_resultsRunningOrder import import_running_orders
 
 class ClassInfo:
@@ -109,15 +111,20 @@ class Final:
         else:
             self.status = 'not started'
 
-    def combine_dfs(self):
-        """Combine the results DataFrames of the jumping and agility classes, Only for pairs that aren't eliminated in either class."""
+    def combine_dfs(self, request_id=None):
+        """Combine the results DataFrames of the jumping and agility classes.
+
+        Only pairs that appear in BOTH result tables (i.e. have run both rounds)
+        are included.  Non-numeric Faults/Time values are coerced to NaN so that
+        the arithmetic still works for partial data.
+
+        Args:
+            request_id: Optional request-id string for error-log correlation.
+        """
 
         # Load round dataframes
         jumping_df = self.jumpingClass.results_df
         agility_df = self.agilityClass.results_df
-
-        first_class = None
-        second_class = None
 
         # Check that both classes have results
         if self.jumpingClass.results_df is None or self.agilityClass.results_df is None:
@@ -127,7 +134,51 @@ class Final:
             if self.agilityClass.results_df is None:
                 missing_results.append("agility")
             raise ValueError(f"Missing results dataframes for: {', '.join(missing_results)}")
-        
+
+        # Log the column names of both DataFrames before merging so any mismatch
+        # is visible in both the console log and the error DB.
+        log_info(
+            source="combine_dfs",
+            message="Combining jumping and agility result DataFrames",
+            request_id=request_id,
+            context={
+                "jumping_columns": jumping_df.columns.tolist(),
+                "agility_columns": agility_df.columns.tolist(),
+                "jumping_status": self.jumpingClass.status,
+                "agility_status": self.agilityClass.status,
+                "jumping_rows": len(jumping_df),
+                "agility_rows": len(agility_df),
+            },
+        )
+
+        # Verify both DataFrames have the required columns before attempting merge
+        REQUIRED_COLS = {"Rank", "Faults", "Time", "Name"}
+        jumping_missing = REQUIRED_COLS - set(jumping_df.columns)
+        agility_missing = REQUIRED_COLS - set(agility_df.columns)
+        if jumping_missing or agility_missing:
+            cause = (
+                f"Cannot merge results: required columns are missing. "
+                f"Jumping missing: {sorted(jumping_missing) or 'none'}. "
+                f"Agility missing: {sorted(agility_missing) or 'none'}. "
+                f"Jumping columns present: {jumping_df.columns.tolist()}. "
+                f"Agility columns present: {agility_df.columns.tolist()}. "
+                "This usually means the Agility Plaza page uses different column names for "
+                "a live (in-progress) class vs a completed class."
+            )
+            log_error(
+                error_type="ColumnMismatch",
+                source="combine_dfs",
+                cause=cause,
+                request_id=request_id,
+                context={
+                    "jumping_columns": jumping_df.columns.tolist(),
+                    "agility_columns": agility_df.columns.tolist(),
+                    "jumping_missing": sorted(jumping_missing),
+                    "agility_missing": sorted(agility_missing),
+                },
+            )
+            raise ValueError(cause)
+
         # Determine order of classes
         if self.jumpingClass.order < self.agilityClass.order:
             first_class = self.jumpingClass
@@ -140,20 +191,59 @@ class Final:
         # Combine results, joining on 'Name' column (name of pair)
         combined_df = jumping_df.merge(agility_df, on='Name', suffixes=('_jumping', '_agility'))
 
-        # Check for duplicated in combined df
+        if combined_df.empty:
+            cause = (
+                "The merge of jumping and agility results produced no matching rows. "
+                f"Jumping has {len(jumping_df)} rows, agility has {len(agility_df)} rows. "
+                "This usually means no competitor name appears in both tables – either "
+                "no one has completed both rounds yet, or there is a name formatting "
+                "difference between the two Agility Plaza pages "
+                "(e.g. extra spaces, punctuation, or KC registration numbers)."
+            )
+            log_error(
+                error_type="MergeError",
+                source="combine_dfs",
+                cause=cause,
+                request_id=request_id,
+                context={
+                    "jumping_names_sample": jumping_df["Name"].tolist()[:5],
+                    "agility_names_sample": agility_df["Name"].tolist()[:5],
+                },
+            )
+            raise ValueError(cause)
+
+        # Check for duplicated names in combined df
         if combined_df['Name'].duplicated().any():
             duplicated_names = combined_df[combined_df['Name'].duplicated()]['Name'].unique()
             raise ValueError(f"Warning: Duplicated names found in combined results: {duplicated_names}")
 
-        combined_df['Combined_Points'] = combined_df['Rank_jumping'].astype(int) + combined_df['Rank_agility'].astype(int)
-        combined_df['Combined_Faults'] = combined_df['Faults_jumping'].astype(float) + combined_df['Faults_agility'].astype(float)
-        combined_df['Combined_Time'] = combined_df['Time_jumping'].astype(float) + combined_df['Time_agility'].astype(float)
+        # Use pd.to_numeric with errors='coerce' so that non-numeric Faults/Time
+        # values (which can appear on live pages) become NaN rather than crashing.
+        combined_df['Combined_Points'] = (
+            pd.to_numeric(combined_df['Rank_jumping'], errors='coerce').astype('Int64') +
+            pd.to_numeric(combined_df['Rank_agility'], errors='coerce').astype('Int64')
+        )
+        combined_df['Combined_Faults'] = (
+            pd.to_numeric(combined_df['Faults_jumping'], errors='coerce') +
+            pd.to_numeric(combined_df['Faults_agility'], errors='coerce')
+        )
+        combined_df['Combined_Time'] = (
+            pd.to_numeric(combined_df['Time_jumping'], errors='coerce') +
+            pd.to_numeric(combined_df['Time_agility'], errors='coerce')
+        )
 
-        # Drop unnecessary columns
-        combined_df.drop(columns=['Place (mobile)_jumping', 'Place (mobile)_agility', 'KC names_jumping', 'KC names_agility', 'Run Data_jumping', 'Run Data_agility'], inplace=True)
+        # Drop auxiliary columns that are present on both sides; use errors='ignore'
+        # so that a column-name difference on a live page does not crash the drop.
+        cols_to_drop = [
+            'Place (mobile)_jumping', 'Place (mobile)_agility',
+            'KC names_jumping', 'KC names_agility',
+            'Run Data_jumping', 'Run Data_agility',
+        ]
+        combined_df.drop(columns=cols_to_drop, errors='ignore', inplace=True)
 
         self.final_results_df = combined_df.sort_values("Combined_Points", ascending=True).reset_index(drop=True)
         return combined_df
+
         
     def to_dict(self):
         """Serialize Final to JSON-serializable dictionary."""
