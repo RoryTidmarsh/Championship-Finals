@@ -75,7 +75,7 @@ async def get_class_ids(agility_link: str, jumping_link: str):
 
     return API_models.lookupIDsResponse(agilityID=agility_id, jumpingID=jumping_id)
 
-async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
+async def update_classInfo(agilityID: str, jumpingID: str, simulation=False, request_id=None):
     """Update ClassInfo object of the qualifying rounds. To be called when finals route is refreshed.
     
     
@@ -101,11 +101,11 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
 
         print_debug(f"[STEP] Importing agility results...")
         # Import results for agility class
-        agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation)
+        agility_results_df, agility_eliminations, agility_status = plaza_R_RO.import_results(agility_class, simulation=simulation, request_id=request_id)
 
         print_debug(f"[STEP] Importing jumping results...")
         # Import results for jumping class
-        jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class, simulation=simulation)
+        jumping_results_df, jumping_eliminations, jumping_status = plaza_R_RO.import_results(jumping_class, simulation=simulation, request_id=request_id)
 
         print_debug(f"[STEP] Updating class info...")
         # Update ClassInfo objects
@@ -132,7 +132,7 @@ async def update_classInfo(agilityID: str, jumpingID: str, simulation=False):
         print_debug(f"[STEP] Creating final class...")
         try:
             final_class = Final(jumping_class, agility_class)
-            final_class.combine_dfs()
+            final_class.combine_dfs(request_id=request_id)
             final_class.update_status()
         except Exception as e:
             print_debug(f"Error combining dfs or updating status: {e}")
