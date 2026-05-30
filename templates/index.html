@@ -91,6 +91,15 @@
             <!-- Error Display for Results -->
             <div id="results-error-display" class="error-box hidden">
                 <span id="results-error-message"></span>
+                <button id="error-detail-btn" class="error-detail-toggle hidden" type="button">
+                    See detailed error information ▼
+                </button>
+            </div>
+
+            <!-- Error Detail Panel -->
+            <div id="error-detail-panel" class="error-detail-panel hidden">
+                <h3>Error Details</h3>
+                <div id="error-detail-content">Loading error details…</div>
             </div>
             
             <!-- Loading Message -->
@@ -542,22 +551,84 @@
                 
                 if (errorMessage) errorMessage.textContent = message;
                 if (errorDiv) errorDiv.classList.remove('hidden');
-                
-                setTimeout(() => {
-                    this.hideError(elementId);
-                }, 5000);
+
+                // Show the "See detailed error information" button for the results page error
+                if (elementId === 'results-error-display') {
+                    const detailBtn = document.getElementById('error-detail-btn');
+                    if (detailBtn) detailBtn.classList.remove('hidden');
+                }
             }
             
             hideError(elementId) {
                 const errorDiv = document.getElementById(elementId);
                 if (errorDiv) errorDiv.classList.add('hidden');
+
+                if (elementId === 'results-error-display') {
+                    const detailBtn = document.getElementById('error-detail-btn');
+                    const detailPanel = document.getElementById('error-detail-panel');
+                    if (detailBtn) {
+                        detailBtn.classList.add('hidden');
+                        detailBtn.textContent = 'See detailed error information ▼';
+                    }
+                    if (detailPanel) detailPanel.classList.add('hidden');
+                }
+            }
+
+            async loadErrorDetail() {
+                const panel = document.getElementById('error-detail-panel');
+                const content = document.getElementById('error-detail-content');
+                if (!panel || !content) return;
+
+                panel.classList.remove('hidden');
+                content.textContent = 'Loading…';
+
+                try {
+                    const resp = await fetch('/api/error-log?limit=1');
+                    const data = await resp.json();
+
+                    if (!data.errors || data.errors.length === 0) {
+                        content.innerHTML = '<em>No error records found in the log.</em>';
+                        return;
+                    }
+
+                    const err = data.errors[0];
+                    const ctx = err.context ? JSON.stringify(err.context, null, 2) : '{}';
+                    content.innerHTML = `
+                        <table class="error-detail-table">
+                            <tr><th>Time</th><td>${err.timestamp}</td></tr>
+                            <tr><th>Type</th><td>${err.error_type}</td></tr>
+                            <tr><th>Source</th><td>${err.source}</td></tr>
+                            <tr><th>Cause</th><td>${err.cause}</td></tr>
+                            <tr><th>Context</th><td><pre>${ctx}</pre></td></tr>
+                            ${err.has_html_snapshot ? '<tr><th>HTML Snapshot</th><td><em>Captured — available via /api/error-log/' + err.id + '</em></td></tr>' : ''}
+                        </table>
+                    `;
+                } catch (e) {
+                    content.innerHTML = `<em>Failed to load error details: ${e}</em>`;
+                }
             }
         }
 
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM ready, creating ChampionshipTracker...');
-            new ChampionshipTracker();
+            const tracker = new ChampionshipTracker();
+
+            // Wire up the error detail toggle button
+            const detailBtn = document.getElementById('error-detail-btn');
+            const detailPanel = document.getElementById('error-detail-panel');
+            if (detailBtn) {
+                detailBtn.addEventListener('click', () => {
+                    const isOpen = !detailPanel.classList.contains('hidden');
+                    if (isOpen) {
+                        detailPanel.classList.add('hidden');
+                        detailBtn.textContent = 'See detailed error information ▼';
+                    } else {
+                        tracker.loadErrorDetail();
+                        detailBtn.textContent = 'Hide error details ▲';
+                    }
+                });
+            }
         });
     </script>
 </body>
